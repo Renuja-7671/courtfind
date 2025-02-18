@@ -10,10 +10,10 @@ app.use(bodyParser.json());
 
 // Database connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // Change if your MySQL username is different
-    password: '12345', // Add your MySQL password
-    database: 'courtfind'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect((err) => {
@@ -23,7 +23,6 @@ db.connect((err) => {
         console.log('Connected to MySQL');
     }
 });
-
 
 // User Registration (Signup)
 app.post('/register', async (req, res) => {
@@ -64,12 +63,12 @@ app.post('/login', (req, res) => {
         }
 
         // Generate a JWT token
-        const token = jwt.sign({ userId: user.userId }, 'secretkey', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ message: 'Login successful', token });
     });
 });
 
-//Here authentication is done. Only authenticated users with JWT token can access certain end-points.
+// Authentication middleware
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -78,23 +77,22 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
-    jwt.verify(token, 'secretkey', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid token' });
         }
-        req.user = user; // Store user details in request
-        next(); // Proceed to the next middleware/route handler
+        req.user = user;
+        next();
     });
 };
 
-//dashboard with controlled access
+// Dashboard with controlled access
 app.get('/dashboard', authenticateToken, (req, res) => {
     res.json({ message: `Welcome to the dashboard, User ID: ${req.user.userId}` });
 });
 
-
 // Start server
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
