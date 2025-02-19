@@ -4,8 +4,10 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
-const app = express();
+const app = express(); // Move this line up before using app
+app.use(cors());
 app.use(bodyParser.json());
 
 // Database connection
@@ -92,7 +94,7 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

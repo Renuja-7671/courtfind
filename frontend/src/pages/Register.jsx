@@ -8,11 +8,13 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const API_URL = "http://localhost:8000";
+
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:3000/register", { email, password });
+            const res = await axios.post(`${API_URL}/register`, { email, password });
             setMessage(res.data.message);
         } catch (error) {
             setMessage(error.response?.data?.message || "Registration failed");
