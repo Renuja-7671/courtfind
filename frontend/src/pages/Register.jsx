@@ -59,7 +59,7 @@ const Register = () => {
             <Row className="w-100 justify-content-center">
                 <Col md={8} lg={6}>
                     <div className="p-4 shadow-sm border rounded bg-white">
-                        <h2 className="mb-4 text-center">Registration Form</h2>
+                        <h2 className="mb-4 mt-4 text-center">Registration Form</h2>
                         <p className="text-left">
                             Already have a Courtfind account?{" "}
                             <Button variant="link" onClick={() => navigate("/login")}>
@@ -191,7 +191,7 @@ const Register = () => {
                                 Register
                             </Button>
                         </Form>
-                        <p className="text-justify mt-3">
+                        <p className="text-justify mt-3 mb-4">
                             By signing up, I agree to the Courtfind Terms of Use and Privacy Policy.
                         </p>
                         {message && <Alert variant={message.includes("failed") ? "danger" : "success"} className="mt-3">{message}</Alert>}
