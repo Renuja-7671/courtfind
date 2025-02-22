@@ -1,7 +1,16 @@
+import React from "react";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { isAuthenticated, logoutUser } from "../services/authService";
 
-const AppNavbar = () => {
+const NavigationBar = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logoutUser();
+        navigate("/login");
+    };
+
     const fullStyle = {
         backgroundColor: "#0b162c",
         padding: "0px 150px 0px 150px ",
@@ -40,21 +49,33 @@ const AppNavbar = () => {
                             <Nav.Link as={Link} to="/contact" style={navLinkStyle}>
                                 Contact us
                             </Nav.Link>
-                            <Nav.Link as={Link} to="/register" style={navLinkStyle}>
+                        </Nav>
+                        <Nav>
+                        {isAuthenticated() ? (
+                            <>
+                                <Nav.Link as={Link} to="/dashboard" style={{ padding: "8px 30px 0px 10px" }}>Dashboard</Nav.Link>
+                                <Button variant="danger" style={{ padding: "5px 10px 7px 10px" }}onClick={handleLogout}>Logout</Button>
+                            </>
+                        ) : (
+                            <>
+                                <Nav.Link as={Link} to="/signup" style={navLinkStyle}>
                                 Sign up
-                            </Nav.Link>
-                            <Button
-                                as={Link}
-                                to="/login"
-                                variant="primary"
-                                style={{
-                                    backgroundColor: "#007bff",
-                                    border: "none",
-                                    padding: "6px 15px",
-                                }}
+                                </Nav.Link>
+                                <Button
+                                    as={Link}
+                                    to="/login"
+                                    variant="primary"
+                                    style={{
+                                        backgroundColor: "#007bff",
+                                        border: "none",
+                                        padding: "6px 15px",
+                                    }}
                             >
-                                Log in
-                            </Button>
+                                    Log in
+                                </Button>
+                            </>
+                        )}
+                            
                         </Nav>
                     </Navbar.Collapse>
                     
@@ -77,5 +98,4 @@ const AppNavbar = () => {
     );
 };
 
-export default AppNavbar;
-
+export default NavigationBar;

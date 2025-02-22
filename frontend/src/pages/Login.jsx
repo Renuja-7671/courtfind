@@ -55,7 +55,7 @@ const Login = () => {
                                     required
                                 />
                             </Form.Group> <br />
-                            <Button variant="link" onClick={() => navigate("/reset-password")}>
+                            <Button variant="link" onClick={() => navigate("/forgot-password")}>
                                 Forget Password
                             </Button> <br />
 

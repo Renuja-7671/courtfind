@@ -3,7 +3,7 @@ import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
@@ -55,4 +55,4 @@ const ResetPassword = () => {
     );
 };
 
-export default ResetPassword;
+export default ForgotPassword;

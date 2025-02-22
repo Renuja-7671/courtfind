@@ -30,7 +30,7 @@ const Footer = () => {
                     <Col>
                         <img src="/assets/logo.png" alt="CourtFind Logo" style={{ height: "90px" }} />
                         <p>Sign Up and Connect With Us</p>
-                        <Button as={Link} to="/register" variant="primary" style={{ backgroundColor: "#007bff", border: "none" }}>
+                        <Button as={Link} to="/signup" variant="primary" style={{ backgroundColor: "#007bff", border: "none" }}>
                             Sign up
                         </Button>
                     </Col>
