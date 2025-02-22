@@ -42,7 +42,7 @@ export const isAuthenticated = () => {
 // Forgot password
 export const forgotPassword = async (email) => {
     try {
-        const response = await api.post("/forgot-password", { email });
+        const response = await api.post("/auth/forgot-password", { email });
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Something went wrong. Try again.";
@@ -52,7 +52,7 @@ export const forgotPassword = async (email) => {
 // Reset password page
 export const resetPassword = async (password, token) => {
     try {
-        const response = await api.post("/reset-password", { password, token });
+        const response = await api.post("/auth/reset-password", { password, token });
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Password reset failed";

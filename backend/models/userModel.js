@@ -11,6 +11,10 @@ const User = {
             userData,
             callback
         );
+    },
+
+    updateUser: (data, callback) => {
+        db.query("UPDATE users SET resetToken = ?, resetTokenExpires = ? WHERE email = ?", data, callback);
     }
 };
 

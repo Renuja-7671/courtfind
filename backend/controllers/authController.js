@@ -65,77 +65,107 @@ const transporter = nodemailer.createTransport({
 });
 
 // Forgot Password
+
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     console.log("Received Email:", email);
 
     try {
-        const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
-        
-        console.log("Rows found:", rows);
+        // Use the findByEmail method from User model
+        User.findByEmail(email, async (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Database error", error: err });
+            }
 
-        if (!Array.isArray(rows) || rows.length === 0) {
-            console.log("No user found with this email:", email);
-            return res.status(404).json({ message: "User not found" });
-        }
+            if (results.length === 0) {
+                console.log("No user found with this email:", email);
+                return res.status(404).json({ message: "User not found" });
+            }
 
-        // Generate reset token
-        const resetToken = crypto.randomBytes(32).toString("hex");
-        const hashedToken = bcrypt.hashSync(resetToken, 10);
-        const expiryTime = new Date(Date.now() + 3600000); // 1 hour expiration
+            // Generate reset token
+            const resetToken = crypto.randomBytes(32).toString("hex");
+            const hashedToken = bcrypt.hashSync(resetToken, 10);
+            const expiryTime = new Date(Date.now() + 3600000); // 1-hour expiration
 
-        // Save token in the database
-        await db.execute(
-            "UPDATE users SET resetToken = ?, resetTokenExpires = ? WHERE email = ?",
-            [hashedToken, expiryTime, email]
-        );
+            // Save token in the database
+            const updateQuery = `UPDATE users SET resetToken = ?, resetTokenExpires = ? WHERE email = ?`;
+            User.updateUser([hashedToken, expiryTime, email], async (updateErr) => {
+                if (updateErr) {
+                    console.error("Error updating reset token:", updateErr);
+                    return res.status(500).json({ message: "Error updating reset token", error: updateErr });
+                }
 
-        // Send reset email
-        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-        const mailOptions = {
-            to: email,
-            from: process.env.EMAIL_USER,
-            subject: "Password Reset Request",
-            html: `<p>You requested a password reset. Click the link below to reset your password:</p>
-                   <a href="${resetUrl}">${resetUrl}</a>
-                   <p>This link expires in 1 hour.</p>`
-        };
+                // Send reset email
+                const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+                const mailOptions = {
+                    to: email,
+                    from: process.env.EMAIL_USER,
+                    subject: "Password Reset Request",
+                    html: `<p>You requested a password reset. Click the link below to reset your password:</p>
+                           <a href="${resetUrl}">${resetUrl}</a>
+                           <p>This link expires in 1 hour.</p>`
+                };
 
-        await transporter.sendMail(mailOptions);
-        console.log("Reset email sent to:", email);
-        res.json({ message: "Password reset link sent to your email" });
-
+                try {
+                    await transporter.sendMail(mailOptions);
+                    console.log("Reset email sent to:", email);
+                    res.json({ message: "Password reset link sent to your email" });
+                } catch (emailError) {
+                    console.error("Error sending email:", emailError);
+                    res.status(500).json({ message: "Error sending email", error: emailError.message });
+                }
+            });
+        });
     } catch (error) {
         console.error("Server Error:", error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
-
-
-
-
 // Reset Password
 exports.resetPassword = async (req, res) => {
-    const { token, password } = req.body;
+    const { password, token } = req.body;
 
     try {
-        const [users] = await db.execute("SELECT * FROM users WHERE resetToken = ? AND resetTokenExpires > NOW()", [token]);
+        // Fetch users with valid reset tokens
+        const result = await db.execute("SELECT * FROM users WHERE resetTokenExpires > NOW()", []);
 
-        if (users.length === 0) {
+        // Ensure the response is structured correctly
+        if (!Array.isArray(result) || result.length < 1) {
+            console.error("Unexpected database response:", result);
+            return res.status(500).json({ message: "Server error: Unexpected database response" });
+        }
+
+        const [rows] = result;
+        console.log("Rows retrieved:", rows);
+
+        if (!Array.isArray(rows) || rows.length === 0) {
             return res.status(400).json({ message: "Invalid or expired token" });
         }
 
+        // Find the correct user by verifying the token
+        const user = rows.find(u => u.resetToken && bcrypt.compareSync(token, u.resetToken));
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid or expired token" });
+        }
+
+        // Hash the new password
         const hashedPassword = bcrypt.hashSync(password, 10);
 
+        // Update password and remove reset token fields
         await db.execute(
             "UPDATE users SET password = ?, resetToken = NULL, resetTokenExpires = NULL WHERE id = ?",
-            [hashedPassword, users[0].id]
+            [hashedPassword, user.id]
         );
 
         res.json({ message: "Password reset successful!" });
 
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        console.error("Reset Password Error:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
