@@ -7,6 +7,7 @@ import Signup from "./views/Signup";
 import Dashboard from "./views/Dashboard";
 import ForgotPasswordPage from "./views/ForgotPasswordPage";
 import ResetPasswordPage from "./views/ResetPasswordPage";
+import ContactUs from "./pages/ContactUs"; 
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                <Route path="/contact" element={<ContactUs />} />
             </Routes>
             </div>
             <Footer />
@@ -28,3 +30,7 @@ function App() {
 }
 
 export default App;
+
+
+    
+    
