@@ -27,8 +27,8 @@ const ForgotPasswordPage = () => {
     };
 
     return (
-        <Container className="d-flex flex-column align-items-center min-vh-100 justify-content-center">
-            <div className="text-left w-50">
+    <Container className=" p-5 d-flex justify-content-center align-items-center">
+          <div className="p-4 shadow-sm border rounded">
                 <h2 className="mb-4">Reset Password</h2>
                 <p className="mb-5">Enter the email address associated with your account, and we'll send a confirmation link.</p>
                 
@@ -48,8 +48,8 @@ const ForgotPasswordPage = () => {
                 
                 {message && <Alert variant="success" className="mt-3">{message}</Alert>}
                 {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
-            </div>
-        </Container>
+            </div> 
+    </Container>
     );
 };
 

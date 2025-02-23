@@ -89,7 +89,6 @@ exports.forgotPassword = async (req, res) => {
             const expiryTime = new Date(Date.now() + 3600000); // 1-hour expiration
 
             // Save token in the database
-            const updateQuery = `UPDATE users SET resetToken = ?, resetTokenExpires = ? WHERE email = ?`;
             User.updateUser([hashedToken, expiryTime, email], async (updateErr) => {
                 if (updateErr) {
                     console.error("Error updating reset token:", updateErr);
@@ -126,46 +125,63 @@ exports.forgotPassword = async (req, res) => {
 // Reset Password
 exports.resetPassword = async (req, res) => {
     const { password, token } = req.body;
+    //console.log("Received Token:", token);
+    //console.log("New Password:", password);
 
     try {
         // Fetch users with valid reset tokens
-        const result = await db.execute("SELECT * FROM users WHERE resetTokenExpires > NOW()", []);
+        User.getUsersWithValidResetToken(async (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Database error", error: err });
+            }
+        
+            //console.log("Database results:", results);
+        
+            if (!results || results.length === 0) {
+                console.log("No user found with valid reset token.");
+                return res.status(400).json({ message: "Invalid or expired token" });
+            }
+        
+            // Check if each result contains the expected fields
+            // results.forEach((user, index) => {
+            //     console.log(`User ${index}:`, user);
+            // });
+        
+            // Find user by comparing the token
+            const user = results.find(u => u.resetToken && bcrypt.compareSync(token, u.resetToken));
+        
+            if (!user) {
+                console.log("No matching user found for this token.");
+                return res.status(400).json({ message: "Invalid or expired token" });
+            }
+        
+            //console.log("Found user:", user);
 
-        // Ensure the response is structured correctly
-        if (!Array.isArray(result) || result.length < 1) {
-            console.error("Unexpected database response:", result);
-            return res.status(500).json({ message: "Server error: Unexpected database response" });
-        }
+            const hashedPassword = bcrypt.hashSync(password, 10);
+            console.log("User ID:", user.userId);
 
-        const [rows] = result;
-        console.log("Rows retrieved:", rows);
+            // Ensure user.id is defined before updating the password
+            if (!user.userId) {
+                return res.status(500).json({ message: "Error: User ID is undefined" });
+            }
 
-        if (!Array.isArray(rows) || rows.length === 0) {
-            return res.status(400).json({ message: "Invalid or expired token" });
-        }
+            // Update the password in the database
+            User.updateUserPassword(user.userId, hashedPassword, (updateErr) => {
+                if (updateErr) {
+                    console.error("Error updating password:", updateErr);
+                    return res.status(500).json({ message: "Error updating password", error: updateErr });
+                }
 
-        // Find the correct user by verifying the token
-        const user = rows.find(u => u.resetToken && bcrypt.compareSync(token, u.resetToken));
-
-        if (!user) {
-            return res.status(400).json({ message: "Invalid or expired token" });
-        }
-
-        // Hash the new password
-        const hashedPassword = bcrypt.hashSync(password, 10);
-
-        // Update password and remove reset token fields
-        await db.execute(
-            "UPDATE users SET password = ?, resetToken = NULL, resetTokenExpires = NULL WHERE id = ?",
-            [hashedPassword, user.id]
-        );
-
-        res.json({ message: "Password reset successful!" });
-
+                res.json({ message: "Password reset successful!" });
+            });
+        });
     } catch (error) {
         console.error("Reset Password Error:", error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
 
 
