@@ -37,23 +37,39 @@ exports.login = (req, res) => {
     const { email, password } = req.body;
 
     User.findByEmail(email, async (err, results) => {
-        if (err) return res.status(500).json({ message: 'Database error', error: err });
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Database error", error: err });
+        }
 
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        if (!results || results.length === 0) {
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
         const user = results[0];
-        const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        try {
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: "Invalid email or password" });
+            }
+
+            // Generate JWT with user ID and role
+            const token = jwt.sign(
+                { userId: user.userId, role: user.role }, // Include role for authorization
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            res.json({ message: "Login successful", token, role: user.role });
+
+        } catch (error) {
+            console.error("Error comparing passwords:", error);
+            return res.status(500).json({ message: "Server error", error: error.message });
         }
-
-        const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ message: 'Login successful', token });
     });
 };
+
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
