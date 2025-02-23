@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const authenticateToken = require('./middleware/authMiddleware');
 
+const contactRoutes = require("./routes/contactRoutes");  // Import Contact Routes
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -13,6 +15,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use("/api", contactRoutes);  // Register the Contact Routes
 
 // Protected Route
 app.get('/api/dashboard', authenticateToken, (req, res) => {
