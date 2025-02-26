@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from "./components/Navbar";
+import { AuthProvider } from "./contexts/AuthContext";
 import Footer from "./components/Footer";
 import Login from "./views/Login";
 import Signup from "./views/Signup";
@@ -11,9 +12,11 @@ import ContactUs from "./views/ContactUs";
 import PlayerDashboard from "./views/PlayerDashboard";
 import OwnerDashboard from "./views/OwnerDashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import PlayerProfile from "./views/PlayerProfile";
 
 function App() {
     return (
+        <AuthProvider>
         <Router>
             <NavigationBar />
             <div className="content">
@@ -28,6 +31,7 @@ function App() {
                 {/* Role-based protected routes */}
                 <Route element={<PrivateRoute allowedRoles={["Player"]} />}>
                     <Route path="/player-dashboard" element={<PlayerDashboard />} />
+                    <Route path="/player-profile" element={<PlayerProfile />} />
                 </Route>
 
                 <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
@@ -37,6 +41,7 @@ function App() {
             </div>
             <Footer />
         </Router>
+        </AuthProvider>
     );
 }
 

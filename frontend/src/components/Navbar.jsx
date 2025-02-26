@@ -1,41 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { isAuthenticated } from "../services/authService";
-import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../contexts/AuthContext"; // Use global auth state
 
 const NavigationBar = () => {
-    const [userRole, setUserRole] = useState(null);
-    const [isAuth, setIsAuth] = useState(isAuthenticated());
+    const { isAuth, userRole, updateAuthState } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setUserRole(decodedToken.role);
-            } catch (error) {
-                console.error("Error decoding token:", error);
-                setUserRole(null);
-            }
-        }
-    }, [isAuth]);
 
     const handleLogout = () => {
         localStorage.removeItem("token"); // Clear token
-        setIsAuth(false); // Update authentication status
+        updateAuthState(); // Update global auth state
         navigate("/login");
     };
 
     const fullStyle = {
         backgroundColor: "#0b162c",
-        padding: "0px 150px 0px 150px ",
+        padding: "0px 150px",
     };
 
     const navbarStyle = {
         backgroundColor: "#0b162c",
-        padding: "0px 10px 0px 10px ",
+        padding: "0px 10px",
         borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
     };
 
@@ -72,11 +57,11 @@ const NavigationBar = () => {
                                     <Nav.Link 
                                         as={Link} 
                                         to={userRole === "Player" ? "/player-dashboard" : "/owner-dashboard"} 
-                                        style={{ padding: "8px 30px 0px 10px" }}
+                                        style={navLinkStyle}
                                     >
                                         Dashboard
                                     </Nav.Link>
-                                    <Button variant="danger" style={{ padding: "5px 10px 7px 10px" }} onClick={handleLogout}>
+                                    <Button variant="danger" style={{ padding: "6px 12px" }} onClick={handleLogout}>
                                         Logout
                                     </Button>
                                 </>

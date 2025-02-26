@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { loginUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
 import { jwtDecode } from "jwt-decode"; // Import jwt-decode
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const { updateAuthState } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -26,7 +28,8 @@ const Login = () => {
   
       console.log("Token received:", token);
       localStorage.setItem("authToken", token);
-  
+      updateAuthState(); // Update navbar state
+    
       const decodedToken = jwtDecode(token);
       console.log("Decoded Token:", decodedToken);
   
