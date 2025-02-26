@@ -119,7 +119,6 @@ const Signup = () => {
                                         <Form.Select name="country" value={formData.country} onChange={handleChange}>
                                             <option value="">Select Country</option>
                                             <option value="Sri Lanka">Sri Lanka</option>
-                                            <option value="India">India</option>
                                         </Form.Select>
                                     </Form.Group>
                                 </Col>

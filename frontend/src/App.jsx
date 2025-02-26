@@ -7,7 +7,10 @@ import Signup from "./views/Signup";
 import Dashboard from "./views/Dashboard";
 import ForgotPasswordPage from "./views/ForgotPasswordPage";
 import ResetPasswordPage from "./views/ResetPasswordPage";
-import ContactUs from "./pages/ContactUs"; 
+import ContactUs from "./views/ContactUs";
+import PlayerDashboard from "./views/PlayerDashboard";
+import OwnerDashboard from "./views/OwnerDashboard";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
     return (
@@ -22,6 +25,14 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
                 <Route path="/contact" element={<ContactUs />} />
+                {/* Role-based protected routes */}
+                <Route element={<PrivateRoute allowedRoles={["Player"]} />}>
+                    <Route path="/player-dashboard" element={<PlayerDashboard />} />
+                </Route>
+
+                <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
+                    <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+                </Route>
             </Routes>
             </div>
             <Footer />

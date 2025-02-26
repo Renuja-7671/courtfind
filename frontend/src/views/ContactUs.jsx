@@ -1,18 +1,12 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { submitContactForm } from "../services/commonService";
 
 const ContactUs = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-    });
+    const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
     const [feedback, setFeedback] = useState("");
     const navigate = useNavigate();
-    const API_URL = "http://localhost:8000";
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,12 +14,10 @@ const ContactUs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const res = await axios.post(`${API_URL}/api/contact`, formData);
-            setFeedback("Your message has been sent successfully!");
+        const result = await submitContactForm(formData);
+        setFeedback(result.message);
+        if (result.success) {
             setFormData({ name: "", email: "", phone: "", message: "" });
-        } catch (error) {
-            setFeedback("Failed to send the message. Please try again.");
         }
     };
 
@@ -34,11 +26,9 @@ const ContactUs = () => {
             <Row className="w-100 justify-content-center">
                 <Col md={6} lg={5}>
                     <div className="p-4 shadow-sm border rounded">
-                        <h2 className="text-left mb-4">Send Us a Massage</h2>
-                        <p className="text-left">
-                            You can Contact us with anyhthing related to our Services.
-                            We'll get in touch with you as soon as possible. 
-                        </p>
+                        <h2 className="text-left mb-4">Send Us a Message</h2>
+                        <p className="text-left">You can contact us regarding any issue. We’ll respond as soon as possible.</p>
+                        
                         <Form onSubmit={handleSubmit}>
                             <Form.Group controlId="formName">
                                 <Form.Label>Your Name</Form.Label>

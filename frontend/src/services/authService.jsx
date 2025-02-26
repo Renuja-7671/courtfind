@@ -16,15 +16,23 @@ export const registerUser = async (userData) => {
 export const loginUser = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
-    console.log("Token received:", response.data.token); // Debugging line
-    localStorage.setItem("token", response.data.token); // Store JWT token
+
+    console.log("Full API Response:", response); // Debugging line
+    console.log("Response Data:", response.data); // Debugging line
+
+    if (!response.data || !response.data.token) {
+      throw new Error("Token not received from server!");
+    }
+    // Save the token to local storage
+    localStorage.setItem("token", response.data.token);
+
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data || error.message || "Login failed";
-    console.error("Login Error:", errorMessage); // Debugging line
-    throw errorMessage;
+    console.error("Login Error:", error.response?.data || error.message || "Login failed");
+    throw error;
   }
 };
+
 
 // Logout User
 export const logoutUser = () => {

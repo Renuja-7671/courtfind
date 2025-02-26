@@ -1,26 +1,54 @@
 import React, { useState } from "react";
 import { loginUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap"; // Added Row and Col imports
+import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode"; // Import jwt-decode
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");  // Separate error state
-  const [successMessage, setSuccessMessage] = useState(""); // Separate success state
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
-      setSuccessMessage("Login successful!"); // Set success message
-      navigate("/dashboard"); // Redirect after successful login
+  
+      console.log("Full API Response in Login:", response); // Debugging line
+  
+      if (!response || !response.token) {
+        throw new Error("Token not received!");
+      }
+  
+      const token = response.token; 
+  
+      console.log("Token received:", token);
+      localStorage.setItem("authToken", token);
+  
+      const decodedToken = jwtDecode(token);
+      console.log("Decoded Token:", decodedToken);
+  
+      if (!decodedToken.role) throw new Error("Role not found in token!");
+  
+      const userRole = decodedToken.role;
+      setSuccessMessage("Login successful!");
+  
+      if (userRole === "Player") {
+        navigate("/player-dashboard");
+      } else if (userRole === "Owner") {
+        navigate("/owner-dashboard");
+      } else {
+        throw new Error("Invalid user role!");
+      }
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Login failed"); // Set error message
-      setSuccessMessage(""); // Clear success message on error
+      console.error("Login Error:", err);
+      setErrorMessage(err.response?.data?.message || err.message || "Login failed");
+      setSuccessMessage("");
     }
   };
+  
 
   return (
     <Container className="min-vh-100 d-flex justify-content-center align-items-center">
@@ -69,7 +97,6 @@ const Login = () => {
               By signing in, I agree to the Courtfind Terms of Use and Privacy Policy.
             </p>
 
-            {/* Display success or error message */}
             {successMessage && <Alert variant="success">{successMessage}</Alert>}
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
           </div>

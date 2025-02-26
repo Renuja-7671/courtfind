@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { isAuthenticated, logoutUser } from "../services/authService";
+import { isAuthenticated } from "../services/authService";
+import { jwtDecode } from "jwt-decode";
 
 const NavigationBar = () => {
+    const [userRole, setUserRole] = useState(null);
+    const [isAuth, setIsAuth] = useState(isAuthenticated());
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserRole(decodedToken.role);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                setUserRole(null);
+            }
+        }
+    }, [isAuth]);
+
     const handleLogout = () => {
-        logoutUser();
+        localStorage.removeItem("token"); // Clear token
+        setIsAuth(false); // Update authentication status
         navigate("/login");
     };
 
@@ -30,8 +47,7 @@ const NavigationBar = () => {
     };
 
     return (
-        <>
-            <div style={fullStyle}>
+        <div style={fullStyle}>
             {/* Main Navbar */}
             <Navbar expand="lg" style={navbarStyle} variant="dark">
                 <Container>
@@ -51,50 +67,54 @@ const NavigationBar = () => {
                             </Nav.Link>
                         </Nav>
                         <Nav>
-                        {isAuthenticated() ? (
-                            <>
-                                <Nav.Link as={Link} to="/dashboard" style={{ padding: "8px 30px 0px 10px" }}>Dashboard</Nav.Link>
-                                <Button variant="danger" style={{ padding: "5px 10px 7px 10px" }}onClick={handleLogout}>Logout</Button>
-                            </>
-                        ) : (
-                            <>
-                                <Nav.Link as={Link} to="/signup" style={navLinkStyle}>
-                                Sign up
-                                </Nav.Link>
-                                <Button
-                                    as={Link}
-                                    to="/login"
-                                    variant="primary"
-                                    style={{
-                                        backgroundColor: "#007bff",
-                                        border: "none",
-                                        padding: "6px 15px",
-                                    }}
-                            >
-                                    Log in
-                                </Button>
-                            </>
-                        )}
-                            
+                            {isAuth ? (
+                                <>
+                                    <Nav.Link 
+                                        as={Link} 
+                                        to={userRole === "Player" ? "/player-dashboard" : "/owner-dashboard"} 
+                                        style={{ padding: "8px 30px 0px 10px" }}
+                                    >
+                                        Dashboard
+                                    </Nav.Link>
+                                    <Button variant="danger" style={{ padding: "5px 10px 7px 10px" }} onClick={handleLogout}>
+                                        Logout
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Nav.Link as={Link} to="/signup" style={navLinkStyle}>
+                                        Sign up
+                                    </Nav.Link>
+                                    <Button
+                                        as={Link}
+                                        to="/login"
+                                        variant="primary"
+                                        style={{
+                                            backgroundColor: "#007bff",
+                                            border: "none",
+                                            padding: "6px 15px",
+                                        }}
+                                    >
+                                        Log in
+                                    </Button>
+                                </>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
-                    
                 </Container>
             </Navbar>
 
+            {/* Second Navbar for "Explore Now" */}
             <Navbar expand="lg" style={navbarStyle} variant="dark">
                 <Container>
-                <Nav>
-                    <Nav.Link as={Link} to="/explore" style={navLinkStyle}>
-                                Explore Now
-                    </Nav.Link>
-                </Nav>
+                    <Nav>
+                        <Nav.Link as={Link} to="/explore" style={navLinkStyle}>
+                            Explore Now
+                        </Nav.Link>
+                    </Nav>
                 </Container>
-                
             </Navbar>
-
-            </div>
-        </>
+        </div>
     );
 };
 
