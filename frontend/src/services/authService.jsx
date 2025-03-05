@@ -1,4 +1,7 @@
 import api from "./api";
+import { useAuth } from "../contexts/AuthContext"; // Use global auth state
+
+
 
 // Register a New User
 export const registerUser = async (userData) => {
@@ -36,8 +39,11 @@ export const loginUser = async (credentials) => {
 
 // Logout User
 export const logoutUser = () => {
+  const { updateAuthState } = useAuth();
   console.log("Logging out and removing token"); // Debugging line
   localStorage.removeItem("token"); // Remove token from storage
+  updateAuthState();
+
 };
 
 // Check if User is Authenticated

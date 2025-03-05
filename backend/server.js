@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 
 app.use('/api', routes);
 
+
 // Protected Route
 app.get('/api/dashboard', authenticateToken, (req, res) => {
     res.json({ message: `Welcome to the dashboard, User ID: ${req.user.userId}` });

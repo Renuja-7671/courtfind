@@ -13,6 +13,8 @@ import PlayerDashboard from "./views/PlayerDashboard";
 import OwnerDashboard from "./views/OwnerDashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import PlayerProfile from "./views/PlayerProfile";
+import Chatbot from "./components/Chatbot";
+import FloatingChatbot from "./components/FloatingChatbot";
 
 function App() {
     return (
@@ -37,7 +39,10 @@ function App() {
                 <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
                     <Route path="/owner-dashboard" element={<OwnerDashboard />} />
                 </Route>
+                {/* End of Role-based protected routes */}
+                <Route path="/chatbot" element={<Chatbot />} />
             </Routes>
+            <FloatingChatbot />
             </div>
             <Footer />
         </Router>

@@ -8,7 +8,7 @@ const NavigationBar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("token"); // Clear token
+        localStorage.removeItem("authToken"); // Clear token
         updateAuthState(); // Update global auth state
         navigate("/login");
     };
@@ -49,6 +49,9 @@ const NavigationBar = () => {
                         <Nav>
                             <Nav.Link as={Link} to="/contact" style={navLinkStyle}>
                                 Contact us
+                            </Nav.Link>
+                            <Nav.Link as={Link} to="/chatbot" style={navLinkStyle}>
+                                AI Help
                             </Nav.Link>
                         </Nav>
                         <Nav>
