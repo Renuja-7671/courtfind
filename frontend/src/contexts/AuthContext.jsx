@@ -6,12 +6,12 @@ const AuthContext = createContext();
 
 // Provide authentication state to entire app
 export const AuthProvider = ({ children }) => {
-    const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
+    const [isAuth, setIsAuth] = useState(!!localStorage.getItem("authToken"));
     const [userRole, setUserRole] = useState(null);
 
     // Function to update authentication state
     const updateAuthState = () => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);

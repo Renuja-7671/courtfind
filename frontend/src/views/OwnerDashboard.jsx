@@ -1,12 +1,15 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext"; // Use global auth state
 
 const OwnerDashboard = () => {
+    const { updateAuthState } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem("authToken"); // Remove token
+        updateAuthState(); // Update global auth state
         navigate("/login"); // Redirect to login
     };
 
