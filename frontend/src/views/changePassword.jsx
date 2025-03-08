@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { changePassword } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [message, setMessage] = useState("");
     const [variant, setVariant] = useState("danger"); // Alert type
     const navigate = useNavigate();
@@ -43,35 +48,66 @@ const ChangePassword = () => {
                         <h2 className="mb-4">Change Password</h2>
                         {message && <Alert variant={variant}>{message}</Alert>}
                         <Form onSubmit={handleChangePassword}>
+
                             <Form.Group className="mb-3" controlId="currentPassword">
                                 <Form.Label>Current Password</Form.Label>
+                                <InputGroup>
                                 <Form.Control
-                                    type="password"
+                                    type={showCurrentPassword ? "text" : "password"}
+                                    placeholder="Current Password"
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     required
                                 />
+                                <Button 
+                                    variant="light" 
+                                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                >
+                                    {showCurrentPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </Button>
+                                </InputGroup>
                             </Form.Group>
+
 
                             <Form.Group className="mb-3" controlId="newPassword">
                                 <Form.Label>New Password</Form.Label>
+                                <InputGroup>
                                 <Form.Control
-                                    type="password"
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="New Password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     required
                                 />
+                                <Button 
+                                    variant="light" 
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                >
+                                    {showNewPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </Button>
+                                </InputGroup>
                             </Form.Group>
 
+
                             <Form.Group className="mb-3" controlId="confirmPassword">
-                                <Form.Label>Confirm New Password</Form.Label>
+                                <Form.Label>Confirm Password</Form.Label>
+                                <InputGroup>
                                 <Form.Control
-                                    type="password"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm Password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                 />
+                                <Button 
+                                    variant="light" 
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </Button>
+                                </InputGroup>
                             </Form.Group>
+                            <br />
 
                             <Button variant="primary" type="submit">
                                 Save

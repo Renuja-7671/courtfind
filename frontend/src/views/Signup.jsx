@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { registerUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap"; // Added Row and Col imports
+import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap"; // Added Row and Col imports
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -15,10 +17,14 @@ const Signup = () => {
         address: "",
         email: "",
         password: ""
+        
     });
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
   
     const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,6 +32,13 @@ const Signup = () => {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
+
+        // Check if passwords match
+        if (formData.password !== formData.confirmPassword) {
+            setMessage("Passwords do not match");
+            return;
+        }
+
       try {
         const response = await registerUser(formData); // Await the registerUser call
         setMessage(response.message); // Use response.message from the API
@@ -41,7 +54,8 @@ const Signup = () => {
             zip: "",
             address: "",
             email: "",
-            password: ""
+            password: "",
+            confirmPassword: ""
         });
 
         // Navigate to login page after a delay
@@ -69,7 +83,7 @@ const Signup = () => {
                             <Form.Group className="mb-3">
                                 <Form.Label>Choose your role *</Form.Label>
                                 <Form.Select name="role" value={formData.role} onChange={handleChange} required>
-                                    <option value="">Select Role</option>
+                                    <option value="" disabled>Select Role</option>
                                     <option value="Player">Player</option>
                                     <option value="Owner">Arena Owner</option>
                                 </Form.Select>
@@ -117,7 +131,7 @@ const Signup = () => {
                                     <Form.Group className="mb-3">
                                         <Form.Label>Country</Form.Label>
                                         <Form.Select name="country" value={formData.country} onChange={handleChange}>
-                                            <option value="">Select Country</option>
+                                            <option value="" disabled>Select Country</option>
                                             <option value="Sri Lanka">Sri Lanka</option>
                                         </Form.Select>
                                     </Form.Group>
@@ -126,7 +140,7 @@ const Signup = () => {
                                     <Form.Group className="mb-3">
                                         <Form.Label>Province</Form.Label>
                                         <Form.Select name="province" value={formData.province} onChange={handleChange}>
-                                            <option value="">Select Province</option>
+                                            <option value="" disabled>Select Province</option>
                                             <option value="Western">Western Province</option>
                                             <option value="Central">Central Province</option>
                                             <option value="Southern">Southern Province</option>
@@ -176,15 +190,44 @@ const Signup = () => {
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <Button 
+                                        variant="light" 
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                    </Button>
+                                </InputGroup>
                             </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Confirm Password</Form.Label>
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        name="confirmPassword"
+                                        placeholder="Type the password again"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <Button 
+                                        variant="light" 
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                    </Button>
+                                </InputGroup>
+                            </Form.Group> <br />
+
+
                             <Button variant="primary" type="submit" className="w-100">
                                 Register
                             </Button>

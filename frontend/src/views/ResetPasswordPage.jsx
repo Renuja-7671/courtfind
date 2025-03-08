@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Alert, InputGroup } from "react-bootstrap";
 import { resetPassword } from "../services/authService";
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 
 const ResetPasswordPage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
     const { token } = useParams(); // Get token from URL
@@ -36,27 +40,45 @@ const ResetPasswordPage = () => {
                     <div className="p-4 shadow-sm border rounded">
                         <h2 className="text-left mb-4">Reset Password</h2>
                         <Form onSubmit={handleResetPassword}>
+                        
                             <Form.Group controlId="formPassword">
                                 <Form.Label>New Password</Form.Label>
+                                <InputGroup>
                                 <Form.Control
-                                    type="password"
+                                    type={showNewPassword ? "text" : "password"}
                                     placeholder="Enter new password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                            </Form.Group> <br />
-
+                                <Button 
+                                    variant="light" 
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                >
+                                    {showNewPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </Button>
+                                </InputGroup>
+                            </Form.Group>
+                            <br />
                             <Form.Group controlId="formConfirmPassword">
-                                <Form.Label>Confirm New Password</Form.Label>
+                                <Form.Label>Confirm Password</Form.Label>
+                                <InputGroup>
                                 <Form.Control
-                                    type="password"
+                                    type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm new password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                 />
-                            </Form.Group> <br />
+                                <Button 
+                                    variant="light" 
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </Button>
+                                </InputGroup>
+                            </Form.Group>
+                            <br />
 
                             <Button variant="primary" type="submit" className="w-100 mt-3">
                                 Reset Password
