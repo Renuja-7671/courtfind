@@ -13,6 +13,7 @@ import PlayerDashboard from "./views/PlayerDashboard";
 import OwnerDashboard from "./views/OwnerDashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import PlayerProfile from "./views/PlayerProfile";
+import ChangePassword from './views/changePassword';
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
 
                 <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
                     <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+                    <Route path="/change-password" element={<ChangePassword />} />
                 </Route>
             </Routes>
             </div>

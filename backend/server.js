@@ -8,10 +8,13 @@ const { authenticateToken } = require('./middleware/authMiddleware');
 
 const contactRoutes = require("./routes/commonRoutes");  // Import Contact Routes
 
+const ownerRoutes = require('./routes/ownerRoutes');
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
+
 
 // Routes
 
