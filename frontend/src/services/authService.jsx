@@ -72,3 +72,13 @@ export const resetPassword = async (password, token) => {
         throw error.response?.data?.message || "Password reset failed";
     }
 };
+
+// Owner change password
+export const changePassword = async (currentPassword, newPassword) => {
+  try {
+      const response = await api.put("/owner/change-password", { currentPassword, newPassword });
+      return response.data;
+  } catch (error) {
+      throw error.response?.data?.message || "Failed to change password";
+    }
+};

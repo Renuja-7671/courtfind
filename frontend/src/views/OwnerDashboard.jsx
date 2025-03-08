@@ -22,6 +22,7 @@ const OwnerDashboard = () => {
                     
                     <Button variant="primary" onClick={() => navigate("/manage-courts")}>Manage Courts</Button>
                     <Button variant="danger" onClick={handleLogout} className="mt-0">Logout</Button>
+                    <Button variant="primary" onClick={() => navigate("/change-password")}>Change Password</Button>
                 </Col>
             </Row>
         </Container>
