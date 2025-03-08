@@ -12,17 +12,33 @@ exports.chatWithGemini = async (req, res) => {
             return res.status(400).json({ error: "Message is required" });
         }
 
-        // Corrected request format
-        const requestData = {
-            contents: [{ parts: [{ text: message }] }],
-        };
+        const systemInstruction = `
+            You are a helpful assistant for "COURTFIND" online sports arena booking system.
+            You should ONLY answer questions related to:
+            - Booking a sports arena
+            - sports
+            - Health benifits gained from sports
+            - Available sports facilities
+            - Pricing and timings of sports arenas
+            - User registration for booking
+            - Payment and cancellation policies
+            - Rules and regulations of the sports center
+            - Customer support related to arena bookings
+            
+            If a user asks about **anything unrelated** (e.g., general knowledge, weather, history, coding, etc.), politely respond:
+            "I can only assist with sports arena booking-related queries."
+        `;
 
-        const response = await axios.post(`${GEMINI_API_URL}?key=${API_KEY}`, requestData, {
-            headers: { "Content-Type": "application/json" }
+        const response = await axios.post(`${GEMINI_API_URL}?key=${API_KEY}`, {
+            contents: [
+                { role: "user", parts: [{ text: systemInstruction }] }, // System instructions
+                { role: "user", parts: [{ text: message }] } // User input
+            ]
         });
 
+
         // Extract response properly
-        const reply = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+        const reply = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "I can only assist with sports arena booking-related queries.";
 
         res.json({ reply });
     } catch (error) {

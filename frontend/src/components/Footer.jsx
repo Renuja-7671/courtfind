@@ -43,7 +43,7 @@ const Footer = () => {
                     <Col>
                         <h6>Support</h6>
                         <Link to="/contact" style={linkStyle}>Contact Us</Link>
-                        <Link to="/help" style={linkStyle}>Help Centre</Link>
+                        <Link to="/chatbot" style={linkStyle}>Help Centre</Link>
                     </Col>
                 </Row>
                 <hr style={{ backgroundColor: "#fff", opacity: 0.2, margin: "20px 0" }} />

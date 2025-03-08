@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { sendMessageToChatbot } from "../services/chatbotService";
 import { Container, Form, Button, Card } from "react-bootstrap";
+import { BsRobot } from "react-icons/bs";
+
 
 const Chatbot = () => {
     const [message, setMessage] = useState("");
@@ -26,7 +28,8 @@ const Chatbot = () => {
     return (
         <Container className="mt-4">
             <Card style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
-                <h4>AI Chatbot</h4>
+                <h4><BsRobot size={35} />  COURTFIND Helping Bot</h4>
+                <strong><p>Need help with something? Just ask me-----</p></strong> 
                 <div style={{ height: "300px", overflowY: "auto", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
                     {chat.map((msg, index) => (
                         <div key={index} style={{ textAlign: msg.sender === "user" ? "right" : "left", margin: "10px 0" }}>
