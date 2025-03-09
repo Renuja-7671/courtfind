@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
     if (!role || !firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: 'Role, first name, last name, email, and password are required' });
     }
-
+    
     try {
         User.findByEmail(email, async (err, results) => {
             if (err) return res.status(500).json({ message: 'Database error', error: err });
@@ -48,6 +48,8 @@ exports.login = (req, res) => {
 
         const user = results[0];
 
+        console.log("User Role:", user.role); // debug (check the role)
+
         try {
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
@@ -61,7 +63,11 @@ exports.login = (req, res) => {
                 { expiresIn: "1h" }
             );
 
-            res.json({ message: "Login successful", token, role: user.role });
+            res.json({ 
+                message: "Login successful", 
+                token, 
+                user: { id: user.userId, email: user.email, role: user.role }
+             });
 
         } catch (error) {
             console.error("Error comparing passwords:", error);
