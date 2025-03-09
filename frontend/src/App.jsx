@@ -16,7 +16,7 @@ import PlayerProfile from "./views/PlayerProfile";
 import ChangePassword from './views/changePassword';
 import Chatbot from "./components/Chatbot";
 import FloatingChatbot from "./components/FloatingChatbot";
-
+import AdminDashboard from "./views/AdminDashboard";
 
 function App() {
     return (
@@ -42,6 +42,13 @@ function App() {
                     <Route path="/owner-dashboard" element={<OwnerDashboard />} />
                     <Route path="/change-password" element={<ChangePassword />} />
                 </Route>
+
+                <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                </Route>
+
+
                 {/* End of Role-based protected routes */}
                 <Route path="/chatbot" element={<Chatbot />} />
             </Routes>
@@ -51,6 +58,7 @@ function App() {
         </Router>
         </AuthProvider>
     );
+    
 }
 
 export default App;
