@@ -46,6 +46,8 @@ const Login = () => {
         navigate("/player-dashboard");
       } else if (userRole === "Owner") {
         navigate("/owner-dashboard");
+      } else if (userRole === "Admin") {
+        navigate("/admin-dashboard");
       } else {
         throw new Error("Invalid user role!");
       }

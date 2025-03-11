@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
+                console.log("Decoded Token:", decodedToken);  // Check the decoded token
                 setUserRole(decodedToken.role);
                 setIsAuth(true);
+                localStorage.setItem("userRole", decodedToken.role); // Store role in localStorage
             } catch (error) {
                 console.error("Error decoding token:", error);
                 setUserRole(null);
@@ -26,6 +28,20 @@ export const AuthProvider = ({ children }) => {
             setIsAuth(false);
             setUserRole(null);
         }
+    };
+
+     // Function to log in user
+     const login = (token) => {
+        localStorage.setItem("authToken", token);
+        updateAuthState();
+    };
+
+    // Function to log out user
+    const logout = () => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userRole");
+        setIsAuth(false);
+        setUserRole(null);
     };
 
     useEffect(() => {
