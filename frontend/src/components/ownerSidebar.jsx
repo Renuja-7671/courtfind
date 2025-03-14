@@ -52,7 +52,7 @@ const Sidebar = () => {
                         <Nav.Link 
                             as={Link} 
                             to={item.path} 
-                            className={`sidebar-link d-flex align-items-center ${location.pathname === item.path ? "active" : ""}`}
+                            className={`sidebar-link d-flex align-items-center ${location.pathname === item.path ? "active" : ""} `}
                         >
                             {item.icon} <span className="ms-2">{item.label}</span>
                         </Nav.Link>

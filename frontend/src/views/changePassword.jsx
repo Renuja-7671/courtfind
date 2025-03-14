@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
+import Sidebar from "../components/ownerSidebar";
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -41,9 +42,14 @@ const ChangePassword = () => {
     };
 
     return (
-        <Container className="min-vh-100 d-flex justify-content-center align-items-center">
-            <Row className="w-100 justify-content-center">
-                <Col md={6} lg={5}>
+        <Container className="min-vh-100 d-flex flex-column  align-items-center">
+                <Row className="w-100" text-center>
+                <Col className="p-4 m-0"  md={3}>
+                    <Sidebar />
+                </Col>
+                <Col className="p-4 m-0"  md={2}>
+                </Col>
+                <Col md={6} lg={5} className="p-4 m-0 align-self-center justify-content-center">
                     <div className="p-4 shadow-sm border rounded">
                         <h2 className="mb-4">Change Password</h2>
                         {message && <Alert variant={variant}>{message}</Alert>}
