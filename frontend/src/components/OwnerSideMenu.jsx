@@ -14,8 +14,8 @@ const OwnerSideMenu = () => {
 
             {/* Menu Items */}
             <ListGroup variant="flush">
-                <ListGroup.Item action onClick={() => navigate('/owner/dashboard')} className="menu-item">
-                    <FaHome className="menu-icon" /> Dashboard
+                <ListGroup.Item action onClick={() => navigate('/owner-dashboard')} className="menu-item active">
+                    <FaHome className="menu-icon" /><span className="active-text">Dashboard</span>
                 </ListGroup.Item>
                 <ListGroup.Item action onClick={() => navigate('/owner/bookings')} className="menu-item">
                     <FaCalendarAlt className="menu-icon" /> Arena Bookings
@@ -26,11 +26,11 @@ const OwnerSideMenu = () => {
                 <ListGroup.Item action onClick={() => navigate('/owner/add-arena')} className="menu-item">
                     <FaPlus className="menu-icon" /> Add Arena
                 </ListGroup.Item>
-                <ListGroup.Item action onClick={() => navigate('/owner/profits')} className="menu-item active">
-                    <FaChartBar className="menu-icon" /> <span className="active-text">My Profits</span>
+                <ListGroup.Item action onClick={() => navigate('/owner/profits')} className="menu-item">
+                    <FaChartBar className="menu-icon" /> My Profits
                 </ListGroup.Item>
                 <hr className="divider" />
-                <ListGroup.Item action onClick={() => navigate('/owner/settings')} className="menu-item">
+                <ListGroup.Item action onClick={() => navigate('/owner-profile')} className="menu-item ">
                     <FaCog className="menu-icon" /> Account Settings
                 </ListGroup.Item>
                 <hr className="divider" />
@@ -42,12 +42,13 @@ const OwnerSideMenu = () => {
         </div>
         <style>
             {`.sidebar {
-                background-color: rgba(173, 216, 230, 0.8); /* Light blue */
+                background-color: rgba(206, 221, 251, 1); /* Light blue */
                 padding: 15px;
-                height: 100vh;
+                height: 75vh;
                 width: 250px;
-                display: flex;
+                display: flex-start;
                 flex-direction: column;
+                border-radius: 25px;
             }
 
             .search-bar {
@@ -86,7 +87,7 @@ const OwnerSideMenu = () => {
 
             .divider {
                 margin: 10px 0;
-                border-top: 1px solid #ccc;
+                border-top: 1px solid #000000;
             }
 
             .profile-section {

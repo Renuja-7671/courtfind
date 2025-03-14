@@ -23,7 +23,7 @@ const Footer = () => {
 
     return (
         <>
-        <div style={fullStyle}>
+        <div  style={fullStyle}>
         <footer style={footerStyle}>
             <Container>
                 <Row>

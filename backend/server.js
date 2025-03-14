@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require("path");
 
 const routes = require("./routes");
 const { authenticateToken } = require('./middleware/authMiddleware');
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 // Routes
 
 app.use('/api', routes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 // Protected Route
