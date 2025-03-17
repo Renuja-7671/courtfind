@@ -35,7 +35,33 @@ const User = {
     
         const query = "UPDATE users SET password = ?, resetToken = NULL, resetTokenExpires = NULL WHERE userId = ?";
         db.execute(query, [hashedPassword, userId], callback);
-    }
+    },
+
+    getOwnerProfile: (ownerId, callback) => {
+        db.query("SELECT firstName, lastName, email, mobile, country, province, zip, address FROM users WHERE userId = ?", [ownerId], callback);
+    },
+
+    updateOwnerProfile: (ownerId, profileData, callback) => {
+        const { firstName, lastName, mobile, country, province, zip, address } = profileData;
+        db.query(
+            "UPDATE users SET firstName = ?, lastName = ?, mobile = ?, country = ?, province = ?, zip = ?, address = ? WHERE userId = ?",
+            [firstName, lastName, mobile, country, province, zip, address, ownerId],
+            callback
+        );
+    },
+
+    updateProfileImage: async (userId, imageUrl) => {
+        try {
+            await db.execute("UPDATE users SET profileImage = ? WHERE userId = ?", [imageUrl, userId]);
+            return { message: "Profile image updated successfully" };
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getProfileImage: (userId, callback) => {
+        db.query("SELECT profileImage FROM users WHERE userId = ?", [userId], callback);
+    },
     
 };
 

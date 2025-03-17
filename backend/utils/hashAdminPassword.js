@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 
 const hashPassword = async () => {
-    const plainPassword = "adminpwdforcourtfind"; // Your admin password
+    const plainPassword = "adminpwd"; // Your admin password
     const saltRounds = 10;
 
     try {
