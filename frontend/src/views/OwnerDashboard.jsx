@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext"; // Use global auth state
-import OwnerSideMenu from "../components/OwnerSideMenu";
 import Sidebar from "../components/ownerSidebar";
 
 const OwnerDashboard = () => {

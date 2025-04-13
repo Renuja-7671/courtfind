@@ -1,22 +1,29 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+import MainLayout from "./components/MainLayout";
+
+// Common Views
 import Login from "./views/Login";
 import Signup from "./views/Signup";
 import Dashboard from "./views/Dashboard";
 import ForgotPasswordPage from "./views/ForgotPasswordPage";
 import ResetPasswordPage from "./views/ResetPasswordPage";
 import ContactUs from "./views/ContactUs";
-import PlayerDashboard from "./views/PlayerDashboard";
-import OwnerDashboard from "./views/OwnerDashboard";
-import PrivateRoute from "./components/PrivateRoute";
-import PlayerProfile from "./views/PlayerProfile";
-import ChangePassword from "./views/changePassword";
 import Chatbot from "./components/Chatbot";
-import OwnerProfile from "./components/OwnerProfile";
-import MainLayout from "./components/MainLayout"; //import common components to player and owner
+import ExploreNow from "./views/ExploreNow";
 
-//admin routes
+// Player Views
+import PlayerDashboard from "./views/PlayerDashboard";
+import PlayerProfile from "./views/PlayerProfile";
+
+// Owner Views
+import OwnerDashboard from "./views/OwnerDashboard";
+import ChangePassword from "./views/changePassword";
+import OwnerProfile from "./components/OwnerProfile";
+
+// Admin Views
 import AdminDashboard from "./views/AdminDashboard";
 import AdminBugs from "./views/AdminBugs";
 import AdminOwners from "./views/AdminOwners";
@@ -26,150 +33,79 @@ import AdminProfit from "./views/AdminProfit";
 import AdminReviews from "./views/AdminReviews";
 import AdminSettings from "./views/AdminSettings";
 
+// Helper component for wrapping routes with layout
+const withLayout = (Component) => (
+  <MainLayout>
+    <Component />
+  </MainLayout>
+);
+
+// Route configs
+const commonRoutes = [
+  { path: "/", element: Login },
+  { path: "/login", element: Login },
+  { path: "/signup", element: Signup },
+  { path: "/dashboard", element: Dashboard },
+  { path: "/forgot-password", element: ForgotPasswordPage },
+  { path: "/reset-password/:token", element: ResetPasswordPage },
+  { path: "/contact", element: ContactUs },
+  { path: "/chatbot", element: Chatbot },
+  { path: "/explore-now", element: ExploreNow }
+];
+
+const playerRoutes = [
+  { path: "/player-dashboard", element: PlayerDashboard },
+  { path: "/player-profile", element: PlayerProfile }
+];
+
+const ownerRoutes = [
+  { path: "/owner-dashboard", element: OwnerDashboard },
+  { path: "/change-password", element: ChangePassword },
+  { path: "/owner-profile", element: OwnerProfile }
+];
+
+const adminRoutes = [
+  { path: "/admin-dashboard", element: AdminDashboard },
+  { path: "/admin-owners", element: AdminOwners },
+  { path: "/admin-players", element: AdminPlayers },
+  { path: "/admin-profit", element: AdminProfit },
+  { path: "/admin-pricing", element: AdminPricing },
+  { path: "/admin-bugs", element: AdminBugs },
+  { path: "/admin-reviews", element: AdminReviews },
+  { path: "/admin-settings", element: AdminSettings }
+];
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        {/* <NavigationBar />
-            <div className="content">  */}
         <Routes>
-          {/*common routes with layout */}
-          <Route
-            path="/"
-            element={
-              <MainLayout>
-                <Login />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <MainLayout>
-                <Login />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <MainLayout>
-                <Signup />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <MainLayout>
-                <Dashboard />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <MainLayout>
-                <ForgotPasswordPage />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/reset-password/:token"
-            element={
-              <MainLayout>
-                <ResetPasswordPage />
-              </MainLayout>
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <MainLayout>
-                <ContactUs />
-              </MainLayout>
-            }
-          />
+          {/* Common Routes */}
+          {commonRoutes.map(({ path, element: Component }) => (
+            <Route key={path} path={path} element={withLayout(Component)} />
+          ))}
 
-          {/* Role-based protected routes */}
-          {/* Player Routes with Layout */}
+          {/* Player Routes */}
           <Route element={<PrivateRoute allowedRoles={["Player"]} />}>
-            <Route
-              path="/player-dashboard"
-              element={
-                <MainLayout>
-                  <PlayerDashboard />
-                </MainLayout>
-              }
-            />
-            <Route
-              path="/player-profile"
-              element={
-                <MainLayout>
-                  <PlayerProfile />
-                </MainLayout>
-              }
-            />
+            {playerRoutes.map(({ path, element: Component }) => (
+              <Route key={path} path={path} element={withLayout(Component)} />
+            ))}
           </Route>
 
-          {/* Owner Routes with Layout */}
-
+          {/* Owner Routes */}
           <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
-            <Route
-              path="/owner-dashboard"
-              element={
-                <MainLayout>
-                  <OwnerDashboard />
-                </MainLayout>
-              }
-            />
-            <Route
-              path="/change-password"
-              element={
-                <MainLayout>
-                  <ChangePassword />
-                </MainLayout>
-              }
-            />
-            <Route
-              path="/owner-profile"
-              element={
-                <MainLayout>
-                  <OwnerProfile />
-                </MainLayout>
-              }
-            />
+            {ownerRoutes.map(({ path, element: Component }) => (
+              <Route key={path} path={path} element={withLayout(Component)} />
+            ))}
           </Route>
 
-          {/* Admin Route WITHOUT MainLayout */}
-
+          {/* Admin Routes - No layout */}
           <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
-            <Route path="/" element={<Login />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/admin-owners" element={<AdminOwners />} />
-            <Route path="/admin-players" element={<AdminPlayers />} />
-            <Route path="/admin-profit" element={<AdminProfit />} />
-            <Route path="/admin-pricing" element={<AdminPricing />} />
-            <Route path="/admin-bugs" element={<AdminBugs />} />
-            <Route path="/admin-reviews" element={<AdminReviews />} />
-            <Route path="/admin-settings" element={<AdminSettings />} />
+            {adminRoutes.map(({ path, element: Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
           </Route>
-
-          {/* End of Role-based protected routes */}
-          <Route
-            path="/chatbot"
-            element={
-              <MainLayout>
-                <Chatbot />
-              </MainLayout>
-            }
-          />
         </Routes>
-        {/*
-            <FloatingChatbot />
-            </div>  
-            <Footer />*/}
       </Router>
     </AuthProvider>
   );
