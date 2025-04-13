@@ -63,6 +63,7 @@ const OwnerProfile = () => {
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
+        console.log("The file is: ",file);
         if (!file) return;
 
         try {

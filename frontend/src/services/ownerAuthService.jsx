@@ -30,6 +30,7 @@ export const updateOwnerProfile = async (token, profileData) => {
 export const uploadProfileImage = async (file, token) => {
     const formData = new FormData();
     formData.append("image", file);
+    console.log("The form data is added:", formData);
 
     const response = await api.post("/owner/profile/upload", formData, {
         headers: {

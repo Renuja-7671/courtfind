@@ -26,6 +26,7 @@ exports.authenticateUser = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded; //attach user data (id,role) to request 
+        req.user.userId
         console.log("Authenticated User:", decoded); // Log user details
         next();
     } catch (err) {
