@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import logo from "/assets/logo.png"; // since it's in public/assets
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext"; // Use global auth state
+
 import {
   FaHome,
   FaUsers,
@@ -49,7 +51,27 @@ const SidebarLink = ({ to, icon, label, isSettings }) => {
 const AdminLayout = ({ children }) => {
   const location = useLocation();
   const { isAuth } = useAuth();
-  
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/admin/profile");
+        setUserData({
+          firstName: res.data.firstName,
+          lastName: res.data.lastName,
+        });
+      } catch (err) {
+        console.error("Error fetching admin profile:", err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   // Protect this layout
   if (!isAuth) {
     return <Navigate to="/login" replace />;
@@ -85,7 +107,7 @@ const AdminLayout = ({ children }) => {
       title: "Reviews",
       icon: <FaStar />,
     },
-    "/admin-settings": {
+    "/admin-profile": {
       title: "Account Settings",
       icon: <FaCog />,
     },
@@ -96,10 +118,8 @@ const AdminLayout = ({ children }) => {
     icon: null,
   };
 
-  const user = {
-    name: "Ms. Melissa",
-    avatar: "https://i.pravatar.cc/40?img=47", // Replace with actual avatar URL if available
-  };
+  const fullName = `${userData.firstName} ${userData.lastName}`;
+  const avatar = "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png"; //  hardcoded for now 
 
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
@@ -107,14 +127,13 @@ const AdminLayout = ({ children }) => {
     setDropdownOpen((prev) => !prev);
   };
 
-
   const { logout } = useAuth();
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleLogout = () => {
-  logout();           // This clears localStorage and state
-  navigate("/login"); // Now you can safely redirect
-};
+  const handleLogout = () => {
+    logout(); // This clears localStorage and state
+    navigate("/login"); // Now you can safely redirect
+  };
 
   React.useEffect(() => {
     const handleClickOutside = (e) => {
@@ -190,13 +209,29 @@ const handleLogout = () => {
           <hr style={{ borderColor: "004377", margin: "10px 0" }} />
 
           <SidebarLink
-            to="/admin-settings"
+            to="/admin-profile"
             icon={<FaCog />}
             label="Account Settings"
             isSettings
           />
           {/* Divider Line */}
           <hr style={{ borderColor: "004377", margin: "10px 0" }} />
+
+          <div>
+                <img
+                  src={avatar}
+                  alt="Profile"
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+                <span>{fullName}</span>
+              </div>
+
+
         </nav>
       </div>
 
@@ -239,7 +274,7 @@ const handleLogout = () => {
                 }}
               >
                 <img
-                  src={user.avatar}
+                  src={avatar}
                   alt="Profile"
                   style={{
                     width: "36px",
@@ -248,7 +283,7 @@ const handleLogout = () => {
                     objectFit: "cover",
                   }}
                 />
-                <span>{user.name}</span>
+                <span>{fullName}</span>
               </div>
 
               {dropdownOpen && (
