@@ -151,7 +151,7 @@ const AdminLayout = ({ children }) => {
     <div
       style={{
         display: "flex",
-        height: "100vh",
+        minHeight: "100vh",
         backgroundColor: "#0a1120",
         color: "white",
       }}

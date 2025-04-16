@@ -73,3 +73,90 @@ exports.updateAdminProfile = async (req, res) => {
     }
 };
 
+
+// Get all pricing items
+exports.getAllPricing = (req, res) => {
+  const query = 'SELECT * FROM pricing ORDER BY id ASC';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching pricing data:', err);
+      return res.status(500).json({ error: 'Failed to fetch pricing data' });
+    }
+    
+    res.json(results);
+  });
+};
+
+// Update a pricing item
+exports.updatePricing = (req, res) => {
+  const { id, activity_name, price } = req.body;
+  
+  if (!id || !price || !activity_name) {
+    return res.status(400).json({ error: 'ID, activity name, and price are required' });
+  }
+  
+  const query = 'UPDATE pricing SET activity_name = ?, price = ? WHERE id = ?';
+  
+  db.query(query, [activity_name, price, id], (err, result) => {
+    if (err) {
+      console.error('Error updating pricing:', err);
+      return res.status(500).json({ error: 'Failed to update pricing' });
+    }
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Pricing item not found' });
+    }
+    
+    res.json({ message: 'Pricing updated successfully' });
+  });
+};
+
+// Add a new pricing item
+exports.addPricing = (req, res) => {
+  const { activity_name, price } = req.body;
+  
+  if (!activity_name || !price) {
+    return res.status(400).json({ error: 'Activity name and price are required' });
+  }
+  
+  const query = 'INSERT INTO pricing (activity_name, price) VALUES (?, ?)';
+  
+  db.query(query, [activity_name, price], (err, result) => {
+    if (err) {
+      console.error('Error adding pricing:', err);
+      return res.status(500).json({ error: 'Failed to add pricing' });
+    }
+    
+    res.status(201).json({ 
+      message: 'Pricing added successfully',
+      id: result.insertId,
+      activity_name,
+      price
+    });
+  });
+};
+
+// Delete a pricing item
+exports.deletePricing = (req, res) => {
+  const { id } = req.params;
+  
+  if (!id) {
+    return res.status(400).json({ error: 'ID is required' });
+  }
+  
+  const query = 'DELETE FROM pricing WHERE id = ?';
+  
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting pricing:', err);
+      return res.status(500).json({ error: 'Failed to delete pricing' });
+    }
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Pricing item not found' });
+    }
+    
+    res.json({ message: 'Pricing deleted successfully' });
+  });
+};
