@@ -7,8 +7,8 @@ exports.dashboard = (req, res) => {
 
 exports.getAdminProfile = async (req, res) => {
     try {
-       
-  const userId = 13; // Admin userId in database , Replace with actual user ID retrieval logic
+
+       const userId = req.user.userId;
   
   console.log('Fetching admin profile for userId:', userId);
   
@@ -26,7 +26,7 @@ exports.getAdminProfile = async (req, res) => {
     
     console.log('User data found:', results[0]);
     
-    // Add hardcoded position
+    // add hardcoded position for now 
     const userData = {
       ...results[0],
       position: 'System Administrator'
@@ -41,8 +41,8 @@ exports.getAdminProfile = async (req, res) => {
 
 exports.updateAdminProfile = async (req, res) => {
     try {
-        // In a real app, get user ID from session/auth
-  const userId = 13; // Replace with actual user ID retrieval logic
+        
+        const userId = req.user.userId;
   
   const { firstName, lastName, email } = req.body;
   console.log('Updating profile with data:', req.body);

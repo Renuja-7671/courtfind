@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
 import logo from "/assets/logo.png"; // since it's in public/assets
 import { useNavigate } from "react-router-dom";
+import { Link, useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext"; // Use global auth state
-
+import apiClient from "../services/adminApiService";
 import {
   FaHome,
   FaUsers,
@@ -59,7 +59,8 @@ const AdminLayout = ({ children }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/admin/profile");
+        const res = await apiClient.get("/admin/profile");
+        
         setUserData({
           firstName: res.data.firstName,
           lastName: res.data.lastName,
