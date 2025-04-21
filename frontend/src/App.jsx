@@ -31,7 +31,7 @@ import AdminPlayers from "./views/AdminPlayers";
 import AdminPricing from "./views/AdminPricing";
 import AdminProfit from "./views/AdminProfit";
 import AdminReviews from "./views/AdminReviews";
-import AdminSettings from "./views/AdminSettings";
+import AdminProfile from "./views/AdminProfile";
 
 // Helper component for wrapping routes with layout
 const withLayout = (Component) => (
@@ -72,7 +72,7 @@ const adminRoutes = [
   { path: "/admin-pricing", element: AdminPricing },
   { path: "/admin-bugs", element: AdminBugs },
   { path: "/admin-reviews", element: AdminReviews },
-  { path: "/admin-settings", element: AdminSettings }
+  { path: "/admin-profile", element: AdminProfile }
 ];
 
 function App() {
