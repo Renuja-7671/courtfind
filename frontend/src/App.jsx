@@ -17,6 +17,7 @@ import ChangePassword from './views/changePassword';
 import Chatbot from "./components/Chatbot";
 import FloatingChatbot from "./components/FloatingChatbot";
 import AdminDashboard from "./views/AdminDashboard";
+import OwnerProfile from "./components/OwnerProfile";
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                 <Route element={<PrivateRoute allowedRoles={["Owner"]} />}>
                     <Route path="/owner-dashboard" element={<OwnerDashboard />} />
                     <Route path="/change-password" element={<ChangePassword />} />
+                    <Route path="/owner-profile" element={<OwnerProfile />} />
                 </Route>
 
                 <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
