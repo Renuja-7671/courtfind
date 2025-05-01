@@ -6,11 +6,13 @@ const ownerRoutes = require("./ownerRoutes");
 const playerRoutes = require("./playerRoutes");
 const commonRoutes = require("./commonRoutes");
 const adminRoutes = require("./adminRoutes"); 
+const arenaRoutes = require("./arenaRoutes"); // Arena routes
 
-router.use("/auth", authRoutes);
-router.use("/owner", ownerRoutes);
-router.use("/player", playerRoutes);
-router.use("/common", commonRoutes);
-router.use("/admin", adminRoutes);
+router.use("/auth", authRoutes); // Authentication routes (login, register, etc.)
+router.use("/owner", ownerRoutes); // Owner routes
+router.use("/player", playerRoutes); // Player routes
+router.use("/common", commonRoutes); // Common routes for all users
+router.use("/admin", adminRoutes); // Admin routes
+router.use("/arena", arenaRoutes); // Arena routes
 
 module.exports = router;
