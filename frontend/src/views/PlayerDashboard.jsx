@@ -7,7 +7,7 @@ const PlayerDashboard = () => {
   const [profilePic, setProfilePic] = useState("/assets/Profilepic.png");
   const [clickedItem, setClickedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);//ridmi
 
 
   const [bookings, setBookings] = useState([
