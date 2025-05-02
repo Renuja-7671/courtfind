@@ -96,7 +96,7 @@ const NavigationBar = () => {
             <Navbar expand="lg" style={navbarStyle} variant="dark">
                 <Container>
                     <Nav>
-                        <Nav.Link as={Link} to="/explore" style={navLinkStyle}>
+                        <Nav.Link as={Link} to="/explore-now" style={navLinkStyle}>
                             Explore Now
                         </Nav.Link>
                     </Nav>
