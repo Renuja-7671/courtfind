@@ -124,3 +124,22 @@ exports.getProfileImage = async (req, res) => {
         res.status(500).json({ message: "Error fetching profile image", error });
     }
 };
+
+exports.addArena = (req, res) => {
+    const ownerId = req.user.userId;  
+    const { arenaName, streetName, city } = req.body;
+
+    if (!arenaName || !streetName || !city) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const sql = 'INSERT INTO arenas (id, name, country, city) VALUES (?, ?, ?, ?)';
+    db.query(sql, [ownerId, arenaName, streetName, city], (err, result) => {
+        if (err) {
+            console.error("Error inserting arena:", err);
+            return res.status(500).json({ message: "Database error while adding arena" });
+        }
+
+        res.status(201).json({ message: "Arena added successfully", arenaId: result.insertId });
+    });
+};
