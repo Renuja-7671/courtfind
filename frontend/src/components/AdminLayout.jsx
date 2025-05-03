@@ -11,6 +11,7 @@ import {
   FaUserAlt,
   FaDollarSign,
   FaTags,
+  FaBasketballBall,
   FaBug,
   FaStar,
   FaCog,
@@ -99,6 +100,10 @@ const AdminLayout = ({ children }) => {
     "/admin-pricing": {
       title: "Pricing",
       icon: <FaTags />,
+    },
+    "/admin-sports": {
+      title: "Sports",
+      icon: <FaBasketballBall />,
     },
     "/admin-bugs": {
       title: "Bug Tracker",
@@ -203,6 +208,7 @@ const AdminLayout = ({ children }) => {
             label="Profit Analysis"
           />
           <SidebarLink to="/admin-pricing" icon={<FaTags />} label="Pricing" />
+          <SidebarLink to="/admin-sports" icon={<FaBasketballBall />} label="Sports" />
           <SidebarLink to="/admin-bugs" icon={<FaBug />} label="Bug Tracker" />
           <SidebarLink to="/admin-reviews" icon={<FaStar />} label="Reviews" />
 

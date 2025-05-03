@@ -31,6 +31,7 @@ import AdminBugs from "./views/AdminBugs";
 import AdminOwners from "./views/AdminOwners";
 import AdminPlayers from "./views/AdminPlayers";
 import AdminPricing from "./views/AdminPricing";
+import AdminSports from "./views/AdminSports";
 import AdminProfit from "./views/AdminProfit";
 import AdminReviews from "./views/AdminReviews";
 import AdminProfile from "./views/AdminProfile";
@@ -74,6 +75,7 @@ const adminRoutes = [
   { path: "/admin-players", element: AdminPlayers },
   { path: "/admin-profit", element: AdminProfit },
   { path: "/admin-pricing", element: AdminPricing },
+  { path: "/admin-sports", element: AdminSports },
   { path: "/admin-bugs", element: AdminBugs },
   { path: "/admin-reviews", element: AdminReviews },
   { path: "/admin-profile", element: AdminProfile }

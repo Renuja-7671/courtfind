@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
+const sportController = require("../controllers/sportController");
+const arenaController = require("../controllers/arenaController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
 
 // Protect routes to ensure only Admins can access them
@@ -17,5 +19,10 @@ router.delete('/pricing/:id', authenticateUser, authorizeRole(['Admin']), adminC
 router.get('/pricing-test', (req, res) => {
   res.json({ message: 'Pricing API is working!' });
 });
+
+router.get("/sports", authenticateUser, authorizeRole(["Admin"]), sportController.getAllSports);
+router.put("/sports/:sportId", authenticateUser, authorizeRole(["Admin"]), sportController.updateSport);
+router.post("/sports", authenticateUser, authorizeRole(["Admin"]), sportController.addSport);
+router.delete("/sports/:sportId", authenticateUser, authorizeRole(["Admin"]), sportController.deleteSport);
 
 module.exports = router;
