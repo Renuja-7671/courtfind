@@ -1,7 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 
-// Storage Configuration
+// General Storage Configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/"); // Save in "uploads" folder
@@ -11,7 +11,17 @@ const storage = multer.diskStorage({
     },
 });
 
-// File Filter (Optional: Allow only image files)
+// Arena-specific Storage
+const storage2 = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/arenas"); // Save in "uploads/arenas" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+
+// File Filter (Allow only image files)
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
         cb(null, true);
@@ -20,6 +30,12 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+// Multer upload middlewares
 const upload = multer({ storage, fileFilter });
+const uploadArenas = multer({ storage: storage2, fileFilter });
 
-module.exports = upload;
+// Export both uploaders
+module.exports = {
+    upload,
+    uploadArenas
+};

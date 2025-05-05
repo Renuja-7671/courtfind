@@ -25,6 +25,7 @@ const OwnerProfile = () => {
         const fetchProfile = async () => {
             try {
                 const data = await getOwnerProfile(authToken);
+                console.log("The profile data is: ", data);
                 setProfile(data);
             } catch (error) {
                 console.error("Error fetching profile:", error);

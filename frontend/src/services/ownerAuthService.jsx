@@ -6,6 +6,7 @@ export const getOwnerProfile = async (token) => {
         const response = await api.get("/owner/profile", {
             headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("The response is for data: ", response);
         return response.data;
     } catch (error) {
         console.error("Error fetching profile:", error);
