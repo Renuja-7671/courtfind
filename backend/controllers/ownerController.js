@@ -2,6 +2,7 @@ const db = require('../config/db'); // MySQL connection
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const OwnerDashboard = require('../models/ownerModel');
 
 exports.changePassword = async (req, res) => {
     const userId = req.user.userId;
@@ -75,7 +76,7 @@ exports.updateOwnerProfile = async (req, res) => {
     try {
         const ownerId = req.user.userId;
         const profileData = req.body;
-        console.log("The profile data: ", profileData);
+        //console.log("The profile data: ", profileData);
         User.updateOwnerProfile(ownerId, profileData, (err, results) =>{
             if (err) {
                 console.error("Database error:", err);
@@ -92,6 +93,7 @@ exports.updateOwnerProfile = async (req, res) => {
 exports.uploadProfileImage = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+        console.log("The came file is: ",req.file);
 
         const imageUrl = `/uploads/${req.file.filename}`; // Store relative path
         const userId = req.user.userId; // Extract from auth token
@@ -143,3 +145,52 @@ exports.addArena = (req, res) => {
         res.status(201).json({ message: "Arena added successfully", arenaId: result.insertId });
     });
 };
+
+exports.getStats = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const stats = await OwnerDashboard.fetchStats(ownerId);
+        res.json(stats);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+  
+};
+
+exports.getIncomeOverview = async (req, res) => {
+    try {const ownerId = req.user.userId;
+        const chartData = await OwnerDashboard.fetchIncomeOverview(ownerId);
+        res.json(chartData);
+    } catch (error) {
+        console.error('Error fetching income overview:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+  
+};
+
+exports.getRecentBookings = async (req, res) => {
+  try {
+    const ownerId = req.user.userId;
+    const bookings = await OwnerDashboard.fetchRecentBookings(ownerId);
+    console.log("The table details are : ", bookings);
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching recent bookings:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.getPaymentHistory = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const payments = await OwnerDashboard.fetchPaymentHistory(ownerId);
+        res.json(payments);
+    } catch (error) {
+        console.error('Error fetching payment history:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
