@@ -51,3 +51,64 @@ export const getProfileImage = async (token) => {
     console.log("The image service URL: ", response.data);
     return response.data;
 };
+
+export const getDashboardStats = async (token ) => {
+    try {
+        const response = await api.get('/owner/dashboard/stats', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        });
+        console.log("stats dataaaaaaaaaaaa are:",response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        throw error;
+    }
+};
+
+export const getIncomeOverview = async (token) => {
+    try {
+        const response = await api.get('/owner/dashboard/income-overview', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching income overview:', error);
+        throw error;
+    }
+};
+
+export const getRecentBookings = async (token) => {
+    try {
+        const response = await api.get('/owner/dashboard/recent-bookings', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching recent bookings:', error);
+        throw error;
+    }
+};
+
+export const getPaymentHistory = async (token) => {
+    try {
+        const response = await api.get('/owner/dashboard/payment-history', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching payment history:', error);
+        throw error;
+    }
+};
+
+
+
+
