@@ -18,6 +18,9 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
+import { RiContactsLine } from "react-icons/ri";
+
+
 import { NavLink } from "react-router-dom";
 
 const SidebarLink = ({ to, icon, label, isSettings }) => {
@@ -105,9 +108,9 @@ const AdminLayout = ({ children }) => {
       title: "Sports",
       icon: <FaBasketballBall />,
     },
-    "/admin-bugs": {
-      title: "Bug Tracker",
-      icon: <FaBug />,
+    "/admin-messages": {
+      title: "Contact Messages",
+      icon: <RiContactsLine />,
     },
     "/admin-reviews": {
       title: "Reviews",
@@ -209,7 +212,7 @@ const AdminLayout = ({ children }) => {
           />
           <SidebarLink to="/admin-pricing" icon={<FaTags />} label="Pricing" />
           <SidebarLink to="/admin-sports" icon={<FaBasketballBall />} label="Sports" />
-          <SidebarLink to="/admin-bugs" icon={<FaBug />} label="Bug Tracker" />
+          <SidebarLink to="/admin-messages" icon={<RiContactsLine />} label="Contact Messages" />
           <SidebarLink to="/admin-reviews" icon={<FaStar />} label="Reviews" />
 
           {/* Divider Line */}
