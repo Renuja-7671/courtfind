@@ -228,7 +228,7 @@ const AdminSportsPage = () => {
                         </>
                       ) : (
                         <Button
-                          variant="outline-light"
+                          variant="primary"
                           size="sm"
                           onClick={() => handleEditClick(index)}
                         >

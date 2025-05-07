@@ -4,6 +4,7 @@ const adminController = require("../controllers/adminController");
 const sportController = require("../controllers/sportController");
 const arenaController = require("../controllers/arenaController");
 const reviewController = require("../controllers/reviewController");
+const contactController = require("../controllers/contactController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
 
 // Protect routes to ensure only Admins can access them
@@ -28,4 +29,8 @@ router.delete("/sports/:sportId", authenticateUser, authorizeRole(["Admin"]), sp
 
 //routes needed for reviews
 router.get("/reviews", authenticateUser, authorizeRole(["Admin"]), reviewController.getAllReviews);
+//routes needed for messages from website visitors
+router.get("/messages", authenticateUser, authorizeRole(["Admin"]), contactController.getAllMessages);
+router.put("/messages/:id/status", authenticateUser, authorizeRole(["Admin"]), contactController.updateMessageStatus);
+
 module.exports = router;

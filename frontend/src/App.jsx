@@ -27,7 +27,7 @@ import AddCourts from "./views/AddCourts";
 
 // Admin Views
 import AdminDashboard from "./views/AdminDashboard";
-import AdminBugs from "./views/AdminBugs";
+import AdminMessagesPage from "./views/AdminViewMessages";
 import AdminOwners from "./views/AdminOwners";
 import AdminPlayers from "./views/AdminPlayers";
 import AdminPricing from "./views/AdminPricing";
@@ -76,7 +76,7 @@ const adminRoutes = [
   { path: "/admin-profit", element: AdminProfit },
   { path: "/admin-pricing", element: AdminPricing },
   { path: "/admin-sports", element: AdminSports },
-  { path: "/admin-bugs", element: AdminBugs },
+  { path: "/admin-messages", element: AdminMessagesPage },
   { path: "/admin-reviews", element: AdminReviews },
   { path: "/admin-profile", element: AdminProfile }
 ];

@@ -62,17 +62,31 @@ export const getAllReviews = async (token) => {
   }
 };
 
-export const getAllBugs = async (token) => {
+export const getAllMessages = async (token) => {
   try{
-    const response = await api.get("/admin/bugs", {
+    const response = await api.get("/admin/messages", {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching bugs:", error);
+    console.error("Error fetching messages:", error);
     throw error;
   }
 };
+
+export const updateMessageStatus = async (id, status, token) => {
+  try {
+    const response = await api.put(`/admin/messages/${id}/status`, 
+      { status }, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating status:", error);
+    throw error;
+  }
+};
+
 
 export const getAllPricing = async (token) => {
   try{
