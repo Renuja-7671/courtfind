@@ -62,7 +62,8 @@ const User = {
     getProfileImage: (userId, callback) => {
         db.query("SELECT profileImage FROM users WHERE userId = ?", [userId], callback);
     },
-    
+
+
 };
 
 module.exports = User;
