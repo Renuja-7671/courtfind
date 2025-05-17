@@ -1,9 +1,9 @@
 const db = require('../config/db');
 
-const Player = {
-    getBookingsByPlayerId: (playerId, callback) => {
+const invoice = {  
+      getBookingsByPlayerId: (playerId, callback) => {
         const query = `
-            SELECT a.name, b.booking_date, b.start_time, b.end_time, b.status, a.image_url
+            SELECT a.name, b.booking_date, b.start_time, b.end_time, b.status, a.image_url, b.invoices_url
             FROM bookings b
             JOIN arenas a ON b.arenaId = a.arenaId
             WHERE b.playerId = ?;
@@ -11,6 +11,5 @@ const Player = {
         db.query(query, [playerId], callback);
     },
 
-  
-}
-module.exports = Player;
+  }
+  module.exports = invoice;
