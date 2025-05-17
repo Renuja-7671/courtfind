@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ownerController = require("../controllers/ownerController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
-const upload = require("../middleware/uploadMiddleware");
+const { upload } = require("../middleware/uploadMiddleware");
 //const { changePassword } = require('../controllers/ownerController');
 
 router.get("/dashboardbcb", authenticateUser, authorizeRole(["Owner"]), ownerController.dashboard);

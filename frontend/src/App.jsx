@@ -17,6 +17,7 @@ import ExploreNow from "./views/ExploreNow";
 // Player Views
 import PlayerDashboard from "./views/PlayerDashboard";
 import PlayerProfile from "./views/PlayerProfile";
+import PlayerChangePassword from "./views/PlayerChangePassword";
 
 // Owner Views
 import OwnerDashboard from "./views/OwnerDashboard";
@@ -58,7 +59,8 @@ const commonRoutes = [
 
 const playerRoutes = [
   { path: "/player-dashboard", element: PlayerDashboard },
-  { path: "/player-profile", element: PlayerProfile }
+  { path: "/player-profile", element: PlayerProfile },
+  { path: "/player-change-password", element: PlayerChangePassword },
 ];
 
 const ownerRoutes = [

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, Spinner, Alert, Badge, Row, Col } from 'react-bootstrap';
 import { getPlayerBookings } from '../services/playerAuthService';
+import Sidebar from '../components/playerSidebar';
 
 const PlayerDashboard = () => {
     const [bookings, setBookings] = useState([]);
@@ -33,7 +34,12 @@ const PlayerDashboard = () => {
     };
 
     return (
-        <Container className="mt-4">
+        <Container className="min-vh-100 d-flex flex-column  align-items-center">
+            <Row className="w-100" text-center>
+                <Col className="p-4 m-0"  md={3}>
+                    <Sidebar />
+                </Col>
+                <Col className="p-4 m-0"  md={9}>
             <h2 className="mb-4 text-primary">My Bookings</h2>
             {loading ? (
                 <Spinner animation="border" variant="primary" />
@@ -48,11 +54,11 @@ const PlayerDashboard = () => {
                             <Card className="shadow-sm">
                                 <Row className="g-0">
                                     <Col md={3}>
-                                        {/* <Card.Img 
-                                            src={`http://localhost:8000/uploads/${booking.image_url}`} 
+                                        <Card.Img 
+                                            src={`http://localhost:8000${booking.image_url}`} 
                                             alt="Arena"
                                             style={{ height: '100%', objectFit: 'cover' }}
-                                        /> */}
+                                        />
                                     </Col>
                                     <Col md={9}>
                                         <Card.Body>
@@ -74,6 +80,8 @@ const PlayerDashboard = () => {
                     ))}
                 </Row>
             )}
+            </Col>
+            </Row>
         </Container>
     );
 };
