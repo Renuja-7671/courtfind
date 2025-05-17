@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { addArena } = require("../controllers/ownerController");
 
 const arena={
     getAllArenas: (callback) => {
@@ -21,6 +22,11 @@ const arena={
         }
 
         db.query(query, params, callback);
+    },
+
+    addArena: (name, city, description, image_url, callback) => {
+        const query = "INSERT INTO arenas (name, city, description, image_url) VALUES (?, ?, ?, ?)";
+        db.query(query, [name, city, description, image_url], callback);
     },
 }
 
