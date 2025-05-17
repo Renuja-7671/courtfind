@@ -21,6 +21,16 @@ const storage2 = multer.diskStorage({
     },
 });
 
+const storage3 = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/courts"); // Save in "uploads/arenas" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+
+
 // File Filter (Allow only image files)
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
