@@ -46,3 +46,35 @@ exports.searchArenas = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.addArena = async (req, res) => {
+    const { name, city, description, image_url } = req.body;
+
+    if (!name || !city || !description || !image_url) {
+        return res.status(400).json({ error: "All fields are required"});
+    }
+
+    try {
+        arena.addArena(name, city, description, image_url, (err, results) => {
+            if (err) {
+                console.error("Database error:",err);
+                return res.status(500).json({ error:"Database error" });
+            }
+            res.status(201).json({ message: "Arena added succesfully", arenaId: results.insertId});
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message});
+    }
+};
+
+exports.uploadArenaImage = async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+        console.log("The uploaded file is: ", req.file);
+
+        const imageUrl = `/uploads/arenas/${req.file.filename}`; // relative path
+        res.json({ message: "Image uploaded successfully", imageUrl });
+    } catch (error) {
+        res.status(500).json({ message: "Error uploading arena image", error });
+    }
+};

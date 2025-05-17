@@ -11,6 +11,26 @@ const storage = multer.diskStorage({
     },
 });
 
+//Arena specific storage
+const storage2 = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/arenas"); // Save in "arenas" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+
+//Courts specific storage
+const storage3 = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/courts"); // Save in "courts" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+
 // File Filter (Optional: Allow only image files)
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
@@ -21,5 +41,11 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
+const uploadArenas = multer({ storage: storage2, fileFilter });
+const uploadCourts = multer({ storage: storage3, fileFilter });
 
-module.exports = upload;
+module.exports = {
+    upload,
+    uploadArenas,
+    uploadCourts,
+};
