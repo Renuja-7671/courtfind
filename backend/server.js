@@ -13,13 +13,14 @@ app.use(cors()); // Enable CORS
 app.use(express.json()); // JSON Parsing (No need for bodyParser.json())
 app.use(express.urlencoded({ extended: true })); // Handle form data
 
-//Ensure 'uploads' and 'uploads/player' deirectories exist
-const uploadDirs = ['uploads','uploads/player'];//list of  directories to create 
-uploadDirs.forEach(dir =>{
-    const fullpath = path.join(__dirname, dir);
-    if(!fs.existsSync(fullpath)){
-        fs.mkdirSync(fullpath,{recursive:true});
-    }
+//Ensure uploads, uploads/Arenas, uploads/Courts directories exist
+const uploadDirs = ['uploads', 'uploads/arenas', 'uploads/courts', 'uploads/player'];
+uploadDirs.forEach(dir => {
+    const fullPath = path.join(__dirname, dir);
+    if(!fs.existsSync(fullPath)){
+        fs.existsSync(fullPath,{recursive: true});
+         }
+
 });
 
 // Static File Serving (For profile image uploads, etc.)

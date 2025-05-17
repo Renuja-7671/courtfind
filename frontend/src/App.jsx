@@ -23,7 +23,7 @@ import PlayerChangePassword from "./views/PlayerChangePassword";
 import OwnerDashboard from "./views/OwnerDashboard";
 import ChangePassword from "./views/changePassword";
 import OwnerProfile from "./components/OwnerProfile";
-import AddArena from "./views/AddArena";
+import AddArena from "./views/AddArenas";
 import AddCourts from "./views/AddCourts";
 
 // Admin Views
@@ -68,7 +68,7 @@ const ownerRoutes = [
   { path: "/change-password", element: ChangePassword },
   { path: "/owner-profile", element: OwnerProfile },
   { path: "/add-arena", element: AddArena },
-  { path: "/add-courts", element: AddCourts }
+  { path: "/add-courts", element: AddCourts },
 ];
 
 const adminRoutes = [
