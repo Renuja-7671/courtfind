@@ -17,12 +17,13 @@ import ExploreNow from "./views/ExploreNow";
 // Player Views
 import PlayerDashboard from "./views/PlayerDashboard";
 import PlayerProfile from "./views/PlayerProfile";
+import PlayerChangePassword from "./views/PlayerChangePassword";
 
 // Owner Views
 import OwnerDashboard from "./views/OwnerDashboard";
 import ChangePassword from "./views/changePassword";
 import OwnerProfile from "./components/OwnerProfile";
-import AddArena from "./views/AddArena";
+import AddArena from "./views/AddArenas";
 import AddCourts from "./views/AddCourts";
 
 // Admin Views
@@ -58,7 +59,8 @@ const commonRoutes = [
 
 const playerRoutes = [
   { path: "/player-dashboard", element: PlayerDashboard },
-  { path: "/player-profile", element: PlayerProfile }
+  { path: "/player-profile", element: PlayerProfile },
+  { path: "/player-change-password", element: PlayerChangePassword },
 ];
 
 const ownerRoutes = [
@@ -66,7 +68,7 @@ const ownerRoutes = [
   { path: "/change-password", element: ChangePassword },
   { path: "/owner-profile", element: OwnerProfile },
   { path: "/add-arena", element: AddArena },
-  { path: "/add-courts", element: AddCourts }
+  { path: "/add-courts", element: AddCourts },
 ];
 
 const adminRoutes = [

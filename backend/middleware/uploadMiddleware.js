@@ -1,7 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 
-// General Storage Configuration
+// Storage Configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/"); // Save in "uploads" folder
@@ -11,27 +11,38 @@ const storage = multer.diskStorage({
     },
 });
 
-// Arena-specific Storage
+//playerprofile image upload
+const playerProfileImage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/player"); // Save in "upload/player" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+
+//Arena specific storage
 const storage2 = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/arenas"); // Save in "uploads/arenas" folder
+        cb(null, "uploads/arenas"); // Save in "arenas" folder
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
     },
 });
 
+//Courts specific storage
 const storage3 = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/courts"); // Save in "uploads/arenas" folder
+        cb(null, "uploads/courts"); // Save in "courts" folder
+
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
     },
 });
 
-
-// File Filter (Allow only image files)
+// File Filter (Optional: Allow only image files)
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
         cb(null, true);
@@ -40,12 +51,14 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Multer upload middlewares
 const upload = multer({ storage, fileFilter });
+const uploadPlayerProfileImage = multer({ storage: playerProfileImage, fileFilter });
 const uploadArenas = multer({ storage: storage2, fileFilter });
+const uploadCourts = multer({ storage: storage3, fileFilter });
 
-// Export both uploaders
 module.exports = {
     upload,
-    uploadArenas
+    uploadArenas,
+    uploadCourts,
+    uploadPlayerProfileImage,
 };

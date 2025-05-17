@@ -2,11 +2,16 @@ const express = require("express");
 const router = express.Router();
 const playerController = require("../controllers/playerController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
+const { uploadPlayerProfileImage } = require("../middleware/uploadMiddleware");
 
-router.get("/dashboard", authenticateUser, authorizeRole(["player"]), playerController.dashboard);
-router.post("/book-court", authenticateUser, authorizeRole(["player"]), playerController.bookCourt);
-router.get("/bookings", authenticateUser, authorizeRole(["player"]), playerController.getBookings);
-router.get("/profile", authenticateUser, authorizeRole(["player"]), playerController.getPlayerProfile);
 
+
+router.get("/bookings", authenticateUser, authorizeRole(["Player"]), playerController.getBookings);
+
+router.put('/change-password',  authenticateUser, authorizeRole(["Player"]), playerController.changePassword);
+router.get("/profile", authenticateUser, authorizeRole(["Player"]), playerController.getPlayerProfile);
+router.put("/profile", authenticateUser, authorizeRole(["Player"]), playerController.updatePlayerProfile);
+router.post("/profile/upload", authenticateUser, authorizeRole(["Player"]), uploadPlayerProfileImage.single("image"), playerController.uploadProfileImage);
+router.get("/profile/image", authenticateUser, authorizeRole(["Player"]), playerController.getProfileImage);
 
 module.exports = router;
