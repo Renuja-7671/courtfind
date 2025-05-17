@@ -15,6 +15,11 @@ const storage = multer.diskStorage({
 const playerProfileImage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/player"); // Save in "upload/player" folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
 
 //Arena specific storage
 const storage2 = multer.diskStorage({
