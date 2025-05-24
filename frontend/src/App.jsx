@@ -13,6 +13,7 @@ import ResetPasswordPage from "./views/ResetPasswordPage";
 import ContactUs from "./views/ContactUs";
 import Chatbot from "./components/Chatbot";
 import ExploreNow from "./views/ExploreNow";
+import ViewingPage from "./views/sportViewing";
 
 // Player Views
 import PlayerDashboard from "./views/PlayerDashboard";
@@ -37,6 +38,7 @@ import AdminProfit from "./views/AdminProfit";
 import AdminReviews from "./views/AdminReviews";
 import AdminProfile from "./views/AdminProfile";
 
+
 // Helper component for wrapping routes with layout
 const withLayout = (Component) => (
   <MainLayout>
@@ -54,7 +56,8 @@ const commonRoutes = [
   { path: "/reset-password/:token", element: ResetPasswordPage },
   { path: "/contact", element: ContactUs },
   { path: "/chatbot", element: Chatbot },
-  { path: "/explore-now", element: ExploreNow }
+  { path: "/explore-now", element: ExploreNow },
+  { path: "/view", element: ViewingPage },
 ];
 
 const playerRoutes = [
