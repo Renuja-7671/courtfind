@@ -45,3 +45,38 @@ export const getAllSports = async (token) => {
     }
   };
 
+  export const getArenaByRating = async () => {
+    try {
+        const response = await api.get("/common/arenasByRating"); 
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching arenas by rating:", error);
+        throw error; 
+    }
+};
+
+export const getSportForHome = async () => {
+    try {
+        const response = await api.get("/common/sport");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching sports for home:", error);
+        throw error; 
+    }
+};
+
+export const searchArenasForHome = async (sport, venue) => {
+    try {
+        const response = await api.get("/common/searchArenas", {
+            params: { sport, venue },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error searching arenas for home:", error);
+        throw error; 
+    }
+};
+
+
+
+
