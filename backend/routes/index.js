@@ -10,6 +10,7 @@ const arenaRoutes = require("./arenaRoutes");
 const sportRoutes = require("./sportRoutes"); 
 const courtRoutes = require("./courtRoutes");
 
+
 router.use("/auth", authRoutes); // Authentication routes (login, register, etc.)
 router.use("/owner", ownerRoutes); // Owner routes
 router.use("/player", playerRoutes); // Player routes

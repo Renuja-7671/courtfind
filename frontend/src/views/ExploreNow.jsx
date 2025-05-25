@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col, Form } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { getAllArenas, searchArenas } from "../services/arenaService";
+import { MdOutlineSportsScore } from "react-icons/md";
+
 
 const ExploreNow = () => {
     const [arenas, setArenas] = useState([]);
@@ -21,10 +23,12 @@ const ExploreNow = () => {
     };
 
     return (
-        <Container className="mt-4">
-            <h2>Explore Arenas</h2>
-
+        <Container className="min-vh-100 d-flex flex-column  align-items-center">
             <Row className="my-3">
+            <h2>Explore your desired Arenas</h2>
+            </Row>
+
+            <Row className="my-3 w-75">
                 <Col md={5}>
                     <Form.Control
                         placeholder="Sport"
@@ -50,12 +54,12 @@ const ExploreNow = () => {
                 {arenas.map((arena) => (
                     <Col md={4} key={arena.id} className="mb-4">
                         <Card className="shadow-sm">
-                            <Card.Img variant="top" src={`http://localhost:8000/uploads/${arena.image_url}`} />
+                            <Card.Img variant="top" width={150} height={200} src={`http://localhost:8000${arena.image_url}`} />
                             <Card.Body>
                                 <Card.Title>{arena.name}</Card.Title>
                                 <Card.Text>{arena.city}, {arena.country}</Card.Text>
                                 <Card.Text>
-                                    <span role="img" aria-label="sport">🏏</span> {arena.sport}
+                                    <span role="img" aria-label="sport"><MdOutlineSportsScore /></span> {arena.sport}
                                 </Card.Text>
                                 <Button variant="primary">Book Now</Button>
                             </Card.Body>

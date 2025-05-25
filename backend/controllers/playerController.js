@@ -3,6 +3,8 @@ const User = require("../models/userModel");
 const bcrypt = require('bcrypt');
 const db = require('../config/db'); // MySQL connection
 const jwt = require('jsonwebtoken');
+const Player = require('../models/playerModel');
+const Sport = require('../models/sportModel');
 
 exports.getBookings = (req, res) => {
     const playerId = req.user.userId; // assuming 'req.user' is populated by auth middleware
@@ -136,3 +138,36 @@ exports.getProfileImage = async (req, res) => {
         res.status(500).json({ message: "Error fetching profile image", error });
     }
 };
+
+// Home Page
+exports.getHomePageData = async (req, res) => {
+    try {
+        const { sport, venue } = req.query;
+        const responseData = {};
+
+        // Get arenas (filtered)
+        Player.searchArenas(sport, venue, (err, arenas) => {
+            if (err) {
+                console.error("Database error fetching arenas:", err);
+                return res.status(500).json({ message: "Database error fetching arenas", error: err });
+            }
+            responseData.arenas = arenas;
+
+            // Get all sports
+            Sport.getAllSports((err, sports) => {
+                if (err) {
+                    console.error("Database error fetching sports:", err);
+                    return res.status(500).json({ message: "Database error fetching sports", error: err });
+                }
+                responseData.sports = sports;
+
+                // Send the combined response
+                res.json(responseData);
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Unexpected error", error });
+    }
+};
+
+exports

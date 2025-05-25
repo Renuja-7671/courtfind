@@ -78,3 +78,19 @@ exports.uploadArenaImage = async (req, res) => {
         res.status(500).json({ message: "Error uploading arena image", error });
     }
 };
+
+exports.getArenaByRating = async (req, res) => {
+    try {
+        arena.getArenaByRating((err, results) => {
+            if (err) {
+                console.error("Database error while fetching arenas by rating:", err);
+                return res.status(500).json({ message: "Database error", error: err });
+            }
+
+            res.json(results); // Send back the list of arenas ordered by rating
+        });
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        res.status(500).json({ message: "Unexpected error", error });
+    }
+};

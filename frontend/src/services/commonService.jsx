@@ -8,3 +8,11 @@ export const submitContactForm = async (formData) => {
         return { success: false, message: error.response?.data?.message || "Something went wrong!" };
     }
 };
+
+export const getArenaCourtDetails = async () => {
+    try {
+        const response = await api.get("/common/arena-courts");
+        return { success: true, data: response.data };
+    } catch (error){
+         return { success: false, message: error.response?.data?.message || "Error fetching sports viewing page!" };   }
+};
