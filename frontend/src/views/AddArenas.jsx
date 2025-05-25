@@ -35,7 +35,7 @@ const AddArena = () => {
 
             if (imageFile) {
                 const uploadRes = await uploadArenaImage(imageFile, authToken);
-                imageUrl = uploadRes.imageUrl; // Ensure backend returns imageUrl
+                imageUrl = uploadRes.imageUrl; 
             }
 
             const response = await addArena(

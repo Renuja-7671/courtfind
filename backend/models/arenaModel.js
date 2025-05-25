@@ -8,16 +8,16 @@ const arena={
     },
 
     searchArenas: (sport, venue, callback) => {
-        let query = "SELECT * FROM arenas WHERE 1=1";
+        let query = "SELECT a.arenaId, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
         const params = [];
 
         if (sport) {
-            query += " AND sport = ?";
-            params.push(sport);
+            query += " AND c.sport  LIKE ?";
+            params.push(`%${sport}%`);
         }
 
         if (venue) {
-            query += " AND (name LIKE ? OR city LIKE ?)";
+            query += " AND (a.name LIKE ? OR a.city LIKE ?)";
             params.push(`%${venue}%`, `%${venue}%`);
         }
 
