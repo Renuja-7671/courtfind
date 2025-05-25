@@ -33,4 +33,10 @@ router.get("/reviews", authenticateUser, authorizeRole(["Admin"]), reviewControl
 router.get("/messages", authenticateUser, authorizeRole(["Admin"]), contactController.getAllMessages);
 router.put("/messages/:id/status", authenticateUser, authorizeRole(["Admin"]), contactController.updateMessageStatus);
 
+
+// Player management routes 
+router.get('/players', authenticateUser, authorizeRole(['Admin']), adminController.getAllPlayers);
+router.get('/players/:id', authenticateUser, authorizeRole(['Admin']), adminController.getPlayerById);
+router.delete('/players/:id', authenticateUser, authorizeRole(['Admin']), adminController.deletePlayer);
+
 module.exports = router;
