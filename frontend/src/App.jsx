@@ -57,7 +57,7 @@ const commonRoutes = [
   { path: "/contact", element: ContactUs },
   { path: "/chatbot", element: Chatbot },
   { path: "/explore-now", element: ExploreNow },
-  { path: "/view", element: ViewingPage },
+  { path: "/view/:courtId", element: ViewingPage },
 ];
 
 const playerRoutes = [

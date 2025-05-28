@@ -3,7 +3,7 @@ const { addArena } = require("../controllers/ownerController");
 
 const arena={
     getAllArenas: (callback) => {
-        const query = "SELECT * FROM arenas";
+        const query = "SELECT * FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
         db.query(query, callback);
     },
 
@@ -24,9 +24,9 @@ const arena={
         db.query(query, params, callback);
     },
 
-    addArena: (name, city, description, image_url, callback) => {
-        const query = "INSERT INTO arenas (name, city, description, image_url) VALUES (?, ?, ?, ?)";
-        db.query(query, [name, city, description, image_url], callback);
+    addArena: (ownerId, name, city, description, image_url, callback) => {
+        const query = "INSERT INTO arenas (owner_id, name, city, description, image_url) VALUES (?, ?, ?, ?, ?)";
+        db.query(query, [ownerId, name, city, description, image_url], callback);
     },
 
     getArenaByRating: (callback) => {

@@ -3,11 +3,13 @@ import { Card, Button, Container, Row, Col, Form } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { getAllArenas, searchArenas } from "../services/arenaService";
 import { MdOutlineSportsScore } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 
 const ExploreNow = () => {
     const [arenas, setArenas] = useState([]);
     const [filters, setFilters] = useState({ sport: "", venue: "" });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,13 +24,17 @@ const ExploreNow = () => {
         setArenas(data);
     };
 
+    const handleBookNow = (courtId) => {
+    navigate(`/view/${courtId}`);
+    };
+
     return (
-        <Container className="min-vh-100 d-flex flex-column  align-items-center">
-            <Row className="my-3">
+        <Container className="py-4 px-5">
+            <Row className="my-3 text-center">
             <h2>Explore your desired Arenas</h2>
             </Row>
 
-            <Row className="my-3 w-75">
+            <Row className="my-3 w-75 mx-auto align-items-center"> 
                 <Col md={5}>
                     <Form.Control
                         placeholder="Sport"
@@ -61,7 +67,9 @@ const ExploreNow = () => {
                                 <Card.Text>
                                     <span role="img" aria-label="sport"><MdOutlineSportsScore /></span> {arena.sport}
                                 </Card.Text>
-                                <Button variant="primary">Book Now</Button>
+                                <Button variant="primary" onClick={() => handleBookNow(arena.courtId)}>
+                                    Book Now
+                                </Button>
                             </Card.Body>
                         </Card>
                     </Col>

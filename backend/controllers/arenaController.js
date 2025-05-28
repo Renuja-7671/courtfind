@@ -49,13 +49,14 @@ exports.searchArenas = async (req, res) => {
 
 exports.addArena = async (req, res) => {
     const { name, city, description, image_url } = req.body;
+    const ownerId = req.user.userId;
 
     if (!name || !city || !description || !image_url) {
         return res.status(400).json({ error: "All fields are required"});
     }
 
     try {
-        arena.addArena(name, city, description, image_url, (err, results) => {
+        arena.addArena(ownerId, name, city, description, image_url, (err, results) => {
             if (err) {
                 console.error("Database error:",err);
                 return res.status(500).json({ error:"Database error" });

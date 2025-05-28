@@ -65,6 +65,28 @@ exports.uploadCourtImages = (req, res) => {
         console.error("Error uploading images:", error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-    };
+};
+
+    exports.getCourtsForBooking = async (req, res) => {
+    const { courtId } = req.params;
+    if (!courtId) {
+        return res.status(400).json({ success: false, message: "Court ID is required." });
+    }
+    try {
+        court.getCourtsforbooking(courtId, (err, results) => {
+            if (err) {
+                console.error("Error fetching court for booking:", err);
+                return res.status(500).json({ success: false, message: "Database Error while fetching court" });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ success: false, message: "Court not found" });
+            }
+            res.json({ success: true, court: results[0] });
+        });
+    } catch (error) {
+        console.error("Error in getCourtsForBooking:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
 
     

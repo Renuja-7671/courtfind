@@ -142,7 +142,7 @@ const AdminPlayers = () => {
             <FaUsers className="stats-icon" />
             <div className="stats-text">
               <span className="stats-number">{totalPlayers}</span>
-              <span className="stats-label">players in total</span>
+              <span className="stats-label">Players in Total</span>
             </div>
           </div>
         </div>
