@@ -13,7 +13,7 @@ exports.getInvoices = (req, res) => {
         if (results.length === 0) {
             return res.status(404).json({ message: "No invoice found" });
         }
-        console.log("These are the invoices: ", results);
+        //console.log("These are the invoices: ", results);
 
         res.status(200).json(results);
     });

@@ -27,7 +27,6 @@ exports.register = async (req, res) => {
 
                 res.status(201).json({ message: 'User registered successfully' });
             });
-            console.log("User created with data:", [role, firstName, lastName, mobile, country, province, zip, address, email, hashedPassword]); // Debugging line
         });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
@@ -48,8 +47,6 @@ exports.login = (req, res) => {
         }
 
         const user = results[0];
-
-        console.log("User Role:", user.role); // debug (check the role)
 
         try {
             const isMatch = await bcrypt.compare(password, user.password);
@@ -88,10 +85,8 @@ const transporter = nodemailer.createTransport({
 });
 
 // Forgot Password
-
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
-    console.log("Received Email:", email);
 
     try {
         // Use the findByEmail method from User model
@@ -131,7 +126,7 @@ exports.forgotPassword = async (req, res) => {
 
                 try {
                     await transporter.sendMail(mailOptions);
-                    console.log("Reset email sent to:", email);
+                    // console.log("Reset email sent to:", email);
                     res.json({ message: "Password reset link sent to your email" });
                 } catch (emailError) {
                     console.error("Error sending email:", emailError);
@@ -165,24 +160,15 @@ exports.resetPassword = async (req, res) => {
                 console.log("No user found with valid reset token.");
                 return res.status(400).json({ message: "Invalid or expired token" });
             }
-        
-            // Check if each result contains the expected fields
-            // results.forEach((user, index) => {
-            //     console.log(`User ${index}:`, user);
-            // });
-        
-            // Find user by comparing the token
+            // Find the user with the matching reset token
             const user = results.find(u => u.resetToken && bcrypt.compareSync(token, u.resetToken));
         
             if (!user) {
                 console.log("No matching user found for this token.");
                 return res.status(400).json({ message: "Invalid or expired token" });
             }
-        
-            //console.log("Found user:", user);
 
             const hashedPassword = bcrypt.hashSync(password, 10);
-            console.log("User ID:", user.userId);
 
             // Ensure user.id is defined before updating the password
             if (!user.userId) {

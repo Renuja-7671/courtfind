@@ -63,7 +63,7 @@ exports.getOwnerProfile = async (req, res) => {
                 return res.status(404).json({ message: "Profile not found" });
             }
             const profile = results[0];
-            console.log("The profile data: ", profile);
+            //console.log("The profile data: ", profile);
             res.json(profile);
         });
     } catch (error) {
@@ -109,7 +109,6 @@ exports.uploadProfileImage = async (req, res) => {
 exports.getProfileImage = async (req, res) => {
     try {
         const userId = req.user.userId;
-        console.log("The ID of the user for fetching the image: ", userId);
         User.getProfileImage(userId, async (err, results) =>{
             if (err) {
                 console.error("Database error:", err);
@@ -119,31 +118,12 @@ exports.getProfileImage = async (req, res) => {
                 return res.status(404).json({ message: "Profile image not found" });
             }
             const imageUrl = results[0].profileImage;
-            console.log("The image URL: ", imageUrl);
+            //console.log("The image URL: ", imageUrl);
             res.json(imageUrl);
         });
     } catch (error) {
         res.status(500).json({ message: "Error fetching profile image", error });
     }
-};
-
-exports.addArena = (req, res) => {
-    const ownerId = req.user.userId;  
-    const { arenaName, streetName, city } = req.body;
-
-    if (!arenaName || !streetName || !city) {
-        return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const sql = 'INSERT INTO arenas (id, name, country, city) VALUES (?, ?, ?, ?)';
-    db.query(sql, [ownerId, arenaName, streetName, city], (err, result) => {
-        if (err) {
-            console.error("Error inserting arena:", err);
-            return res.status(500).json({ message: "Database error while adding arena" });
-        }
-
-        res.status(201).json({ message: "Arena added successfully", arenaId: result.insertId });
-    });
 };
 
 exports.getStats = async (req, res) => {
@@ -173,7 +153,7 @@ exports.getRecentBookings = async (req, res) => {
   try {
     const ownerId = req.user.userId;
     const bookings = await OwnerDashboard.fetchRecentBookings(ownerId);
-    console.log("The table details are : ", bookings);
+    //console.log("The table details are : ", bookings);
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching recent bookings:', error);

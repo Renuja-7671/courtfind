@@ -6,7 +6,7 @@ export const getAllArenas = async () => {
 };
 
 export const searchArenas = async (filters) => {
-    console.log("Filters in service:", filters); // Debugging line
+    //console.log("Filters in service:", filters); // Debugging line
     const response = await api.get("/arena/search", { params: filters });
     return response.data;
 };
@@ -37,7 +37,6 @@ export const getAllSports = async (token) => {
       const response = await api.get("/arena/sports", {
           headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("The response is: ", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching sports:", error);

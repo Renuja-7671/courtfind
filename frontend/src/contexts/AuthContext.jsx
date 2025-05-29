@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-                console.log("Decoded Token:", decodedToken);  // Check the decoded token
                 setUserRole(decodedToken.role);
                 setIsAuth(true);
                 localStorage.setItem("userRole", decodedToken.role); // Store role in localStorage

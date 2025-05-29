@@ -124,9 +124,8 @@ const AddCourts = () => {
       setCourts([]);
       resetForm();
       setTimeout(() => {
-            navigate("/owner-dashboard"); // Navigate to owner dashboard page
+            navigate("/owner-dashboard"); 
         }, 500);
-      // Optionally redirect here
     } catch (error) {
       console.error("Error creating courts:", error);
       alert("Failed to create some courts. Please try again.");

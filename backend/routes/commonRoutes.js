@@ -6,6 +6,7 @@ const { getAllSports } = require('../controllers/sportController');
 const { searchArenas } = require('../controllers/arenaController');
 const { getArenaByRating } = require('../controllers/arenaController');
 const { getCourtsForBooking } = require('../controllers/courtController');
+const { getBookingTimesByCourtId } = require('../controllers/bookingController');
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.get('/arenasByRating', getArenaByRating);
 
 // Court viewing route for booking
 router.get("/courtsForBooking/:courtId", getCourtsForBooking);
+router.get("/courtBookedTimes/:courtId", getBookingTimesByCourtId);
 
 
 module.exports = router;

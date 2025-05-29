@@ -13,7 +13,7 @@ exports.authenticateToken = (req, res, next) => {
             return res.status(403).json({ message: 'Invalid token' });
         }
         req.user = user;
-        console.log("Authenticated User:", user); // Log user details
+        //console.log("Authenticated User:", user); // Log user details
         next();
     });
 };
@@ -27,7 +27,7 @@ exports.authenticateUser = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded; //attach user data (id,role) to request 
         req.user.userId
-        console.log("Authenticated User:", decoded); // Log user details
+        //console.log("Authenticated User:", decoded); // Log user details
         next();
     } catch (err) {
         res.status(403).json({ message: "Invalid token" });
@@ -40,7 +40,7 @@ exports.authorizeRole = (roles) => {
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({ message: "Access denied" });
         }
-        console.log(`User Role: ${req.user.role} - Access Granted`); // Log role verification
+        //console.log(`User Role: ${req.user.role} - Access Granted`); // Log role verification
         next();
     };
 };

@@ -7,7 +7,7 @@ const Player = require('../models/playerModel');
 const Sport = require('../models/sportModel');
 
 exports.getBookings = (req, res) => {
-    const playerId = req.user.userId; // assuming 'req.user' is populated by auth middleware
+    const playerId = req.user.userId;
 
     PlayerBooking.getBookingsByPlayerId(playerId, (err, results) => {
         if (err) {
@@ -18,7 +18,7 @@ exports.getBookings = (req, res) => {
         if (results.length === 0) {
             return res.status(404).json({ message: "No booking found" });
         }
-        console.log("These are the bookings: ", results);
+        //console.log("These are the bookings: ", results);
 
         res.status(200).json(results);
     });
@@ -64,7 +64,7 @@ exports.changePassword = async (req, res) => {
 exports.getPlayerProfile = async (req, res) => {
     try {
         const playerId = req.user.userId;
-        console.log("The ID of the user: ", playerId);
+        //console.log("The ID of the user: ", playerId);
         User.getOwnerProfile(playerId, async (err, results) =>{
             if (err) {
                 console.error("Database error:", err);
@@ -74,7 +74,7 @@ exports.getPlayerProfile = async (req, res) => {
                 return res.status(404).json({ message: "Profile not found" });
             }
             const profile = results[0];
-            console.log("The profile data: ", profile);
+            //console.log("The profile data: ", profile);
             res.json(profile);
         });
     } catch (error) {
@@ -104,11 +104,11 @@ exports.updatePlayerProfile = async (req, res) => {
 exports.uploadProfileImage = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-        console.log("The came file is: ",req.file);
+        //console.log("The came file is: ",req.file);
 
         const imageUrl = `/uploads/player/${req.file.filename}`; // Store relative path
         const userId = req.user.userId; // Extract from auth token
-        console.log("The image url now is:", imageUrl);
+        //console.log("The image url now is:", imageUrl);
 
         const response = await User.updateProfileImage(userId, imageUrl);
         res.json({ message: response.message, imageUrl });
@@ -121,7 +121,7 @@ exports.uploadProfileImage = async (req, res) => {
 exports.getProfileImage = async (req, res) => {
     try {
         const userId = req.user.userId;
-        console.log("The ID of the user for fetching the image: ", userId);
+        //console.log("The ID of the user for fetching the image: ", userId);
         User.getProfileImage(userId, async (err, results) =>{
             if (err) {
                 console.error("Database error:", err);
@@ -131,7 +131,7 @@ exports.getProfileImage = async (req, res) => {
                 return res.status(404).json({ message: "Profile image not found" });
             }
             const imageUrl = results[0].profileImage;
-            console.log("The image URL: ", imageUrl);
+            //console.log("The image URL: ", imageUrl);
             res.json(imageUrl);
         });
     } catch (error) {

@@ -60,7 +60,10 @@ const ExploreNow = () => {
                 {arenas.map((arena) => (
                     <Col md={4} key={arena.id} className="mb-4">
                         <Card className="shadow-sm">
-                            <Card.Img variant="top" width={150} height={200} src={`http://localhost:8000${arena.image_url}`} />
+                            <Card.Img variant="top" 
+                                src={`http://localhost:8000${arena.image_url}`} 
+                                style={{ height: "200px", width: "100%", objectFit: "cover" }}
+                            />
                             <Card.Body>
                                 <Card.Title>{arena.name}</Card.Title>
                                 <Card.Text>{arena.city}, {arena.country}</Card.Text>

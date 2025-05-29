@@ -12,8 +12,6 @@ router.get("/profile", authenticateUser, authorizeRole(["Owner"]), ownerControll
 router.put("/profile", authenticateUser, authorizeRole(["Owner"]), ownerController.updateOwnerProfile);
 router.post("/profile/upload", authenticateUser, authorizeRole(["Owner"]), upload.single('image'), ownerController.uploadProfileImage);
 router.get("/profile/image", authenticateUser, authorizeRole(["Owner"]), ownerController.getProfileImage);
-router.post("/arenas", authenticateUser, authorizeRole(["Owner"]), ownerController.addArena);
-//router.get("/dashboard", authenticateUser, authorizeRole(["Owner"]), ownerController.getDashboardData);
 
 //Owner Dashboard routes
 router.get('/dashboard/stats', authenticateUser, authorizeRole(["Owner"]), ownerController.getStats);

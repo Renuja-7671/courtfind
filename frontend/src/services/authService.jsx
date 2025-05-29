@@ -20,9 +20,6 @@ export const loginUser = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
 
-    console.log("Full API Response:", response); // Debugging line
-    console.log("Response Data:", response.data); // Debugging line
-
     if (!response.data || !response.data.token) {
       throw new Error("Token not received from server!");
     }
@@ -40,7 +37,7 @@ export const loginUser = async (credentials) => {
 // Logout User
 export const logoutUser = () => {
   const { updateAuthState } = useAuth();
-  console.log("Logging out and removing token"); // Debugging line
+  //console.log("Logging out and removing token"); // Debugging line
   localStorage.removeItem("token"); // Remove token from storage
   updateAuthState();
 
@@ -49,7 +46,7 @@ export const logoutUser = () => {
 // Check if User is Authenticated
 export const isAuthenticated = () => {
   const token = localStorage.getItem("token");
-  console.log("Is user authenticated?", !!token); // Debugging line
+  //console.log("Is user authenticated?", !!token); // Debugging line
   return !!token; // Returns true if token exists
 };
 

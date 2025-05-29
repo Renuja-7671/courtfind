@@ -85,7 +85,7 @@ const PlayerProfile = () => {
                 <Col className="p-4 m-0"  md={3}>
                     <Card className="shadow-sm p-3 mb-5 bg-white rounded">
                         <Card.Body className="text-center">
-                            {profileImage && <Image src={profileImage} alt="Profile" roundedCircle width={150} height={150} />}
+                            {profileImage && <Image src={profileImage} alt="Profile" roundedCircle style={{ height: "200px", width: "100%", objectFit: "cover" }}/>}
                             <Form.Group>
                                 <h4>{profile.firstName} {profile.lastName}</h4>
                                 <Form.Control type="file" accept="image/*" onChange={handleImageUpload} />

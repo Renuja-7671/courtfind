@@ -11,7 +11,7 @@ const PrivateRoute = ({ allowedRoles }) => {
 
     try {
         const decodedToken = jwtDecode(token);
-        console.log("the decoded token is: ", decodedToken);
+        //console.log("the decoded token is: ", decodedToken);
         if (!allowedRoles.includes(decodedToken.role)) {
             return <Navigate to="/login" replace />;
         }

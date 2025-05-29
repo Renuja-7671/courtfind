@@ -6,7 +6,6 @@ export const getOwnerProfile = async (token) => {
         const response = await api.get("/owner/profile", {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("The response is for data: ", response);
         return response.data;
     } catch (error) {
         console.error("Error fetching profile:", error);
@@ -31,8 +30,6 @@ export const updateOwnerProfile = async (token, profileData) => {
 export const uploadProfileImage = async (file, token) => {
     const formData = new FormData();
     formData.append("image", file);
-    console.log("The form data is added:", formData);
-
     const response = await api.post("/owner/profile/upload", formData, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -48,8 +45,6 @@ export const getProfileImage = async (token) => {
     const response = await api.get("/owner/profile/image", {
         headers: { Authorization: `Bearer ${token}` }, // Add auth token
     });
-    console.log("The response is: ", response);
-    console.log("The image service URL: ", response.data);
     return response.data;
 };
 
@@ -60,7 +55,6 @@ export const getDashboardStats = async (token ) => {
             Authorization: `Bearer ${token}`,
         },
         });
-        console.log("stats dataaaaaaaaaaaa are:",response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching dashboard stats:', error);

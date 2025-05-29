@@ -59,7 +59,7 @@ exports.uploadCourtImages = (req, res) => {
         return relativePath.replace(/\/{2,}/g, "/")
     });
 
-    console.log("Uploaded image urls", imageUrls);
+    //console.log("Uploaded image urls", imageUrls);
     res.json({ success: true, message: "Images uploaded successfully", imageUrls });
     }catch (error){
         console.error("Error uploading images:", error);

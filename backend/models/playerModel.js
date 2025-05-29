@@ -1,5 +1,4 @@
 const db = require('../config/db');
-const { getArenaCourtDetails } = require('../controllers/courtViewingController');
 
 const Player = {
     getBookingsByPlayerId: (playerId, callback) => {

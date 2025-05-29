@@ -10,6 +10,10 @@ const PlayerBooking = {
         const query = "INSERT INTO bookings (playerId, courtId, booking_date, start_time, end_time, total_price, payment_status, status, ownerId, arenaId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         db.query(query, [playerId, courtId, booking_date, start_time, end_time, total_price, payment_status, status, ownerId, arenaId], callback);
     },
+    getBookingTimesByCourtId: (courtId, bookingDate, callback) => {
+        const query = "SELECT start_time, end_time FROM bookings WHERE courtId = ? AND booking_date = ?;";
+        db.query(query, [courtId, bookingDate], callback);
+    },
 };
 
 module.exports = PlayerBooking;

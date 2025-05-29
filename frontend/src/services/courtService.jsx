@@ -12,7 +12,7 @@ export const uploadCourtImages = async (files, token) => {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "multipart/form-data",
 }});
-    console.log("Response From Upload Court Images:", response);
+    //console.log("Response From Upload Court Images:", response);
     return response.data.imageUrls;
 };
 
@@ -25,8 +25,6 @@ return response.data;
 };
 
 export const getCourtsForBooking = async (courtId) => { 
-    console.log("Fetching court for booking with ID:", courtId);
     const response = await api.get(`/common/courtsForBooking/${courtId}`);
-    console.log("Response from getCourtsForBooking:", response.data);
     return response.data;
 } 

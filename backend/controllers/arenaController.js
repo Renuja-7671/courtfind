@@ -10,7 +10,7 @@ exports.getAllArenas = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "No arenas found" });
             }
-            console.log("All arenas:", results); // Debugging line
+            //console.log("All arenas:", results); // Debugging line
             res.json(results);
         });
     } catch (err) {
@@ -20,9 +20,6 @@ exports.getAllArenas = async (req, res) => {
 
 exports.searchArenas = async (req, res) => {
     const { sport, venue } = req.query;
-    console.log("Filters in controller:", req.query); // Debugging line
-    console.log("Sport:", sport); // Debugging line
-    console.log("Venue:", venue); // Debugging line
     if (!sport && !venue) {
         return res.status(400).json({ error: "At least one filter (sport or venue) is required." });
     }
@@ -38,7 +35,7 @@ exports.searchArenas = async (req, res) => {
                 console.log("No arenas found for the given filters."); // Debugging line
                 return res.status(404).json({ message: "No arenas found" });
             }
-            console.log("Search results:", results); // Debugging line
+            //console.log("Search results:", results); // Debugging line
             res.json(results);
         });
 
@@ -71,8 +68,7 @@ exports.addArena = async (req, res) => {
 exports.uploadArenaImage = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-        console.log("The uploaded file is: ", req.file);
-
+        //console.log("The uploaded file is: ", req.file);
         const imageUrl = `/uploads/arenas/${req.file.filename}`; // relative path
         res.json({ message: "Image uploaded successfully", imageUrl });
     } catch (error) {

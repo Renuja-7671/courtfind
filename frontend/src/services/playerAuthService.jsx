@@ -21,7 +21,6 @@ export const getPlayerProfile = async (token) => {
         const response = await api.get("/player/profile", {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("The details of the player:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching profile:", error);
@@ -46,8 +45,6 @@ export const updatePlayerProfile = async (token, profileData) => {
 export const uploadProfileImage = async (file, token) => {
     const formData = new FormData();
     formData.append("image", file);
-    console.log("The form data is added:", formData);
-
     const response = await api.post("/player/profile/upload", formData, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -63,8 +60,6 @@ export const getProfileImage = async (token) => {
     const response = await api.get("/player/profile/image", {
         headers: { Authorization: `Bearer ${token}` }, // Add auth token
     });
-    console.log("The response is: ", response);
-    console.log("The image service URL: ", response.data);
     return response.data;
 };
 

@@ -10,7 +10,7 @@ exports.getAllReviews = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "No reviews found" });
             }
-            console.log("All reviews:", results); // Debugging line
+            //console.log("All reviews:", results); // Debugging line
             res.json(results);
         });
         } catch (err) {

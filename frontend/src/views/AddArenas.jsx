@@ -42,7 +42,7 @@ const AddArena = () => {
                 { ...formData, image_url: imageUrl },
                 authToken
             );
-            console.log("The response from adding arena: ", response);
+            //console.log("The response from adding arena: ", response);
 
             if (response.status === 201) {
                 setMessage("Arena added successfully!");

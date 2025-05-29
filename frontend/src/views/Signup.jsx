@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { registerUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap"; // Added Row and Col imports
+import { Form, Button, Container, Alert, Row, Col, InputGroup, ProgressBar } from "react-bootstrap"; // Added Row and Col imports
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
+
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -24,12 +25,35 @@ const Signup = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState({ label: "", variant: "", percent: 0 });
     
   
     const handleChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        if (name === "password") {
+            const strength = getPasswordStrength(value);
+            setPasswordStrength(strength);
+        }
     };
-  
+
+
+    const getPasswordStrength = (password) => {
+        let strength = 0;
+
+        if (password.length >= 8) strength++; // Length
+        if (/[A-Z]/.test(password)) strength++; // Uppercase letter
+        if (/[a-z]/.test(password)) strength++; // Lowercase letter
+        if (/[0-9]/.test(password)) strength++; // Number
+        if (/[^A-Za-z0-9]/.test(password)) strength++; // Special character
+
+        if (strength <= 2) return { label: "Weak", variant: "danger", percent: 33 };
+        if (strength === 3 || strength === 4) return { label: "Moderate", variant: "warning", percent: 66 };
+        if (strength === 5) return { label: "Strong", variant: "success", percent: 100 };
+        };
+
+    // Function to handle form submission
     const handleSubmit = async (e) => {
       e.preventDefault();
 
@@ -86,6 +110,7 @@ const Signup = () => {
                                     <option value="" disabled>Select Role</option>
                                     <option value="Player">Player</option>
                                     <option value="Owner">Arena Owner</option>
+                                    required
                                 </Form.Select>
                             </Form.Group>
                             <Row>
@@ -124,13 +149,14 @@ const Signup = () => {
                                     placeholder="Mobile Phone"
                                     value={formData.mobile}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
                             <Row>
                                 <Col md={4}>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Country</Form.Label>
-                                        <Form.Select name="country" value={formData.country} onChange={handleChange}>
+                                        <Form.Select name="country" value={formData.country} onChange={handleChange} required>
                                             <option value="" disabled>Select Country</option>
                                             <option value="Sri Lanka">Sri Lanka</option>
                                         </Form.Select>
@@ -139,7 +165,7 @@ const Signup = () => {
                                 <Col md={4}>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Province</Form.Label>
-                                        <Form.Select name="province" value={formData.province} onChange={handleChange}>
+                                        <Form.Select name="province" value={formData.province} onChange={handleChange} required>
                                             <option value="" disabled>Select Province</option>
                                             <option value="Western">Western Province</option>
                                             <option value="Central">Central Province</option>
@@ -162,6 +188,7 @@ const Signup = () => {
                                             placeholder="Zip Code"
                                             value={formData.zip}
                                             onChange={handleChange}
+                                            required
                                         />
                                     </Form.Group>
                                 </Col>
@@ -175,6 +202,7 @@ const Signup = () => {
                                     placeholder="Address"
                                     value={formData.address}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
                             <Form.Group className="mb-3">
@@ -199,13 +227,28 @@ const Signup = () => {
                                         onChange={handleChange}
                                         required
                                     />
-                                    <Button 
-                                        variant="light" 
+                                    <Button
+                                        variant="light"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
                                         {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                                     </Button>
                                 </InputGroup>
+                                {formData.password && (
+                                    <>
+                                        <ProgressBar
+                                            striped
+                                            now={passwordStrength.percent}
+                                            variant={passwordStrength.variant}
+                                            className="mt-2"
+                                            label={passwordStrength.label}
+                                        />
+                                    </>
+                                )}
+                                <Form.Text >
+                                    Use at least 8 characters, including uppercase, lowercase, numbers, and symbols.
+                                </Form.Text>
+
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Confirm Password</Form.Label>
@@ -226,8 +269,6 @@ const Signup = () => {
                                     </Button>
                                 </InputGroup>
                             </Form.Group> <br />
-
-
                             <Button variant="primary" type="submit" className="w-100">
                                 Register
                             </Button>

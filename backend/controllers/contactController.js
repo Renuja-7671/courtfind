@@ -26,7 +26,7 @@ exports.getAllMessages = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "No messages found" });
             }
-            console.log("All messages:", results); // Debugging line
+            //console.log("All messages:", results); // Debugging line
             res.json(results);
         });
         } catch (err) {
@@ -44,7 +44,7 @@ exports.updateMessageStatus = async (req, res) => {
                 console.error("Database error:", err);
                 return res.status(500).json({ error: "Database error" });
             }
-            console.log("Status updated:", result); // Debugging line
+            //console.log("Status updated:", result); // Debugging line
             res.json(result[0]);
         })
 

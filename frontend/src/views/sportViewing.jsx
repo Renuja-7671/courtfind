@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row, Spinner, Form, Carousel } from 'react-bootstrap';
 import { getCourtsForBooking } from '../services/courtService';
-import { createBooking } from '../services/bookingService';
+import { createBooking, getBookingTimesByCourtId } from '../services/bookingService';
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaPhoneAlt, FaStar } from 'react-icons/fa';
 import { MdOutlineSportsScore } from "react-icons/md";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
 
 
 const ViewingPage = () => {
@@ -26,8 +25,30 @@ const ViewingPage = () => {
   const { authToken } = useAuth();
   const { isAuth, userRole } = useAuth();
   const navigate = useNavigate();
-  
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [startTime, setStartTime] = useState('');
+  const handleStartTimeChange = (e) => {
+    const time = e.target.value;
+    setStartTime(time);
+    setSelectedTime(time);
+  };
 
+
+  //To fetch the booked times in a selected date
+  useEffect(() => {
+  const fetchBookedTimes = async () => {
+    if (!selectedDate || !courtId) return;
+    const response = await getBookingTimesByCourtId(courtId, selectedDate);
+    if (Array.isArray(response)) {
+      setBookedSlots(response);
+    } else {
+      setBookedSlots([]);
+    }
+  };
+
+  fetchBookedTimes();
+}, [selectedDate, courtId]);
+  
 
   useEffect(() => {
     const fetchCourt = async () => {
@@ -112,11 +133,48 @@ const ViewingPage = () => {
     return isAuth && userRole === 'Player';
   };
 
+// Generate time slots based on opening and closing hours
+  const generateTimeSlots = (open, close) => {
+  const slots = [];
+  for (let hour = open; hour < close; hour++) {
+    slots.push(`${hour}:00`);
+  }
+  return slots;
+};
+
+
 
   if (loading) return <Spinner animation="border" variant="primary" />;
 
   return (
     <Container className="my-5 px-5">
+      <style>{`
+      .timeline-bar {
+        display: flex;
+        border: 1px solid #ccc;
+        overflow: hidden;
+        border-radius: 5px;
+      }
+      .timeline-slot {
+        flex: 1;
+        min-width: 60px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        color: white;
+        font-weight: bold;
+        border-right: 1px solid #fff;
+      }
+      .timeline-slot:last-child {
+        border-right: none;
+      }
+      .booked {
+        background-color: red;
+      }
+      .available {
+        background-color: green;
+      }
+    `}</style>
       <h2>{court.arenaName} - {court.courtName}</h2>
       <p>{court.city}, {court.country}</p>
 
@@ -173,11 +231,11 @@ const ViewingPage = () => {
       </Row>
 
       <Row>
-        <Col md={6} className="text-center my-4">
+        <Col className="text-center my-4">
           <hr/>
-          <div className="bg-light p-3 rounded">
-            <h5 className="text-center mb-3">Weekly Availability</h5>
-            <table className="table table-bordered text-center">
+          <div className="bg-light p-3 rounded d-flex flex-column align-items-center">
+            <h4 className="text-center mb-3">Weekly Availability</h4>
+            <table className="table table-bordered text-center" style={{ width: '60%' }}>
               <thead className="table-secondary">
                 <tr>
                   <th>Day</th>
@@ -199,8 +257,60 @@ const ViewingPage = () => {
               </tbody>
             </table>
           </div>
-
         </Col> 
+        </Row>
+        <Row>
+        <Col md={12} className="text-center my-4">
+        <hr />
+        <h4>Live Booking Status</h4>
+
+        <div className="mb-2">
+          <span style={{ display: 'inline-block', width: '20px', height: '20px', backgroundColor: 'red', borderRadius: '4px', marginRight: '5px' }}></span>
+          <span className="me-3">Booked Time</span>
+
+          <span style={{ display: 'inline-block', width: '20px', height: '20px', backgroundColor: 'green', borderRadius: '4px', marginRight: '5px' }}></span>
+          <span>Free Time</span>
+        </div>
+
+        <div className="timeline-bar mt-3">
+          {(() => {
+            if (!selectedDate) return <p>Select a date to view availability.</p>;
+
+            const dayName = new Date(selectedDate).toLocaleString('en-US', { weekday: 'long' });
+            const dayAvail = availability[dayName];
+            if (!dayAvail || !dayAvail.open || !dayAvail.close) return <p>This day is closed.</p>;
+
+            const openHour = parseInt(dayAvail.open.split(':')[0]);
+            const closeHour = parseInt(dayAvail.close.split(':')[0]);
+
+            // Create an array of all booked hours
+            const bookedHours = new Set();
+            bookedSlots.forEach(slot => {
+              const startHour = parseInt(slot.start_time.split(':')[0]);
+              const endHour = parseInt(slot.end_time.split(':')[0]);
+              for (let h = startHour; h < endHour; h++) {
+                bookedHours.add(h);
+              }
+            });
+
+            const slots = [];
+            for (let hour = openHour; hour < closeHour; hour++) {
+              const isBooked = bookedHours.has(hour);
+              slots.push(
+                <div
+                  key={hour}
+                  className={`timeline-slot ${isBooked ? 'booked' : 'available'}`}
+                >
+                  {hour}:00
+                </div>
+              );
+            }
+
+            return slots;
+          })()}
+        </div>
+      </Col>
+
       </Row>
 
       <Row>
@@ -220,40 +330,85 @@ const ViewingPage = () => {
               <Form.Control type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} />
             </Form.Group>
 
-            <Form.Group className="mb-2">
+            <Form.Group>
               <Form.Label>Start Time</Form.Label>
-              <Form.Control as="select" value={selectedTime} onChange={e => setSelectedTime(e.target.value)}>
-                <option value="">Select time</option>
+              <Form.Select value={startTime} onChange={handleStartTimeChange}>
+                <option value="">Select Start Time</option>
                 {(() => {
                   if (!selectedDate) return null;
-                  
+
                   const dayName = new Date(selectedDate).toLocaleString('en-US', { weekday: 'long' });
                   const dayAvail = availability[dayName];
-                  if (!dayAvail || !dayAvail.open || !dayAvail.close) return <option disabled>No available times</option>;
+                  if (!dayAvail) return null;
 
                   const openHour = parseInt(dayAvail.open.split(':')[0]);
                   const closeHour = parseInt(dayAvail.close.split(':')[0]);
 
+                  // Create a set of all booked hours
+                  const bookedHours = new Set();
+                  bookedSlots.forEach(slot => {
+                    const startHour = parseInt(slot.start_time.split(':')[0]);
+                    const endHour = parseInt(slot.end_time.split(':')[0]);
+                    for (let h = startHour; h < endHour; h++) {
+                      bookedHours.add(h);
+                    }
+                  });
+
                   const options = [];
-                  for (let h = openHour; h < closeHour; h++) {
-                    options.push(
-                      <option key={h} value={`${h}:00`}>{`${h}:00`}</option>
-                    );
+                  for (let hour = openHour; hour < closeHour; hour++) {
+                    if (!bookedHours.has(hour)) {
+                      options.push(
+                        <option key={hour} value={`${hour}:00`}>
+                          {`${hour}:00`}
+                        </option>
+                      );
+                    }
                   }
 
                   return options;
                 })()}
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
 
-            <Form.Group className="mb-2">
-              <Form.Label>Duration</Form.Label>
-              <Form.Control as="select" value={duration} onChange={e => setDuration(e.target.value)}>
-                <option value="">Select duration</option>
-                <option value="1">1 Hour</option>
-                <option value="2">2 Hours</option>
-                <option value="3">3 Hours</option>
-              </Form.Control>
+            <Form.Group>
+              <Form.Label>Duration (in hours)</Form.Label>
+              <Form.Select value={duration} onChange={(e) => setDuration(parseInt(e.target.value))}>
+                <option value="">Select Duration</option>
+                {(() => {
+                  if (!startTime || !selectedDate) return null;
+
+                  const dayName = new Date(selectedDate).toLocaleString('en-US', { weekday: 'long' });
+                  const dayAvail = availability[dayName];
+                  if (!dayAvail) return null;
+
+                  const startHour = parseInt(startTime.split(':')[0]);
+                  const closeHour = parseInt(dayAvail.close.split(':')[0]);
+
+                  // Get all booked hours
+                  const bookedHours = new Set();
+                  bookedSlots.forEach(slot => {
+                    const bStart = parseInt(slot.start_time.split(':')[0]);
+                    const bEnd = parseInt(slot.end_time.split(':')[0]);
+                    for (let h = bStart; h < bEnd; h++) {
+                      bookedHours.add(h);
+                    }
+                  });
+
+                  // Determine how many consecutive free hours are available from selected start
+                  let maxDuration = 0;
+                  for (let h = startHour; h < closeHour; h++) {
+                    if (bookedHours.has(h)) break;
+                    maxDuration++;
+                  }
+
+                  // Render duration options up to maxDuration
+                  return Array.from({ length: maxDuration }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} hour{(i + 1) > 1 ? 's' : ''}
+                    </option>
+                  ));
+                })()}
+              </Form.Select>
             </Form.Group>
 
             <Button

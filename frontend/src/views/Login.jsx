@@ -22,20 +22,16 @@ const Login = () => {
     try {
       const response = await loginUser({ email, password });
   
-      console.log("Full API Response in Login:", response); // Debugging line
-  
       if (!response || !response.token) {
         throw new Error("Token not received!");
       }
   
       const token = response.token; 
   
-      console.log("Token received:", token);
       localStorage.setItem("authToken", token);
       updateAuthState(); // Update navbar state
     
       const decodedToken = jwtDecode(token);
-      console.log("Decoded Token:", decodedToken);
   
       if (!decodedToken.role) throw new Error("Role not found in token!");
   

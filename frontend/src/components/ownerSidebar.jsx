@@ -61,7 +61,7 @@ const Sidebar = () => {
             </Nav>
             <hr className="divider" />
             <div className="sidebar-info d-flex align-items-center">
-                <img src={profileImage} alt="Profile" className="profile-pic me-2" roundedCircle width={60} height={60} />
+                <img src={profileImage} alt="Profile" className="profile-pic me-2" roundedCircle style={{ height: "60px", width: "30%", objectFit: "cover" }}/>
                 <h5 className="sidebar-name">{profile.firstName} {profile.lastName}</h5>
             </div>
         </div>

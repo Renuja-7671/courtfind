@@ -151,7 +151,7 @@ exports.getSportByType = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "Sport not found" });
             }
-            console.log("Sport details:", results); // Debugging line
+            //console.log("Sport details:", results); // Debugging line
             res.json(results[0]);
         });
     } catch (err) {
@@ -170,7 +170,7 @@ exports.getSportByNoOfPlayer = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "Sport not found" });
             }
-            console.log("Sport details:", results); // Debugging line
+            //console.log("Sport details:", results); // Debugging line
             res.json(results[0]);
         });
     } catch (err) {
