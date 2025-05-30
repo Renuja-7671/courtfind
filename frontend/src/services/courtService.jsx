@@ -12,7 +12,7 @@ export const uploadCourtImages = async (files, token) => {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "multipart/form-data",
 }});
-    //console.log("Response From Upload Court Images:", response);
+    console.log("Response From Upload Court Images:", response);
     return response.data.imageUrls;
 };
 
