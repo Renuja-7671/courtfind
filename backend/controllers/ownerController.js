@@ -126,7 +126,7 @@ exports.getProfileImage = async (req, res) => {
     }
 };
 
-//Add Arena
+//Add New Arena
 exports.addArena = (req, res) => {
     const ownerId = req.user.userId;  
     const { arenaName, streetName, city } = req.body;
