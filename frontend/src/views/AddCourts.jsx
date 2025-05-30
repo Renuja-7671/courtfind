@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Sidebar from "../components/ownerSidebar";
 import { getAllSports } from "../services/arenaService";
 import { createCourt, uploadCourtImages } from "../services/courtService";
+import { useNavigate } from "react-router-dom";
 
 const generateTimeOptions = () => {
   const times = [];
@@ -20,6 +21,7 @@ const AddCourts = () => {
   const location = useLocation();
   const arenaId = location.state?.arenaId;
   const { authToken } = useAuth();
+  const navigate = useNavigate();
 
   const [sports, setSports] = useState([]);
   const [courts, setCourts] = useState([]);
