@@ -206,7 +206,7 @@ const AdminPricing = () => {
                       onClick={() => handleEdit(item.id, item.activity_name, item.price)} 
                       className="update-btn"
                     >
-                      Update
+                      Update  <FaSave />
                     </button>
                     <button 
                       onClick={() => handleDelete(item.id)} 
