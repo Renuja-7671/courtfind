@@ -252,7 +252,28 @@ const AdminModel = {
         }
       });
     });
-  }
+  },
+//tottal users for analytics
+  getTotalUsersCount: (search) => {
+  return new Promise((resolve, reject) => {
+    let countQuery = 'SELECT COUNT(*) as total FROM users WHERE role != ?';
+    let countParams = ['Admin'];
+    
+    if (search && search.trim()) {
+      countQuery += ' AND (firstName LIKE ? OR lastName LIKE ? OR CONCAT(firstName, " ", lastName) LIKE ?)';
+      const searchTerm = `%${search.trim()}%`;
+      countParams.push(searchTerm, searchTerm, searchTerm);
+    }
+    
+    db.query(countQuery, countParams, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results[0].total);
+      }
+    });
+  });
+}
 };
 
 module.exports = AdminModel;

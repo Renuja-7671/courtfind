@@ -40,4 +40,7 @@ router.get('/owners', authenticateUser, authorizeRole(['Admin']), adminControlle
 router.get('/owners/:id', authenticateUser, authorizeRole(['Admin']), adminController.getOwnerById);
 router.delete('/owners/:id', authenticateUser, authorizeRole(['Admin']), adminController.deleteOwner);
 
+//analytics routes
+router.get('/user-stats', authenticateUser, authorizeRole(['Admin']), adminController.getUserStats);
+
 module.exports = router;
