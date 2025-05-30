@@ -19,10 +19,8 @@ exports.getAdminProfile = async (req, res) => {
           return res.status(404).json({ error: 'User not found' });
         }
         console.log('User data found:', results[0]);
-        // add hardcoded position for now 
         const userData = {
           ...results[0],
-          position: 'System Administrator'
         };
         res.json(userData);
       });

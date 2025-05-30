@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import logo from "/assets/logo.png"; // since it's in public/assets
+import logo from "/assets/logo.png"; 
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation, Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // Use global auth state
+import { useAuth } from "../contexts/AuthContext"; 
 import apiClient from "../services/adminApiService";
 import {
   FaHome,
@@ -140,8 +140,8 @@ const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // This clears localStorage and state
-    navigate("/login"); // Now you can safely redirect
+    logout(); 
+    navigate("/login"); 
   };
 
   React.useEffect(() => {

@@ -1,7 +1,7 @@
 import AdminLayout from "../components/AdminLayout";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./styles/AdminProfile.css"; // created for styling
+import "./styles/AdminProfile.css";
 import apiClient from "../services/adminApiService";
 
 const AdminProfile = () => {
@@ -10,7 +10,6 @@ const AdminProfile = () => {
     firstName: "",
     lastName: "",
     email: "",
-    position: "System Administrator", // Hardcoded for now.
   });
 
   // States to track which field is being edited
@@ -167,14 +166,6 @@ const AdminProfile = () => {
                 }}
               >
                 {editingEmail ? "Cancel" : "Update"}
-              </button>
-            </div>
-
-            <div className="profile-field">
-              <div className="field-label">Position</div>
-              <div className="field-value">{userData.position}</div>
-              <button className="update-btn" disabled>
-                Update
               </button>
             </div>
           </div>
