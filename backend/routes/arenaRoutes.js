@@ -9,7 +9,7 @@ const sportController = require('../controllers/sportController');
 router.get('/', arenaController.getAllArenas); // Get all arenas
 router.get('/search', arenaController.searchArenas); // Search arenas based on filters
 router.post('/', authenticateUser, authorizeRole(["Owner"]), arenaController.addArena); //Add a new arena
-router.post('/upload', authenticateUser, authorizeRole(["Owner"]), uploadArenas.single('image'), arenaController.uploadArenaImage);
+router.post('/upload', authenticateUser, authorizeRole(["Owner"]), uploadArenas.single('image'), arenaController.uploadArenaImage); //Add an image for arena
 router.get("/sports", authenticateUser, authorizeRole(["Owner"]), sportController.getAllSports);
 
 module.exports = router;
