@@ -19,6 +19,7 @@ import ViewingPage from "./views/sportViewing";
 import PlayerDashboard from "./views/PlayerDashboard";
 import PlayerProfile from "./views/PlayerProfile";
 import PlayerChangePassword from "./views/PlayerChangePassword";
+import PlayerInvoice from "./views/PlayerInvoice";
 
 // Owner Views
 import OwnerDashboard from "./views/OwnerDashboard";
@@ -64,6 +65,7 @@ const playerRoutes = [
   { path: "/player-dashboard", element: PlayerDashboard },
   { path: "/player-profile", element: PlayerProfile },
   { path: "/player-change-password", element: PlayerChangePassword },
+  {path: "/player-invoices",element: PlayerInvoice},
 ];
 
 const ownerRoutes = [

@@ -73,3 +73,17 @@ export const changePassword = async (currentPassword, newPassword) => {
       throw error.response?.data?.message || "Failed to change password";
   }
 };
+//get invoices details
+export const getPlayerInvoices = async (token) => {
+    try {
+        const response = await api.get('/player/invoices', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching player invoices:', error);
+        throw error;
+    }
+};
