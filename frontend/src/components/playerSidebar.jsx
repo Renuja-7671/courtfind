@@ -35,10 +35,10 @@ const Sidebar = () => {
         }, [authToken]);
 
     const menuItems = [
-        { path: "/player-dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
-        { path: "/my-arenas", label: "My Invoices", icon: <FaUser /> },
-        { path: "/player-profile", label: "My Profile", icon: <FaPlusCircle /> },
-        { path: "/player-change-password", label: "Change Password", icon: <FaChartLine /> },
+        { path: "/player-dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },// navigate to the dashboard page
+        { path: "/player-invoices", label: "My Invoices", icon: <FaUser /> },// not changed the path yet 
+        { path: "/player-profile", label: "My Profile", icon: <FaPlusCircle /> },//navigate to the profile page
+        { path: "/player-change-password", label: "Change Password", icon: <FaChartLine /> },// navigate to the change password page
         
     ];
 

@@ -1,89 +1,133 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Card, Spinner, Alert, Badge, Row, Col } from 'react-bootstrap';
+import { Container, Card, Spinner, Alert, Row, Col, Button } from 'react-bootstrap';
 import { getPlayerInvoices } from '../services/playerAuthService';
 import Sidebar from '../components/playerSidebar';
+import { BsDownload } from 'react-icons/bs';
 
-const getPlayerInvoices = () => {
-    const [bookings, setBookings] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [Invoices,setInvoices] = useState([]);
+const PlayerInvoices = () => {
+    // State to store invoices data
+    const [invoices, setInvoices] = useState([]);
+    const [loading, setLoading] = useState(true); // To show loading spinner
+    const [error, setError] = useState(''); // To store any error messages
 
+    // Fetch player invoices when component mounts
     useEffect(() => {
-        const fetchBookings = async () => {
-            const token = localStorage.getItem('authToken');
+        const fetchInvoices = async () => {
+            const token = localStorage.getItem('authToken'); // Get auth token
             try {
-                const data = await getPlayerInvoices(token);
-                setBookings(data);
+                const data = await getPlayerInvoices(token); // API call to fetch invoices
+                setInvoices(data); // Set received invoices
             } catch (err) {
-                setError('Failed to load bookings');
+                setError('Failed to load invoices'); // Set error message
             } finally {
-                setLoading(false);
+                setLoading(false); // Stop loading state
             }
         };
 
-        fetchBookings();
+        fetchInvoices();
     }, []);
 
-    const getPlayerInvoices = async () => {
-        const token = localStorage.getItem('authToken');
-        try {
-            const data = await getPlayerBookings(token);
-            setInvoices(data);
-        } catch (err) {
-            setError('Failed to load invoices');
-        } finally {
-            setLoading(false);
+    // Handle file download with file existence check
+const handleDownload = async (url, name, bookingDate) => {
+    const fullUrl = `http://localhost:8000${url}`; // Full file path
+
+    try {
+        const response = await fetch(fullUrl, { method: 'HEAD' });
+
+        if (!response.ok) {
+            throw new Error('File not found');
         }
+
+        const link = document.createElement('a');
+        link.href = fullUrl;
+        const formattedDate = bookingDate.split('T')[0]; // Format date
+        link.download = `Invoice-${name}-${formattedDate}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (err) {
+        alert('Invoice file not found or unavailable.');
+        console.error('Download error:', err);
     }
+};
+
+
     return (
-        <Container className="min-vh-100 d-flex flex-column  align-items-center">
-            <Row className="w-100" text-center>
-                <Col className="p-4 m-0"  md={3}>
+        <Container className="min-vh-100 d-flex flex-column align-items-center">
+            <Row className="w-100">
+                {/* Sidebar */}
+                <Col md={3} className="p-4 m-0">
                     <Sidebar />
                 </Col>
-                <Col className="p-4 m-0"  md={9}>
-            <h2 className="mb-4 text-primary">My Bookings</h2>
-            {loading ? (
-                <Spinner animation="border" variant="primary" />
-            ) : error ? (
-                <Alert variant="danger">{error}</Alert>
-            ) : bookings.length === 0 ? (
-                <Alert variant="info">No bookings found.</Alert>
-            ) : (
-                <Row>
-                    {bookings.map((booking, index) => (
-                        <Col md={12} className="mb-3" key={index}>
-                            <Card className="shadow-sm">
-                                <Row className="g-0">
-                                    <Col md={3}>
-                                        <Card.Img 
-                                            src={`http://localhost:8000${booking.image_url}`} 
-                                            alt="Arena"
-                                            style={{ height: '100%', objectFit: 'cover' }}
-                                        />
-                                    </Col>
-                                    <Col md={9}>
-                                        <Card.Body>
-                                            <Card.Title className="d-flex justify-content-between">
-                                                {booking.name}
-                                                <Badge bg={getStatusVariant(booking.status)}>
-                                                    {booking.status.toUpperCase()}
-                                                </Badge>
-                                            </Card.Title>
-                                            <Card.Text>
-                                                <strong>Date:</strong> {booking.booking_date.split('T')[0]}<br />
-                                                <strong>Time:</strong> {booking.start_time} - {booking.end_time}
-                                            </Card.Text>
-                                        </Card.Body>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            )}
-            </Col>
+
+                {/* Main content area */}
+                <Col md={9} className="p-4 m-0">
+                    <h2 className="mb-4 text-primary">My Invoices</h2>
+
+                    {/* Loading state */}
+                    {loading ? (
+                        <Spinner animation="border" variant="primary" />
+
+                    // Error state
+                    ) : error ? (
+                        <Alert variant="danger">{error}</Alert>
+
+                    // Empty state
+                    ) : invoices.length === 0 ? (
+                        <Alert variant="info">No invoices found.</Alert>
+
+                    // Invoices list
+                    ) : (
+                        <Row>
+                            {invoices.map((invoice, index) => (
+                                <Col md={12} className="mb-3" key={index}>
+                                    <Card className="shadow-sm">
+                                        <Row className="g-0">
+                                            {/* Arena Image */}
+                                            <Col md={3}>
+                                                <Card.Img
+                                                    src={`http://localhost:8000${invoice.image_url}`}
+                                                    alt="Arena"
+                                                    style={{ height: '100%', objectFit: 'cover' }}
+                                                />
+                                            </Col>
+
+                                            {/* Invoice details */}
+                                            <Col md={9}>
+                                                <Card.Body>
+                                                    <Card.Title>{invoice.name}</Card.Title>
+                                                    <Card.Text>
+                                                        <strong>Date:</strong> {invoice.booking_date.split('T')[0]}<br />
+                                                        <strong>Time:</strong> {invoice.start_time} - {invoice.end_time}
+                                                    </Card.Text>
+
+                                                    {/* Conditional download button */}
+                                                    {invoice.invoices_url ? (
+                                                        <Button
+                                                            variant="outline-primary"
+                                                            onClick={() => handleDownload(
+                                                                invoice.invoices_url,
+                                                                invoice.name,
+                                                                invoice.booking_date
+                                                            )
+                                                            }
+                                                            className="d-flex align-items-center gap-2"
+                                                        >
+                                                            <BsDownload />
+                                                            Download Invoice
+                                                        </Button>
+                                                    ) : (
+                                                        <span className="text-muted">No invoice available</span>
+                                                    )}
+                                                </Card.Body>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+                    )}
+                </Col>
             </Row>
         </Container>
     );
