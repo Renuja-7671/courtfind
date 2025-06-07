@@ -17,10 +17,6 @@ router.put('/pricing', authenticateUser, authorizeRole(['Admin']), adminControll
 router.post('/pricing', authenticateUser, authorizeRole(['Admin']), adminController.addPricing);
 router.delete('/pricing/:id', authenticateUser, authorizeRole(['Admin']), adminController.deletePricing);
 
-// Test endpoint (remove this after testing)
-router.get('/pricing-test', (req, res) => {
-  res.json({ message: 'Pricing API is working!' });
-});
 //routes needed for sports
 router.get("/sports", authenticateUser, authorizeRole(["Admin"]), sportController.getAllSports);
 router.put("/sports/:sportId", authenticateUser, authorizeRole(["Admin"]), sportController.updateSport);
@@ -38,5 +34,13 @@ router.put("/messages/:id/status", authenticateUser, authorizeRole(["Admin"]), c
 router.get('/players', authenticateUser, authorizeRole(['Admin']), adminController.getAllPlayers);
 router.get('/players/:id', authenticateUser, authorizeRole(['Admin']), adminController.getPlayerById);
 router.delete('/players/:id', authenticateUser, authorizeRole(['Admin']), adminController.deletePlayer);
+
+// owner management routes 
+router.get('/owners', authenticateUser, authorizeRole(['Admin']), adminController.getAllOwners);
+router.get('/owners/:id', authenticateUser, authorizeRole(['Admin']), adminController.getOwnerById);
+router.delete('/owners/:id', authenticateUser, authorizeRole(['Admin']), adminController.deleteOwner);
+
+//analytics routes
+router.get('/user-stats', authenticateUser, authorizeRole(['Admin']), adminController.getUserStats);
 
 module.exports = router;

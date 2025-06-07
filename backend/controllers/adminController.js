@@ -205,3 +205,95 @@ exports.deletePlayer = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete player' });
     }
 };
+
+// Get all owners
+exports.getAllOwners = async (req, res) => {
+    try {
+        const { search, page = 1, limit = 10 } = req.query;
+        
+        const [owners, totalOwners] = await Promise.all([
+            AdminModel.getAllOwners({ search, page, limit }),
+            AdminModel.getOwnersCount(search)
+        ]);
+        
+        res.json({
+            owners,
+            totalOwners,
+            currentPage: parseInt(page),
+            totalPages: Math.ceil(totalOwners / limit),
+            hasMore: (page * limit) < totalOwners
+        });
+        
+    } catch (error) {
+        console.error('Error fetching owners data:', error);
+        res.status(500).json({ error: 'Failed to fetch owners data' });
+    }
+};
+
+// Get owner details by ID
+exports.getOwnerById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            return res.status(400).json({ error: 'owner ID is required' });
+        }
+        
+        const results = await AdminModel.getOwnerById(id);
+        
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Owner not found' });
+        }
+        
+        res.json(results[0]);
+        
+    } catch (error) {
+        console.error('Error fetching owner details:', error);
+        res.status(500).json({ error: 'Failed to fetch owner details' });
+    }
+};
+
+// Delete a Owner
+exports.deleteOwner = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            return res.status(400).json({ error: 'Owner ID is required' });
+        }
+        
+        const result = await AdminModel.deleteOwner(id);
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Owner not found' });
+        }
+        
+        res.json({ message: 'Owner deleted successfully' });
+        
+    } catch (error) {
+        console.error('Error deleting owner:', error);
+        res.status(500).json({ error: 'Failed to delete owner' });
+    }
+};
+//analytics counts
+exports.getUserStats = async (req, res) => {
+  try {
+    const { search } = req.query;
+    const [totalUsers, totalPlayers, totalOwners, averageRevenue] = await Promise.all([
+      AdminModel.getTotalUsersCount(search),
+      AdminModel.getPlayersCount(search),
+      AdminModel.getOwnersCount(search),
+      AdminModel.getAverageRevenue()
+    ]);
+    
+    res.json({
+      totalUsers,      // Total users excluding Admins
+      totalPlayers,    // Total players
+      totalOwners,     // Total owners
+      averageRevenue   // Average revenue from payments
+    });
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ error: 'Failed to fetch user stats' });
+  }
+};
