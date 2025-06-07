@@ -1,6 +1,6 @@
 const court = require("../models/courtModel");
 
-//new court creation
+//Add new Court
 exports.createCourt = async (req, res) => {
     try {
      const {

@@ -8,7 +8,7 @@ import Sidebar from "../components/playerSidebar";
 
 const PlayerProfile = () => {
     const navigate = useNavigate();
-    const { authToken } = useAuth();
+    const { authToken } = useAuth(); // Get the auth token from context
     const [profile, setProfile] = useState({
         firstName: "",
         lastName: "",
@@ -25,22 +25,23 @@ const PlayerProfile = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const data = await getPlayerProfile(authToken);
-                setProfile(data);
+                const data = await getPlayerProfile(authToken); // Call API to get profile
+                setProfile(data);  // Update state with fetched profile    
             } catch (error) {
                 console.error("Error fetching profile:", error);
             }
         };
 
-        fetchProfile();
-    }, [authToken]);
-    
+        fetchProfile(); // Call function
+    }, [authToken]);    // Dependency on authToken
+
+     // Fetch profile image on component mount or when authToken changes
     useEffect(() => {
         const fetchProfileImage = async () => {
             try {
-                const imageUrl = await getProfileImage(authToken);
+                const imageUrl = await getProfileImage(authToken); // Get image URL from backend
                 console.log("The image URL: ", imageUrl);
-                setProfileImage(`http://localhost:8000${imageUrl}`);
+                setProfileImage(`http://localhost:8000${imageUrl}`); // Prepend backend host
             } catch (error) {
                 console.error("Error fetching profile image:", error);
             }
@@ -48,28 +49,31 @@ const PlayerProfile = () => {
         fetchProfileImage();
     }, [authToken]);
 
+ // Handle input field changes
     const handleChange = (e) => {
-        setProfile({ ...profile, [e.target.name]: e.target.value });
+        setProfile({ ...profile, [e.target.name]: e.target.value }); // Update corresponding profile field
     };
 
+    
+    // Handle profile form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updatePlayerProfile(authToken, profile);
-            setEditing(false);
+            await updatePlayerProfile(authToken, profile); // Send updated profile to backend
+            setEditing(false); //Exit editing mode
         } catch (error) {
             console.error("Error updating profile:", error);
         }
     };
 
     const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0];// Get the selected file
         console.log("The created file is: ",file);
         if (!file) return;
 
         try {
-            const imageUrl = await uploadProfileImage(file, authToken);
-            setProfileImage(`http://localhost:8000${imageUrl}`);
+            const imageUrl = await uploadProfileImage(file, authToken); // Upload image to backend
+            setProfileImage(`http://localhost:8000${imageUrl}`);// Set image URL to display
         } catch (error) {
             console.error("Error uploading image:", error);
         }

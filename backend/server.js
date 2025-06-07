@@ -25,6 +25,8 @@ uploadDirs.forEach(dir => {
 
 // Static File Serving (For profile image uploads, etc.)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/invoices", express.static(path.join(__dirname, "invoices")));
+
 
 // Routes
 app.use('/api', routes);
