@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from "../components/AdminLayout";
 import apiClient from "../services/adminApiService";
-import { FaUsers } from 'react-icons/fa';
-import './styles/AdminDashboard.css'; // Updated CSS file
+import { FaUsers, FaDollarSign } from 'react-icons/fa'; // Added FaDollarSign for revenue icon
+import './styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalPlayers: 0,
-    totalOwners: 0
+    totalOwners: 0,
+    averageRevenue: 0 // Added averageRevenue to state
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +23,8 @@ const AdminDashboard = () => {
         setStats({
           totalUsers: response.data.totalUsers,
           totalPlayers: response.data.totalPlayers,
-          totalOwners: response.data.totalOwners
+          totalOwners: response.data.totalOwners,
+          averageRevenue: response.data.averageRevenue
         });
         setError(null);
       } catch (err) {
@@ -34,6 +36,17 @@ const AdminDashboard = () => {
     };
     fetchStats();
   }, []);
+
+  // Function to format the revenue (e.g., 150000 -> LKR 150K)
+  const formatRevenue = (amount) => {
+    if (amount >= 1000000) {
+      return `LKR ${(amount / 1000000).toFixed(1)}M`;
+    } else if (amount >= 1000) {
+      return `LKR ${(amount / 1000).toFixed(0)}K`;
+    } else {
+      return `LKR ${amount.toFixed(0)}`;
+    }
+  };
 
   if (loading) return <AdminLayout><div>Loading...</div></AdminLayout>;
   if (error) return <AdminLayout><div>{error}</div></AdminLayout>;
@@ -66,6 +79,14 @@ const AdminDashboard = () => {
               <span className="stats-label">Owners in Total</span>
             </div>
           </div>
+          {/* Average Revenue Box */}
+          <div className="stats-box">
+            <FaDollarSign className="stats-icon" />
+            <div className="stats-text">
+              <span className="stats-number">{formatRevenue(stats.averageRevenue)}</span>
+              <span className="stats-label">Average Revenue</span>
+            </div>
+          </div>
         </div>
         {/* Add other content for your dashboard here */}
       </div>
@@ -74,3 +95,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
