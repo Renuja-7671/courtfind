@@ -273,7 +273,25 @@ const AdminModel = {
       }
     });
   });
-}
+},
+
+
+//get avg revenue for analytics
+  getAverageRevenue: () => {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT AVG(amount) as averageRevenue FROM payments';
+    
+    db.query(query, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        // If there are no payments, return 0 as the average
+        const average = results[0].averageRevenue || 0;
+        resolve(average);
+      }
+    });
+  });
+},
 };
 
 module.exports = AdminModel;
