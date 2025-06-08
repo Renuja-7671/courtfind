@@ -169,7 +169,129 @@ const AdminModel = {
         }
       });
     });
-  }
+  },
+
+
+// Owner Management Methods
+  getAllOwners: (searchParams) => {
+    return new Promise((resolve, reject) => {
+      const { search, page = 1, limit = 10 } = searchParams;
+      
+      let query = 'SELECT userId, firstName, lastName, email, mobile, country, province, zip, address, created_at FROM users WHERE role = ?';
+      let queryParams = ['Owner'];
+      
+      // Add search functionality
+      if (search && search.trim()) {
+        query += ' AND (firstName LIKE ? OR lastName LIKE ? OR CONCAT(firstName, " ", lastName) LIKE ?)';
+        const searchTerm = `%${search.trim()}%`;
+        queryParams.push(searchTerm, searchTerm, searchTerm);
+      }
+      
+      // Add ordering
+      query += ' ORDER BY created_at DESC';
+      
+      // Add pagination
+      const offset = (page - 1) * limit;
+      query += ' LIMIT ? OFFSET ?';
+      queryParams.push(parseInt(limit), offset);
+      
+      db.query(query, queryParams, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
+
+  getOwnersCount: (search) => {
+    return new Promise((resolve, reject) => {
+      let countQuery = 'SELECT COUNT(*) as total FROM users WHERE role = ?';
+      let countParams = ['Owner'];
+      
+      if (search && search.trim()) {
+        countQuery += ' AND (firstName LIKE ? OR lastName LIKE ? OR CONCAT(firstName, " ", lastName) LIKE ?)';
+        const searchTerm = `%${search.trim()}%`;
+        countParams.push(searchTerm, searchTerm, searchTerm);
+      }
+      
+      db.query(countQuery, countParams, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results[0].total);
+        }
+      });
+    });
+  },
+
+  getOwnerById: (id) => {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT userId, firstName, lastName, email, mobile, country, province, zip, address, created_at FROM users WHERE userId = ? AND role = ?';
+      
+      db.query(query, [id, 'Owner'], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
+
+  deleteOwner: (id) => {
+    return new Promise((resolve, reject) => {
+      const query = 'DELETE FROM users WHERE userId = ? AND role = ?';
+      
+      db.query(query, [id, 'Owner'], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
+//tottal users for analytics
+  getTotalUsersCount: (search) => {
+  return new Promise((resolve, reject) => {
+    let countQuery = 'SELECT COUNT(*) as total FROM users WHERE role != ?';
+    let countParams = ['Admin'];
+    
+    if (search && search.trim()) {
+      countQuery += ' AND (firstName LIKE ? OR lastName LIKE ? OR CONCAT(firstName, " ", lastName) LIKE ?)';
+      const searchTerm = `%${search.trim()}%`;
+      countParams.push(searchTerm, searchTerm, searchTerm);
+    }
+    
+    db.query(countQuery, countParams, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results[0].total);
+      }
+    });
+  });
+},
+
+
+//get avg revenue for analytics
+  getAverageRevenue: () => {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT AVG(amount) as averageRevenue FROM payments';
+    
+    db.query(query, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        // If there are no payments, return 0 as the average
+        const average = results[0].averageRevenue || 0;
+        resolve(average);
+      }
+    });
+  });
+},
 };
 
 module.exports = AdminModel;
