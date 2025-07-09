@@ -42,5 +42,6 @@ router.delete('/owners/:id', authenticateUser, authorizeRole(['Admin']), adminCo
 
 //analytics routes
 router.get('/user-stats', authenticateUser, authorizeRole(['Admin']), adminController.getUserStats);
+router.get('/revenue-by-activity', authenticateUser, authorizeRole(['Admin']), adminController.getRevenueByActivity);
 
 module.exports = router;
