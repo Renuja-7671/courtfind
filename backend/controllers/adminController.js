@@ -297,3 +297,13 @@ exports.getUserStats = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user stats' });
   }
 };
+
+exports.getRevenueByActivity = async (req, res) => {
+  try {
+    const revenueData = await AdminModel.getRevenueByActivity();
+    res.json({ revenueByActivity: revenueData });
+  } catch (error) {
+    console.error('Error fetching revenue by activity:', error);
+    res.status(500).json({ error: 'Failed to fetch revenue by activity' });
+  }
+};
