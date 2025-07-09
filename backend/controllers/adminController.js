@@ -307,3 +307,13 @@ exports.getRevenueByActivity = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch revenue by activity' });
   }
 };
+
+exports.getTopRatedArenas = async (req, res) => {
+  try {
+    const topRatedArenas = await AdminModel.getTopRatedArenas();
+    res.json({ topRatedArenas });
+  } catch (error) {
+    console.error('Error fetching top rated arenas:', error);
+    res.status(500).json({ error: 'Failed to fetch top rated arenas' });
+  }
+};

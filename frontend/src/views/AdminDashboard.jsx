@@ -24,6 +24,8 @@ const AdminDashboard = () => {
     averageRevenue: 0
   });
   const [chartData, setChartData] = useState({ revenueByActivity: [] });
+  const [topRatedArenas, setTopRatedArenas] = useState([]);
+  const [visibleArenas, setVisibleArenas] = useState(5); // Initial limit
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,9 +33,10 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [statsResponse, chartResponse] = await Promise.all([
+        const [statsResponse, chartResponse, arenasResponse] = await Promise.all([
           apiClient.get('/admin/user-stats'),
-          apiClient.get('/admin/revenue-by-activity') // Ensure /admin prefix
+          apiClient.get('/admin/revenue-by-activity'),
+          apiClient.get('/admin/top-rated-arenas')
         ]);
         setStats({
           totalUsers: statsResponse.data.totalUsers,
@@ -42,6 +45,7 @@ const AdminDashboard = () => {
           averageRevenue: statsResponse.data.averageRevenue
         });
         setChartData({ revenueByActivity: chartResponse.data.revenueByActivity });
+        setTopRatedArenas(arenasResponse.data.topRatedArenas);
         setError(null);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -79,18 +83,17 @@ const AdminDashboard = () => {
 
   const barChartOptions = {
     scales: {
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: 'Amount (LKR)' }
-      },
-      x: {
-        title: { display: true, text: 'Pricing Activities' }
-      }
+      y: { beginAtZero: true, title: { display: true, text: 'Amount (LKR)' } },
+      x: { title: { display: true, text: 'Pricing Activities' } }
     },
     plugins: {
       legend: { position: 'top' },
       title: { display: true, text: 'Revenue by Activity' }
     }
+  };
+
+  const handleViewAll = () => {
+    setVisibleArenas(topRatedArenas.length); // Show all arenas
   };
 
   if (loading) return <AdminLayout><div>Loading...</div></AdminLayout>;
@@ -129,9 +132,24 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-        {/* Bar Chart Section */}
         <div className="chart-container">
           <Bar data={barChartData} options={barChartOptions} />
+        </div>
+        {/* Top Rated Arenas List */}
+        <div className="top-rated-arenas-container">
+          <h2>Top Rated Arenas</h2>
+          <ul className="arenas-list">
+            {topRatedArenas.slice(0, visibleArenas).map(arena => (
+              <li key={arena.arenaId} className="arena-item">
+                <span className="arena-name">{arena.name}</span>
+                <span className="arena-location">{arena.city}, {arena.country}</span>
+                <span className="arena-rating">Rating: {arena.average_rating.toFixed(1)}</span>
+              </li>
+            ))}
+          </ul>
+          {visibleArenas < topRatedArenas.length && (
+            <button className="view-all-button" onClick={handleViewAll}>View All</button>
+          )}
         </div>
       </div>
     </AdminLayout>
