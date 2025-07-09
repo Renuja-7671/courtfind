@@ -8,4 +8,8 @@ const { uploadCourts } = require("../middleware/uploadMiddleware");
 router.post("/upload-images", authenticateUser, authorizeRole(["Owner"]), uploadCourts.array("images"), courtController.uploadCourtImages);
 router.post("/create", authenticateUser, authorizeRole(["Owner"]), courtController.createCourt);
 
+router.get("/arenas/:arenaId/courts", authenticateUser, authorizeRole(["Owner"]), courtController.getCourtsByArena); // Get courts by arena
+router.put("/:courtId", authenticateUser, authorizeRole(["Owner"]), courtController.updateCourtName); // Update court name
+router.delete("/:courtId", authenticateUser, authorizeRole(["Owner"]), courtController.deleteCourt); // Delete court
+
 module.exports = router;

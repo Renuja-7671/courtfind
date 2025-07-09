@@ -27,6 +27,7 @@ import ChangePassword from "./views/changePassword";
 import OwnerProfile from "./components/OwnerProfile";
 import AddArena from "./views/AddArenas";
 import AddCourts from "./views/AddCourts";
+import ArenaManagement from "./views/ManageArenas";
 
 // Admin Views
 import AdminDashboard from "./views/AdminDashboard";
@@ -74,6 +75,7 @@ const ownerRoutes = [
   { path: "/owner-profile", element: OwnerProfile },
   { path: "/add-arena", element: AddArena },
   { path: "/add-courts", element: AddCourts },
+  { path: "/manage-arenas", element: ArenaManagement },
 ];
 
 const adminRoutes = [
