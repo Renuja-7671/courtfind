@@ -89,5 +89,57 @@ exports.getArenaByRating = async (req, res) => {
     } catch (error) {
         console.error("Unexpected error:", error);
         res.status(500).json({ message: "Unexpected error", error });
+    }};
+
+
+    //for manage arenas page
+    exports.getArenasByOwner = (req, res) => {
+    const ownerId = req.user.userId;
+
+    arena.getArenasByOwner(ownerId, (err, results) => {
+        if (err) {
+        console.error("Error fetching arenas by owner:", err);
+        return res.status(500).json({ message: "Failed to fetch arenas." });
+        }
+
+        if (results.length === 0) {
+        return res.status(404).json({ message: "No arenas found for this owner." });
+        }
+
+        return res.status(200).json(results);
+    });
+    };
+
+    exports.updateArenaName = (req, res) => {
+    const { arenaId } = req.params;
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: "Arena name is required." });
     }
+
+    arena.updateArenaName(arenaId, name, (err, result) => {
+        if (err) {
+        console.error("Error updating arena name:", err);
+        return res.status(500).json({ message: "Failed to update arena name." });
+        }
+
+        if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Arena not found." });
+        }
+        return res.status(200).json({ message: "Arena name updated successfully." });
+    });
+    };
+
+    exports.deleteArena = (req, res) => {
+    const { arenaId } = req.params;
+
+    arena.removeArena(arenaId, (err, result) => {
+        if (err) {
+        console.error("Error deleting arena:", err);
+        return res.status(500).json({ message: "Failed to delete arena." });
+        }
+
+        return res.status(200).json({ message: "Arena and associated courts deleted successfully." });
+    });
 };

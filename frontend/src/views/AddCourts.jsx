@@ -120,8 +120,18 @@ const AddCourts = () => {
       alert("All courts created successfully!");
       setCourts([]);
       resetForm();
-      setTimeout(() => navigate("/owner-dashboard"), 500);
-    } catch (error) {
+
+    // Modified navigation logic
+    setTimeout(() => {
+      if (arenaId && location.state?.arenaId) {
+        // Came from Arena Management - return to manage arenas
+        navigate("/manage-arenas");
+      } else {
+        // Came from Add Arena flow - go to owner dashboard
+        navigate("/owner-dashboard");
+      }
+    }, 500);
+     } catch (error) {
       console.error("Error creating courts:", error);
       alert("Failed to create some courts. Please try again.");
     }

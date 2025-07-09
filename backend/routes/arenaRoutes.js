@@ -12,4 +12,8 @@ router.post('/', authenticateUser, authorizeRole(["Owner"]), arenaController.add
 router.post('/upload', authenticateUser, authorizeRole(["Owner"]), uploadArenas.single('image'), arenaController.uploadArenaImage); //Add an image for arena
 router.get("/sports", authenticateUser, authorizeRole(["Owner"]), sportController.getAllSports);
 
+router.get('/owner', authenticateUser, authorizeRole(["Owner"]), arenaController.getArenasByOwner);
+router.put("/:arenaId", authenticateUser, authorizeRole(["Owner"]), arenaController.updateArenaName);
+router.delete("/:arenaId", authenticateUser, authorizeRole(["Owner"]), arenaController.deleteArena);
+
 module.exports = router;

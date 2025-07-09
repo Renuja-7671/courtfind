@@ -76,6 +76,49 @@ export const searchArenasForHome = async (sport, venue) => {
     }
 };
 
+//for manage arena
+// Get arenas by owner
+export const getArenasByOwner = async (token) => {
+    try {
+        const response = await api.get("/arena/owner", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching arenas by owner:", error);
+        throw error;
+    }
+};
+
+// Update arena name
+export const updateArenaName = async (arenaId, name, token) => {
+    try {
+        const response = await api.put(`/arena/${arenaId}`, 
+            { name }, 
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating arena name:", error);
+        throw error;
+    }
+};
+
+// Delete arena
+export const deleteArena = async (arenaId, token) => {
+    try {
+        const response = await api.delete(`/arena/${arenaId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting arena:", error);
+        throw error;
+    }
+};
+
 
 
 

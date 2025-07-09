@@ -33,6 +33,25 @@ const arena={
         const query = "SELECT a.arenaId, a.city, a.name, a.country, a.description, a.image_url, AVG(r.rating) AS average_rating FROM arenas a JOIN reviews r ON a.arenaId = r.arenaId GROUP BY a.arenaId ORDER BY average_rating DESC";
         db.query(query, callback);
     },
+
+    // Get arenas by owner 
+getArenasByOwner: (ownerId, callback) => {
+  const query = "SELECT arenaId, name FROM arenas WHERE owner_id = ?";
+  db.query(query, [ownerId], callback);
+},
+
+// Update arena name
+updateArenaName: (arenaId, name, callback) => {
+  const query = "UPDATE arenas SET name = ? WHERE arenaId = ?";
+  db.query(query, [name, arenaId], callback);
+},
+
+// Delete arena
+removeArena: (arenaId, callback) => {
+  const query = "DELETE FROM arenas WHERE arenaId = ?";
+  db.query(query, [arenaId], callback);
 }
+
+};
 
 module.exports = arena;

@@ -86,7 +86,52 @@ exports.uploadCourtImages = (req, res) => {
     } catch (error) {
         console.error("Error in getCourtsForBooking:", error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
-    }
-};
+    }};
 
+    // Delete Court
+    exports.deleteCourt = (req, res) => {
+    const courtId = req.params.courtId;
+    
+    court.deleteCourt(courtId, (err, result) => {
+        if (err) {
+        return res.status(500).json({ message: "Failed to delete court", error: err.message });
+        }
+        if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Court not found" });
+        }
+        res.status(200).json({ message: "Court deleted successfully" });
+    });
+    };
+
+    // Get Courts by Arena
+    exports.getCourtsByArena = (req, res) => {
+    const arenaId = req.params.arenaId;
+    
+    court.getCourtsByArena(arenaId, (err, courts) => {
+        if (err) {
+        return res.status(500).json({ message: "Database Error", error: err.message });
+        }
+        res.status(200).json(courts);
+    });
+    };
+
+    // Update Court Name
+    exports.updateCourtName = (req, res) => {
+    const courtId = req.params.courtId;
+    const { name } = req.body;
+    
+    if (!name) {
+        return res.status(400).json({ message: "Name is required" });
+    }
+    
+    court.updateCourtName(courtId, name, (err, result) => {
+        if (err) {
+        return res.status(500).json({ message: "Database Error", error: err.message });
+        }
+        if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Court not found" });
+        }
+        res.status(200).json({ message: "Court updated successfully" });
+    });
+    };
     
