@@ -29,6 +29,7 @@ import OwnerProfile from "./components/OwnerProfile";
 import AddArena from "./views/AddArenas";
 import AddCourts from "./views/AddCourts";
 import ArenaManagement from "./views/ManageArenas";
+import OwnerArenaBookings from "./views/OwnerArenaBookings";
 
 // Admin Views
 import AdminDashboard from "./views/AdminDashboard";
@@ -79,6 +80,7 @@ const ownerRoutes = [
   { path: "/add-arena", element: AddArena },
   { path: "/add-courts", element: AddCourts },
   { path: "/manage-arenas", element: ArenaManagement },
+  { path: "/arena-bookings", element: OwnerArenaBookings },
 ];
 
 const adminRoutes = [
