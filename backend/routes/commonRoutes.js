@@ -7,6 +7,7 @@ const { searchArenas } = require('../controllers/arenaController');
 const { getArenaByRating } = require('../controllers/arenaController');
 const { getCourtsForBooking } = require('../controllers/courtController');
 const { getBookingTimesByCourtId } = require('../controllers/bookingController');
+const playerReviewController = require("../controllers/playerReviewController");
 
 const router = express.Router();
 
@@ -26,5 +27,10 @@ router.get("/getAllSports", getAllSports);
 router.get("/courtsForBooking/:courtId", getCourtsForBooking);
 router.get("/courtBookedTimes/:courtId", getBookingTimesByCourtId);
 
+// Anyone can view reviews for a court
+router.get("/reviews/:courtId", playerReviewController.getReviewsByCourtId);
+
+// Get average rating for a court
+router.get("/average-rating/:courtId", playerReviewController.getAverageRatingByCourtId);
 
 module.exports = router;

@@ -87,3 +87,49 @@ export const getPlayerInvoices = async (token) => {
         throw error;
     }
 };
+
+// Add a review
+export const submitReview = async (token, reviewData) => {
+    try{
+  const response = await api.post("/player/reviews",reviewData,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+});
+    return response.data;
+  }catch(error) {
+        console.error("Error submitting review:", error);
+        throw error.response?.data?.message || "Failed to submit review";
+    }  
+}; 
+
+// Get reviews for court
+export const getReviewStats = async (courtId,token) => {
+  const response = await api.get(`/player/reviews/${courtId}/stats`,{
+    headers:{Authorization: `Bearer ${token}`},
+});
+  return response.data;
+};
+
+// Get average rating for court
+export const getAverageRatingByCourt = async (courtId,token) => {
+  const response = await api.get(`/player/reviews/${courtId}/average`,{
+  headers: { Authorization: `Bearer ${token}` }
+});
+  return response.data;
+};
+
+// Get individual reviews for a court
+export const getReviewsByCourt = async (courtId, token) => {
+  try {
+    const response = await api.get(`/player/reviews/${courtId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("Reviews fetched:", response.data);
+    return response.data; // Expected: [{ rating, comment, playerName, date }, ...]
+  } catch (error) {
+    console.error('Error fetching reviews by court:', error);
+    throw error;
+  }
+};
