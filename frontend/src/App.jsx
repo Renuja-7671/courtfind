@@ -23,6 +23,9 @@ import PlayerChangePassword from "./views/PlayerChangePassword";
 import PlayerInvoice from "./views/PlayerInvoice";
 import ViewReviews from "./views/ViewReviews";
 import FeedbackPage from "./views/Feedback";
+import PaymentPage from "./views/paymentPage";
+import PaymentSuccess from "./views/PaymentSuccess";
+import PaymentCancel from "./views/paymentCancel";
 
 // Owner Views
 import OwnerDashboard from "./views/OwnerDashboard";
@@ -72,9 +75,12 @@ const playerRoutes = [
   { path: "/player-dashboard", element: PlayerDashboard },
   { path: "/player-profile", element: PlayerProfile },
   { path: "/player-change-password", element: PlayerChangePassword },
-  {path: "/player-invoices",element: PlayerInvoice},
+  { path: "/player-invoices",element: PlayerInvoice }, 
   { path: "/reviews/:courtId", element: ViewReviews },
   { path: "/feedback/:courtId", element: FeedbackPage},
+  { path: "/payment/:total", element: PaymentPage },
+  { path: "/payment-success", element: PaymentSuccess }, 
+  { path: "/payment-cancel", element: PaymentCancel },
 ];
 
 const ownerRoutes = [

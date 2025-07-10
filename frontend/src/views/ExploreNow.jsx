@@ -23,7 +23,7 @@ const ExploreNow = () => {
             let updatedSport = sport;
             if (sportId) {
                 try {
-                    console.log("Fetching sport for sportId:", sportId); // Debug log
+                    //console.log("Fetching sport for sportId:", sportId); // Debug log
                     const response = await fetch(`http://localhost:8000/common/sport`);
                     const sports = await response.json();
                     console.log("Sports data:", sports); // Debug log

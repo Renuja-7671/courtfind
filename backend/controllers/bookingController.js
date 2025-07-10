@@ -18,7 +18,21 @@ exports.setABooking = async (req, res) => {
                 console.error("Database error:", err);
                 return res.status(500).json({ error: "Database error" });
             }
-            res.status(201).json({ message: "Booking created successfully", booking: results });
+            if (results.affectedRows === 0) {
+                return res.status(400).json({ error: "Failed to create booking" });
+            }
+            // Fetch the last booking ID for the player
+            PlayerBooking.getIdOfLastBooking(playerId, (err, bookingId) => {
+                if (err) { 
+                    console.error("Error fetching last booking ID:", err);
+                    return res.status(500).json({ error: "Failed to fetch booking ID" });
+                }
+                if (!bookingId) {
+                    return res.status(404).json({ error: "No bookings found for this player" });
+                }
+                res.status(201).json({ bookingId: bookingId }); // Return the booking ID
+                //console.log("Booking ID returned:", bookingId); // Debugging line
+            });
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -45,3 +59,27 @@ exports.getBookingTimesByCourtId = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getBookingDetailsForPayment = async (req, res) => {
+    const bookingId = req.params.bookingId;
+
+    if (!bookingId) {
+        return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    try {
+        PlayerBooking.getBookingDetailsForPayment(bookingId, (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ error: "Booking not found" });
+            }
+            console.log("Booking details for payment:", results[0]); // Debugging line
+            res.status(200).json(results[0]);
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

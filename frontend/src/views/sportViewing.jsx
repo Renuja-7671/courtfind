@@ -130,12 +130,15 @@ const ViewingPage = () => {
     };
 
     try {
-      const res = await createBooking(bookingData, authToken);
-      if (res.booking) {
+      const bookingId = await createBooking(bookingData, authToken);
+      if (bookingId) {
         alert("Booking successful!");
+        navigate(`/payment/${bookingData.total_price}`); // Redirect to payment page with bookingId
+        // Reset form fields
         setSelectedDate('');
         setSelectedTime('');
         setDuration('');
+
       } else {
         alert("Booking failed: " + res.error);
       }

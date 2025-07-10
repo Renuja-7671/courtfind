@@ -8,7 +8,9 @@ const commonRoutes = require("./commonRoutes");
 const adminRoutes = require("./adminRoutes"); 
 const arenaRoutes = require("./arenaRoutes");
 const sportRoutes = require("./sportRoutes"); 
-const courtRoutes = require("./courtRoutes");
+const courtRoutes = require("./courtRoutes");  
+const stripeRoutes = require("./stripeRoutes"); // Stripe routes
+const bookingRoutes = require("./bookingRoutes"); // Booking routes
 
 
 router.use("/auth", authRoutes); // Authentication routes (login, register, etc.)
@@ -19,6 +21,10 @@ router.use("/admin", adminRoutes); // Admin routes
 router.use("/arena", arenaRoutes); // Arena routes
 router.use("/sport", sportRoutes); // Sport routes
 router.use("/courts", courtRoutes); // Sport routes
+router.use("/stripe", stripeRoutes); // Stripe payment routes
+router.use("/booking", bookingRoutes); // Booking routes
+
+
 
 
 module.exports = router;
