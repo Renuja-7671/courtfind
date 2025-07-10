@@ -340,6 +340,28 @@ getTopRatedArenas: () => {
   });
 },
 
+getMonthlyPricingAnalysis: (month, year) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT activity_name, SUM(price) as total_amount
+      FROM pricing
+      WHERE DATE_FORMAT(created_at, '%Y-%m') = ?
+      GROUP BY activity_name
+    `;
+    db.query(query, [`${year}-${month.toString().padStart(2, '0')}`], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        const data = results.map(row => ({
+          activity_name: row.activity_name,
+          total_amount: parseFloat(row.total_amount) || 0
+        }));
+        resolve(data);
+      }
+    });
+  });
+},
+
 };
 
 module.exports = AdminModel;
