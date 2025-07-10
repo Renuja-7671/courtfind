@@ -9,7 +9,8 @@ export const createBooking = async (bookingData, token) => {
             Authorization: `Bearer ${token}`,
         },
     }); 
-    return response.data;
+    console.log("Booking Response:", response.data.bookingId);
+    return response.data.bookingId;
   } catch (error) {
     console.error("Booking failed:", error);
     return { success: false, error: error.response?.data?.error || "Unknown error" };

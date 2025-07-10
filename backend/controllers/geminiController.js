@@ -1,7 +1,7 @@
 const axios = require("axios");
 require("dotenv").config();
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
 const API_KEY = process.env.GEMINI_API_KEY;
 
 exports.chatWithGemini = async (req, res) => {
