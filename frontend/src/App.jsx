@@ -14,6 +14,7 @@ import ContactUs from "./views/ContactUs";
 import Chatbot from "./components/Chatbot";
 import ExploreNow from "./views/ExploreNow";
 import ViewingPage from "./views/sportViewing";
+import Homepage from "./views/Home";
 
 // Player Views
 import PlayerDashboard from "./views/PlayerDashboard";
@@ -60,6 +61,8 @@ const commonRoutes = [
   { path: "/chatbot", element: Chatbot },
   { path: "/explore-now", element: ExploreNow },
   { path: "/view/:courtId", element: ViewingPage },
+  { path: "/home", element: Homepage },
+
 ];
 
 const playerRoutes = [
