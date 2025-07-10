@@ -20,6 +20,7 @@ router.get("/arena-courts", getArenaCourtDetails);
 router.get("/sport", getAllSports);
 router.get("/searchArenas", searchArenas);
 router.get('/arenasByRating', getArenaByRating);
+router.get("/getAllSports", getAllSports);
 
 // Court viewing route for booking
 router.get("/courtsForBooking/:courtId", getCourtsForBooking);

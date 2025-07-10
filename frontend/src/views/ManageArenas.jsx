@@ -184,9 +184,9 @@ const ArenaManagement = () => {
   }
 
   return (
-    <Container fluid className="p-0" style={{ backgroundColor: "#f1f5f9", minHeight: "100vh" }}>
-      <Row className="g-0">
-        <Col md={3}>
+    <Container className="min-vh-100 d-flex flex-column  align-items-center">
+        <Row className="w-100" text-center>
+            <Col className="p-4 m-0"  md={3}>
           <Sidebar />
         </Col>
         <Col md={9} style={{ padding: "2rem 3rem" }}>

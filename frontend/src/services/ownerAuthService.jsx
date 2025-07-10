@@ -104,6 +104,99 @@ export const getPaymentHistory = async (token) => {
     }
 };
 
+export const getBookings = async (token) => {
+    try {
+        const response = await api.get('/owner/arena-bookings', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+        } catch (error) {
+                    console.error('Error fetching bookings:', error);
+                    throw error;
+        }
+};
+
+export const updateBookingStatus = async (token, bookingId) => {
+    try {
+        const response = await api.put(`/owner/arena-bookings/${bookingId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+         });
+        return response.data;
+        } catch (error) {
+                     console.error('Error updating booking status:', error);
+                     throw error;
+        }
+};
+
+export const getArenasOfOwner = async (token) => {
+    try {
+        const response = await api.get('/owner/arena-bookings/allArenas', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+         });
+          return response.data;
+          } catch (error) {
+             console.error('Error fetching arenas:', error);
+             throw error;
+        }
+};
+
+export const getSelectedArenaBookings = async (token, arenaId) => {
+    try {
+        const response = await api.get(`/owner/arena-bookings/${arenaId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+         });
+         return response.data;
+         } catch (error) {
+            console.error('Error fetching selected arena bookings:', error);
+            throw error;
+        }
+};     
+
+export const getCourtsByArenaId = async (token, arenaId) => {
+    try {
+        const response = await api.get(`/owner/arena-bbokings/courts/${arenaId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+            } catch (error) {
+                console.error('Error fetching courts by arena id:', error);
+                throw error;
+            }
+};
+
+export const getFilteredArenaBookings = async (token, filters) => {
+    try {
+        const { arenaId, bookingDate, courtName } = filters;
+        const params = new URLSearchParams();
+
+        if (arenaId) params.append("arenaId", arenaId);
+        if (bookingDate) params.append("bookingDate", bookingDate);
+        if (courtName) params.append("courtName", courtName);
+
+        const response = await api.get(`/owner/arena-bookings/filter?${params.toString()}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching filtered bookings:", error);
+        throw error;
+    }
+};
+
+
+
+
 
 
 

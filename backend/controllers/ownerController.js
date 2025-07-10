@@ -192,5 +192,82 @@ exports.getPaymentHistory = async (req, res) => {
     }
 };
 
+exports.fetchArenaBookings = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const bookingsArena = await OwnerDashboard.fetchArenaBookings(ownerId);
+        console.log("The booking details are : ", bookingsArena);
+        res.json(bookingsArena);
+    } catch (error) {
+        console.error('Error fetching arena bookings:', error);
+        res.status(500).json({ message: 'Internal server error' });
+        }
+};
 
+exports.fetchSelectedArenaBookings = async (req, res) => {
+    try {
+        const arenaId = req.params.arenaId;
+        const ownerId = req.user.userId;
+        const bookingsArena = await OwnerDashboard.fetchSelectedArenaBookings(ownerId, arenaId);
+        console.log("The booking details are : ", bookingsArena);
+        res.json(bookingsArena);
+    } catch (error) {
+        console.error('Error fetching selected arena bookings:', error);
+        res.status(500).json({ message: 'Internal server error' });
+        }
+    };    
+    
+exports.fetchArenasOfOwner = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const arenas = await OwnerDashboard.fetchArenasOfOwner(ownerId);
+        res.json(arenas);
+        } catch (error) {
+            console.error('Error fetching arenas of owner:', error);
+            res.status(500).json({ message: 'Internal server error' });
+            }
+     };
+
+exports.updateCancelStatus = async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        console.log('bookingId :', bookingId);
+        const updateBookingStatus = await OwnerDashboard.updateCancelStatus(bookingId);
+        console.log("booking status : ", updateBookingStatus);
+        res.json(updateBookingStatus);
+    } catch (error) {
+            console.error('Error updating cancel status:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+};
+
+exports.fetchCourtsByArenaId = async (req, res) => {
+    try {
+        const arenaId = req.params.arenaId;
+        const courts = await OwnerDashboard.fetchCourtsByArenaId(arenaId);
+        res.json(courts);
+        } catch (error) {
+            console.error('Error fetching courts by arena id:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+};
+
+exports.fetchFilteredArenaBookings = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const { arenaId, bookingDate, courtName } = req.query;
+
+        const bookings = await OwnerDashboard.fetchFilteredArenaBookings(
+            ownerId,
+            arenaId,
+            bookingDate || null,
+            courtName || null
+        );
+
+        res.json(bookings);
+    } catch (error) {
+        console.error("Error filtering arena bookings:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 
