@@ -314,6 +314,32 @@ getRevenueByActivity: () => {
   });
 },
 
+getTopRatedArenas: () => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT a.arenaId, a.name, a.city, a.country, AVG(r.rating) as average_rating
+      FROM arenas a
+      LEFT JOIN reviews r ON a.arenaId = r.arenaId
+      GROUP BY a.arenaId, a.name, a.city, a.country
+      ORDER BY average_rating DESC
+    `;
+    db.query(query, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        const data = results.map(row => ({
+          arenaId: row.arenaId,
+          name: row.name,
+          city: row.city,
+          country: row.country,
+          average_rating: parseFloat(row.average_rating) || 0
+        }));
+        resolve(data);
+      }
+    });
+  });
+},
+
 };
 
 module.exports = AdminModel;
