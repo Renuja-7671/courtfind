@@ -21,6 +21,8 @@ import PlayerDashboard from "./views/PlayerDashboard";
 import PlayerProfile from "./views/PlayerProfile";
 import PlayerChangePassword from "./views/PlayerChangePassword";
 import PlayerInvoice from "./views/PlayerInvoice";
+import ViewReviews from "./views/ViewReviews";
+import FeedbackPage from "./views/Feedback";
 
 // Owner Views
 import OwnerDashboard from "./views/OwnerDashboard";
@@ -71,6 +73,8 @@ const playerRoutes = [
   { path: "/player-profile", element: PlayerProfile },
   { path: "/player-change-password", element: PlayerChangePassword },
   {path: "/player-invoices",element: PlayerInvoice},
+  { path: "/reviews/:courtId", element: ViewReviews },
+  { path: "/feedback/:courtId", element: FeedbackPage},
 ];
 
 const ownerRoutes = [

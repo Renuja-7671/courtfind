@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row, Spinner, Form, Carousel } from 'react-bootstrap';
 import { getCourtsForBooking } from '../services/courtService';
 import { createBooking, getBookingTimesByCourtId } from '../services/bookingService';
+import { getReviewStats, getAverageRatingByCourt } from '../services/playerAuthService';
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaPhoneAlt, FaStar } from 'react-icons/fa';
 import { MdOutlineSportsScore } from "react-icons/md";
@@ -27,6 +28,9 @@ const ViewingPage = () => {
   const navigate = useNavigate();
   const [bookedSlots, setBookedSlots] = useState([]);
   const [startTime, setStartTime] = useState('');
+  // State for review statistics
+  const [reviewStats, setReviewStats] = useState([]);
+  const [averageRating, setAverageRating] = useState(0.0);
   const handleStartTimeChange = (e) => {
     const time = e.target.value;
     setStartTime(time);
@@ -84,9 +88,21 @@ const ViewingPage = () => {
         setLoading(false);
       }
     };
+// Fetch review statistics and average rating
+    const fetchReviewData = async () => {
+      try {
+        const statsData = await getReviewStats(courtId,authToken);
+        setReviewStats(statsData);
+        const avgData = await getAverageRatingByCourt(courtId,authToken);
+        setAverageRating(avgData.averageRating || 0.0);
+      } catch (error) {
+        console.error("Error fetching review data:", error);
+      }
+    };
 
     fetchCourt();
-  }, [courtId]);
+    if (authToken) fetchReviewData();
+  }, [courtId,authToken]);
 
   // Handle booking submission
   const handleBooking = async () => {
@@ -141,7 +157,14 @@ const ViewingPage = () => {
   }
   return slots;
 };
-
+// Handle viewing reviews
+const handleViewReviews = () => {
+    if (isLoggedInPlayer()) {
+      navigate(`/reviews/${courtId}`);
+    } else {
+      navigate('/login');
+    }
+  };
 
 
   if (loading) return <Spinner animation="border" variant="primary" />;
@@ -207,8 +230,18 @@ const ViewingPage = () => {
           <p><FaMapMarkerAlt /><strong> Address:</strong> {court.city}, {court.country}</p>
           <p><FaPhoneAlt /><strong> Call Us: </strong> {court.mobile}</p>
           <div>
-            <h4>4.2 <FaStar className="text-warning" /></h4>
-            <p><a href="#">20 Ratings</a> | <a href="#">05 Reviews</a></p>
+            <h4>{averageRating}<FaStar className="text-warning" /></h4>
+           <Card.Text className="mt-2">
+                  <span
+                    style={{
+                      cursor: isLoggedInPlayer() ? 'pointer' : 'not-allowed',
+                      color: isLoggedInPlayer() ? '#007bff' : '#6c757d',
+                    }}
+                    onClick={handleViewReviews}
+                  >
+                    {reviewStats} Reviews
+                  </span>
+                </Card.Text> 
           </div>
           </Card.Body>
           
