@@ -52,7 +52,7 @@ const withLayout = (Component) => (
 
 // Route configs
 const commonRoutes = [
-  { path: "/", element: Login },
+  { path: "/", element: Homepage },
   { path: "/login", element: Login },
   { path: "/signup", element: Signup },
   { path: "/dashboard", element: Dashboard },
