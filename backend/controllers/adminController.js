@@ -317,3 +317,15 @@ exports.getTopRatedArenas = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch top rated arenas' });
   }
 };
+
+
+exports.getMonthlyRevenueAnalysis = async (req, res) => {
+  try {
+    const { month, year } = req.query; // Expect month (1-12) and year as query params
+    const analysisData = await AdminModel.getMonthlyRevenueAnalysis(month, year || 2025);
+    res.json({ analysisData });
+  } catch (error) {
+    console.error('Error fetching monthly revenue analysis:', error);
+    res.status(500).json({ error: 'Failed to fetch monthly revenue analysis' });
+  }
+};
