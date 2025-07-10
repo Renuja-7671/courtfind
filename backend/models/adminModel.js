@@ -340,12 +340,14 @@ getTopRatedArenas: () => {
   });
 },
 
-getMonthlyPricingAnalysis: (month, year) => {
+
+
+getMonthlyRevenueAnalysis: (month, year) => {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT activity_name, SUM(price) as total_amount
-      FROM pricing
-      WHERE DATE_FORMAT(created_at, '%Y-%m') = ?
+      SELECT activity_name, SUM(amount_paid) as total_amount
+      FROM revenue
+      WHERE DATE_FORMAT(paid_at, '%Y-%m') = ?
       GROUP BY activity_name
     `;
     db.query(query, [`${year}-${month.toString().padStart(2, '0')}`], (err, results) => {

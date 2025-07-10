@@ -46,6 +46,6 @@ router.get('/revenue-by-activity', authenticateUser, authorizeRole(['Admin']), a
 router.get('/top-rated-arenas', authenticateUser, authorizeRole(['Admin']), adminController.getTopRatedArenas);
 
 //profit analysis routes
-router.get('/monthly-pricing-analysis', authenticateUser, authorizeRole(['Admin']), adminController.getMonthlyPricingAnalysis);
+router.get('/monthly-revenue-analysis', authenticateUser, authorizeRole(['Admin']), adminController.getMonthlyRevenueAnalysis);
 
 module.exports = router;

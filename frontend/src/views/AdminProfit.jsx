@@ -32,7 +32,7 @@ const AdminProfit = () => {
         setLoading(true);
         const [chartResponse, analysisResponse] = await Promise.all([
           apiClient.get('/admin/revenue-by-activity'),
-          apiClient.get(`/admin/monthly-pricing-analysis?month=${currentMonth}&year=${currentYear}`)
+          apiClient.get(`/admin/monthly-revenue-analysis?month=${currentMonth}&year=${currentYear}`)
         ]);
         setChartData({ revenueByActivity: chartResponse.data.revenueByActivity });
         const analysisData = analysisResponse.data.analysisData;
@@ -41,7 +41,7 @@ const AdminProfit = () => {
         // Fetch previous month's total for increase calculation
         const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
         const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
-        const prevResponse = await apiClient.get(`/admin/monthly-pricing-analysis?month=${prevMonth}&year=${prevYear}`);
+        const prevResponse = await apiClient.get(`/admin/monthly-revenue-analysis?month=${prevMonth}&year=${prevYear}`);
         const prevTotal = prevResponse.data.analysisData.reduce((sum, item) => sum + item.total_amount, 0);
         setMonthIncrease(totalProfit - prevTotal);
         setError(null);
@@ -91,7 +91,7 @@ const AdminProfit = () => {
   };
 
   const handleSeeMore = () => {
-    setVisibleItems(prev => Math.min(prev + 5, monthlyAnalysis.length)); // Increase by 5 or show all
+    setVisibleItems(prev => Math.min(prev + 5, monthlyAnalysis.length));
   };
 
   const handlePrevMonth = () => {
@@ -119,7 +119,6 @@ const AdminProfit = () => {
         <div className="chart-wrapper">
           <Bar data={barChartData} options={barChartOptions} />
         </div>
-        {/* Monthly Revenue Analysis */}
         <div className="monthly-analysis">
           <h2>{monthNames[currentMonth - 1]} {currentYear}</h2>
           <ul className="analysis-list">
