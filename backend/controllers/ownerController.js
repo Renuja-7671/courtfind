@@ -271,3 +271,84 @@ exports.fetchFilteredArenaBookings = async (req, res) => {
     }
 };
 
+//FOR MY PROFIT 
+exports.getTotalRevenue = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const totalRevenue = await OwnerDashboard.fetchTotalRevenue(ownerId);
+        res.json({ totalRevenue });
+    } catch (error) {
+        console.error('Error fetching total revenue:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getCurrentMonthRevenue = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;  
+        const currentMonthRevenue = await OwnerDashboard.fetchCurrentMonthRevenue(ownerId);
+        res.json({ currentMonthRevenue });
+    } catch (error) {
+        console.error('Error fetching current month revenue:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getYearlyChartData = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const year = req.query.year || new Date().getFullYear(); // capture year from query
+        const chartData = await OwnerDashboard.fetchYearlyChartData(ownerId, year);
+        res.json(chartData);
+    } catch (error) {
+        console.error('Error fetching yearly chart data:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getMonthlyChartData = async (req, res) => {
+    console.log("Raw query params:", req.query);
+    const { year, month } = req.query;
+    console.log("Parsed values:", { year: typeof year, month: typeof month });
+    const ownerId = req.user.userId;
+    
+    // Convert to numbers explicitly
+    const numYear = parseInt(year) || new Date().getFullYear();
+    const numMonth = parseInt(month) || new Date().getMonth() + 1;
+    console.log("Final values:", { numYear, numMonth });
+    
+    const chartData = await OwnerDashboard.fetchMonthlyChartData(ownerId, numYear, numMonth);
+    console.log(" Monthly Chart Query Params:", req.query);
+    try {
+        const ownerId = req.user.userId;
+        const { year, month } = req.query; // Optional year/month from query params
+        const chartData = await OwnerDashboard.fetchMonthlyChartData(ownerId, year, month);
+        res.json(chartData);
+    } catch (error) {
+        console.error('Error fetching monthly chart data:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getAllTransactions = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const transactions = await OwnerDashboard.fetchAllTransactions(ownerId);
+        res.json(transactions);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getPaymentHistoryForProfit = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const payments = await OwnerDashboard.fetchPaymentHistoryForMyProfit(ownerId);
+        res.json(payments);
+    } catch (error) {
+        console.error('Error fetching payment history for profit:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
