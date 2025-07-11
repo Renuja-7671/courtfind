@@ -59,7 +59,16 @@ const NavigationBar = () => {
                                 <>
                                     <Nav.Link 
                                         as={Link} 
-                                        to={userRole === "Player" ? "/player-dashboard" : "/owner-dashboard"} 
+                                        //to={userRole === "Player" ? "/player-dashboard" : "/owner-dashboard"} 
+                                        to={
+                                            userRole === "Player" 
+                                            ? "/player-dashboard"
+                                            : userRole === "Owner"
+                                            ? "/owner-dashboard"
+                                            : userRole === "Admin"
+                                            ? "/admin-dashboard"
+                                            : "/"
+                                        } 
                                         style={navLinkStyle}
                                     >
                                         Dashboard
