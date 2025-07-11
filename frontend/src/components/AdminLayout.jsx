@@ -177,6 +177,7 @@ const AdminLayout = ({ children }) => {
           alt="Logo"
           style={{ width: "250px", marginBottom: "20px" }}
         />
+        {/* 
         <input
           type="text"
           placeholder="Search for..."
@@ -189,7 +190,39 @@ const AdminLayout = ({ children }) => {
             outline: "none",
           }}
         />
+        */}
         <nav style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+
+          {/*Home button */}
+          <Link
+            to="/home"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "10px 12px",
+              backgroundColor: "#38b1e0ff", // Light blue background
+              color: "white",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "500",
+              marginBottom: "0", // No extra margin to match SidebarLink
+              border: "1px solid #76b9d6", // Added border for visibility
+              transition: "background-color 0.3s, color 0.3s", // Smooth transitions
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#76b9d6"; // Slightly lighter blue on hover
+              e.currentTarget.style.color = "#f0f8ff"; // Lighter text on hover
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#38b1e0ff"; // Return to light blue
+              e.currentTarget.style.color = "white"; // Return to white text
+            }}
+          >
+            Home
+          </Link>
+          {/*Home button */}
+
           <SidebarLink
             to="/admin-dashboard"
             icon={<FaHome />}
@@ -327,7 +360,7 @@ const AdminLayout = ({ children }) => {
             </div>
           </div>
         )}
-
+        
         <div style={{ marginTop: "20px" }}>{children}</div>
       </div>
     </div>
