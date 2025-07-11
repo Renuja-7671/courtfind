@@ -276,18 +276,18 @@ const AdminModel = {
 },
 
 
-//get avg revenue for analytics
-  getAverageRevenue: () => {
+//get tot revenue for analytics
+
+getTotalRevenue: () => {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT AVG(amount) as averageRevenue FROM payments';
-    
+    const query = 'SELECT SUM(amount_paid) as totalRevenue FROM revenue';
     db.query(query, (err, results) => {
       if (err) {
         reject(err);
       } else {
-        // If there are no payments, return 0 as the average
-        const average = results[0].averageRevenue || 0;
-        resolve(average);
+        // If there are no revenue entries, return 0 as the total
+        const totalRevenue = results[0].totalRevenue || 0;
+        resolve(totalRevenue);
       }
     });
   });

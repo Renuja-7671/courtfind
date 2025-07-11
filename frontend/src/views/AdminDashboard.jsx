@@ -21,7 +21,7 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalPlayers: 0,
     totalOwners: 0,
-    averageRevenue: 0
+    totalRevenue: 0 // Changed from averageRevenue
   });
   const [chartData, setChartData] = useState({ revenueByActivity: [] });
   const [topRatedArenas, setTopRatedArenas] = useState([]);
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
           totalUsers: statsResponse.data.totalUsers,
           totalPlayers: statsResponse.data.totalPlayers,
           totalOwners: statsResponse.data.totalOwners,
-          averageRevenue: statsResponse.data.averageRevenue
+          totalRevenue: statsResponse.data.totalRevenue // Changed from averageRevenue
         });
         setChartData({ revenueByActivity: chartResponse.data.revenueByActivity });
         setTopRatedArenas(arenasResponse.data.topRatedArenas);
@@ -58,14 +58,14 @@ const AdminDashboard = () => {
   }, []);
 
   const formatRevenue = (amount) => {
-    if (amount >= 1000000) {
-      return `LKR ${(amount / 1000000).toFixed(1)}M`;
-    } else if (amount >= 1000) {
-      return `LKR ${(amount / 1000).toFixed(0)}K`;
-    } else {
-      return `LKR ${amount.toFixed(0)}`;
-    }
-  };
+  if (amount >= 1000000) {
+    return `LKR ${(amount / 1000000).toFixed(1)}M`;
+  } else if (amount >= 1000) {
+    return `LKR ${Math.floor(amount / 1000)}K`; // Changed to Math.floor for rounding down
+  } else {
+    return `LKR ${amount.toFixed(0)}`;
+  }
+};
 
   // Bar Chart Data
   const barChartData = {
@@ -127,8 +127,8 @@ const AdminDashboard = () => {
           <div className="stats-box">
             <FaDollarSign className="stats-icon" />
             <div className="stats-text">
-              <span className="stats-number">{formatRevenue(stats.averageRevenue)}</span>
-              <span className="stats-label">Average Revenue</span>
+              <span className="stats-number">{formatRevenue(stats.totalRevenue)}</span> {/* Changed from stats.averageRevenue */}
+              <span className="stats-label">Total Revenue</span> {/* Changed from Average Revenue */}
             </div>
           </div>
         </div>
