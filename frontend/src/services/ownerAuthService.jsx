@@ -194,6 +194,50 @@ export const getFilteredArenaBookings = async (token, filters) => {
     }
 };
 
+//FOR MY PROFIT
+export const getTotalRevenueService = async (token) => {
+  const res = await api.get('/owner/my-profit/total-revenue', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const getCurrentMonthRevenueService = async (token) => {
+  const res = await api.get('/owner/my-profit/current-month-revenue', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const getYearlyChartDataService = async (token, year) => {
+  const res = await api.get(`/owner/my-profit/yearly-chart?year=${year}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const getMonthlyChartDataService = async (token, year, month) => {
+  const res = await api.get(`/owner/my-profit/monthly-chart?year=${year}&month=${month}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const getAllTransactionsService = async (token) => {
+  const res = await api.get('/owner/my-profit/transactions', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const getPaymentHistoryService = async (token) => {
+  const res = await api.get('/owner/my-profit/payment-history', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+
 
 
 
