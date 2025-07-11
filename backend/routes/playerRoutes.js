@@ -36,4 +36,5 @@ router.post("/update-payments-table", authenticateUser, authorizeRole(["Player"]
 router.get("/reviewsNoAuth/:courtId/stats", playerReviewController.getReviewStats);
 router.get("/reviewsNoAuth/:courtId/average", playerReviewController.getAverageRatingByCourtId);
 
+
 module.exports = router;
