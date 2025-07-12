@@ -396,9 +396,92 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
         } catch (err) {
             throw err;
         }
+    },
+
+    //For courtwise Profit Page
+    // Get all arenas for a specific owner
+    fetchOwnerArenas: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT arenaId, name, city, country 
+                FROM arenas 
+                WHERE owner_id = ?
+                ORDER BY name ASC
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Get arena details by ID
+    fetchArenaDetails: async (arenaId) => {
+        try {
+            const queryStr = `
+                SELECT arenaId, name, city, country, description
+                FROM arenas 
+                WHERE arenaId = ?
+            `;
+            const [rows] = await query(queryStr, [arenaId]);
+            return rows[0] || null;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Get yearly chart data by courts for a specific arena
+    fetchArenaCourtYearlyData: async (arenaId, year = new Date().getFullYear()) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    c.name AS court_name,
+                    MONTH(p.paid_at) AS month,
+                    SUM(p.amount) AS total
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                JOIN courts c ON b.courtId = c.courtId
+                WHERE c.arenaId = ? AND YEAR(p.paid_at) = ?
+                GROUP BY c.courtId, c.name, MONTH(p.paid_at)
+                ORDER BY c.name, MONTH(p.paid_at)
+            `;
+            const [rows] = await query(queryStr, [arenaId, year]);
+
+            // Get unique court names
+            const courtNames = [...new Set(rows.map(row => row.court_name))];
+
+            const chartData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: []
+            };
+
+            // If no data, return empty chart
+            if (!rows || rows.length === 0) {
+                return chartData;
+            }
+
+            // Create dataset for each court
+            courtNames.forEach(courtName => {
+                const courtData = Array(12).fill(0);
+                rows.forEach(row => {
+                    if (row.court_name === courtName) {
+                        courtData[row.month - 1] = row.total;
+                    }
+                });
+
+                chartData.datasets.push({
+                    label: courtName,
+                    data: courtData
+                });
+            });
+
+            return chartData;
+        } catch (err) {
+            throw err;
+        }
     }
 
-}
+    }
 
 
 
