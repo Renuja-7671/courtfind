@@ -27,4 +27,12 @@ router.get("/arena-bookings/:arenaId", authenticateUser, authorizeRole(["Owner"]
 router.get("/arena-bookings/filter", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchFilteredArenaBookings);
 router.get("/arena-bookings/courts/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchCourtsByArenaId);
 
+//My Profit Dashboard Routes
+router.get("/my-profit/total-revenue", authenticateUser, authorizeRole(["Owner"]), ownerController.getTotalRevenue);
+router.get("/my-profit/yearly-chart", authenticateUser, authorizeRole(["Owner"]), ownerController.getYearlyChartData);
+router.get("/my-profit/monthly-chart", authenticateUser, authorizeRole(["Owner"]), ownerController.getMonthlyChartData);
+router.get("/my-profit/payment-history", authenticateUser, authorizeRole(["Owner"]), ownerController.getPaymentHistoryForProfit);
+router.get("/my-profit/transactions", authenticateUser, authorizeRole(["Owner"]), ownerController.getAllTransactions);
+router.get('/my-profit/current-month-revenue', authenticateUser, authorizeRole(["Owner"]),ownerController.getCurrentMonthRevenue);
+
 module.exports = router;
