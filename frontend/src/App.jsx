@@ -36,6 +36,7 @@ import AddCourts from "./views/AddCourts";
 import ArenaManagement from "./views/ManageArenas";
 import OwnerArenaBookings from "./views/OwnerArenaBookings";
 import MyProfitPage from "./views/MyProfit";
+import ProfitCourtwise from "./views/MyProfitCourtwise";
 
 // Admin Views
 import AdminDashboard from "./views/AdminDashboard";
@@ -93,6 +94,7 @@ const ownerRoutes = [
   { path: "/manage-arenas", element: ArenaManagement },
   { path: "/arena-bookings", element: OwnerArenaBookings },
   { path: "/my-profit", element: MyProfitPage},
+  { path: "/courtwise-profit", element: ProfitCourtwise},
 
 ];
 
