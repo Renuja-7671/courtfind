@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { jwtDecode } from "jwt-decode";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -27,9 +25,8 @@ const Login = () => {
       }
   
       const token = response.token; 
-  
       localStorage.setItem("authToken", token);
-      updateAuthState(); // Update navbar state
+      updateAuthState();
     
       const decodedToken = jwtDecode(token);
   
@@ -38,7 +35,20 @@ const Login = () => {
       const userRole = decodedToken.role;
       setSuccessMessage("Login successful!");
   
-      if (userRole === "Player") {
+      // Check for redirectVenue or redirectAfterLogin
+      const redirectVenue = localStorage.getItem('redirectVenue');
+      const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+      
+      // Clear redirect storage
+      localStorage.removeItem('redirectVenue');
+      localStorage.removeItem('redirectAfterLogin');
+      
+      // Redirect based on stored redirect or role
+      if (redirectVenue) {
+        navigate(`/explore-now?venue=${encodeURIComponent(redirectVenue)}`);
+      } else if (redirectAfterLogin) {
+        navigate(redirectAfterLogin);
+      } else if (userRole === "Player") {
         navigate("/player-dashboard");
       } else if (userRole === "Owner") {
         navigate("/owner-dashboard");
@@ -53,7 +63,6 @@ const Login = () => {
       setSuccessMessage("");
     }
   };
-  
 
   return (
     <Container className="min-vh-100 d-flex justify-content-center align-items-center">
@@ -69,7 +78,7 @@ const Login = () => {
             </p>
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formEmail">
-                <Form.Label>Email</Form.Label> <br />
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="Email Address"
@@ -77,7 +86,8 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-              </Form.Group> <br />
+              </Form.Group>
+              <br />
 
               <Form.Group controlId="formPassword">
                 <Form.Label>Password</Form.Label>
@@ -96,10 +106,12 @@ const Login = () => {
                     {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                   </Button>
                 </InputGroup>
-              </Form.Group> <br />
+              </Form.Group>
+              <br />
               <Button variant="link" onClick={() => navigate("/forgot-password")}>
                 Forgot Password
-              </Button> <br />
+              </Button>
+              <br />
 
               <Button variant="primary" type="submit" className="w-100 mt-3">
                 Login
