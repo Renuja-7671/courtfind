@@ -12,6 +12,7 @@ import {
   getCurrentMonthRevenueService
 } from '../services/ownerAuthService';
 import { FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -27,6 +28,7 @@ const MyProfitPage = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [showCombinedLine, setShowCombinedLine] = useState(false);
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   const years = Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i);
@@ -279,6 +281,17 @@ const MyProfitPage = () => {
                         </div>
                       </Tab>
                     </Tabs>
+
+                    {/* Add button here */}
+                    <div className="d-flex justify-content-end mt-3">
+                      <Button
+                        variant="primary"
+                        onClick={() => navigate('/courtwise-profit')}
+                      >
+                        Switch to Detailed View
+                      </Button>
+                    </div>
+
                   </Card.Body>
                 </Card>
               </Col>

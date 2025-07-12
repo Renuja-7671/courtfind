@@ -352,3 +352,46 @@ exports.getPaymentHistoryForProfit = async (req, res) => {
     }
 };
 
+// For courtwise profit page
+
+// Get owner's arenas
+exports.getOwnerArenas = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const arenas = await OwnerDashboard.fetchOwnerArenas(ownerId);
+        res.json(arenas);
+    } catch (error) {
+        console.error('Error fetching owner arenas:', error);
+        res.status(500).json({ error: 'Failed to fetch arenas' });
+    }
+};
+
+// Get arena details
+exports.getArenaDetails = async (req, res) => {
+    try {
+        const { arenaId } = req.params;
+        const arena = await OwnerDashboard.fetchArenaDetails(arenaId);
+        if (!arena) {
+            return res.status(404).json({ error: 'Arena not found' });
+        }
+        res.json(arena);
+    } catch (error) {
+        console.error('Error fetching arena details:', error);
+        res.status(500).json({ error: 'Failed to fetch arena details' });
+    }
+};
+
+// Get arena court yearly data
+exports.getArenaCourtYearlyData = async (req, res) => {
+    try {
+        const { arenaId } = req.params;
+        const { year } = req.query;
+        const chartData = await OwnerDashboard.fetchArenaCourtYearlyData(arenaId, year);
+        res.json(chartData);
+    } catch (error) {
+        if (!arena) {
+    return res.status(404).json({ error: 'Arena not found' });}
+        console.error('Error fetching arena court yearly data:', error);
+        res.status(500).json({ error: 'Failed to fetch chart data' });
+    }
+};
