@@ -45,16 +45,32 @@ const Homepage = () => {
             return;
         }
 
-        // Navigate to explore-now with sport and venue parameters
         const searchParams = new URLSearchParams();
         if (selectedSport) searchParams.append('sport', selectedSport);
         if (venueLocation) searchParams.append('venue', venueLocation);
         navigate(`/explore-now?${searchParams.toString()}`);
     };
 
-    const handleSportSelection = (sportId) => {
-        // Navigate to explore-now with sportId parameter
-        navigate(`/explore-now?sportId=${sportId}`);
+    const handleSportSelection = (sportName) => {
+        navigate(`/explore-now?sport=${encodeURIComponent(sportName)}`);
+    };
+
+    const handleStartBooking = () => {
+        if (localStorage.getItem('authToken')) {
+            navigate('/explore-now');
+        } else {
+            localStorage.setItem('redirectAfterLogin', '/explore-now');
+            navigate('/login');
+        }
+    };
+
+    const handleArenaBookNow = (arenaName) => {
+        if (localStorage.getItem('authToken')) {
+            navigate(`/explore-now?venue=${encodeURIComponent(arenaName)}`);
+        } else {
+            localStorage.setItem('redirectVenue', arenaName);
+            navigate('/login');
+        }
     };
 
     const resetSearch = () => {
@@ -129,7 +145,7 @@ const Homepage = () => {
                     
                     <button 
                         className="btn btn-primary btn-lg mt-4"
-                        onClick={() => navigate('/login')}
+                        onClick={handleStartBooking}
                     >
                         Start Booking
                     </button>
@@ -145,7 +161,7 @@ const Homepage = () => {
                             <div key={sport.sportId} className="col-6 col-md-2 mb-3">
                                 <button 
                                     className="btn btn-outline-primary w-100 py-2"
-                                    onClick={() => handleSportSelection(sport.sportId)}
+                                    onClick={() => handleSportSelection(sport.name)}
                                 >
                                     {sport.name}
                                 </button>
@@ -250,7 +266,7 @@ const Homepage = () => {
                                         style={{ cursor: 'pointer', overflow: 'hidden' }}
                                     >
                                         <img 
-                                            src={arena.image_url || "https://via.placeholder.com/300x200?text=Arena+Image"}
+                                            src={arena.image_url ? `http://localhost:8000${arena.image_url}` : "https://via.placeholder.com/300x200?text=Arena+Image"}
                                             className="card-img-top"
                                             alt={arena.name}
                                             style={{ height: '200px', objectFit: 'cover' }}
@@ -274,7 +290,10 @@ const Homepage = () => {
                                                         {arena.average_rating ? Number(arena.average_rating).toFixed(1) : 'No rating'}
                                                     </span>
                                                 </div>
-                                                <button className="btn btn-primary btn-sm" onClick={() => navigate('/login')}>
+                                                <button 
+                                                    className="btn btn-primary btn-sm" 
+                                                    onClick={() => handleArenaBookNow(arena.name)}
+                                                >
                                                     Book Now
                                                 </button>
                                             </div>
@@ -302,7 +321,10 @@ const Homepage = () => {
                                                             {arena.average_rating ? Number(arena.average_rating).toFixed(1) : 'No rating'}
                                                         </span>
                                                     </div>
-                                                    <button className="btn btn-primary" onClick={() => navigate('/login')}>
+                                                    <button 
+                                                        className="btn btn-primary" 
+                                                        onClick={() => handleArenaBookNow(arena.name)}
+                                                    >
                                                         Book Now
                                                     </button>
                                                 </div>
