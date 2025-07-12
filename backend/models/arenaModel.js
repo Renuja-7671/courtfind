@@ -3,12 +3,12 @@ const { addArena } = require("../controllers/ownerController");
 
 const arena={
     getAllArenas: (callback) => {
-        const query = "SELECT * FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
+        const query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
         db.query(query, callback);
     },
 
     searchArenas: (sport, venue, callback) => {
-        let query = "SELECT a.arenaId, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
+        let query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
         const params = [];
 
         if (sport) {
