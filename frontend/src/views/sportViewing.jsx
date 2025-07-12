@@ -131,9 +131,10 @@ const ViewingPage = () => {
 
     try {
       const bookingId = await createBooking(bookingData, authToken);
+      console.log("Booking ID sent for payment:", bookingId); // Debug log
       if (bookingId) {
         alert("Booking successful!");
-        navigate(`/payment/${bookingData.total_price}`); // Redirect to payment page with bookingId
+        navigate(`/payment/${bookingId}/${bookingData.total_price}`); // Redirect to payment page with bookingId
         // Reset form fields
         setSelectedDate('');
         setSelectedTime('');
@@ -201,7 +202,7 @@ const handleViewReviews = () => {
         background-color: green;
       }
     `}</style>
-      <h2>{court.arenaName} - {court.courtName}</h2>
+      <h2>{court.arenaName} <br/> {court.courtName}</h2>
       <p>{court.city}, {court.country}</p>
 
       <Row className="mb-4">
@@ -300,7 +301,7 @@ const handleViewReviews = () => {
         <hr />
         <h4>Live Booking Status</h4>
 
-        <div className="mb-2">
+        <div className="mb-1">
           <span style={{ display: 'inline-block', width: '20px', height: '20px', backgroundColor: 'red', borderRadius: '4px', marginRight: '5px' }}></span>
           <span className="me-3">Booked Time</span>
 
@@ -453,6 +454,7 @@ const handleViewReviews = () => {
                 !selectedDate || !selectedTime || !duration || isDayClosed || !isLoggedInPlayer()
               }
               onClick={handleBooking}
+              className="mt-3"
             >
               Reserve and Book Now
             </Button>

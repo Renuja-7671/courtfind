@@ -98,7 +98,7 @@ const ExploreNow = () => {
                                 style={{ height: "200px", width: "100%", objectFit: "cover" }}
                             />
                             <Card.Body>
-                                <Card.Title>{arena.name}</Card.Title>
+                                <Card.Title>{arena.arenaName} <br/> {arena.courtName}</Card.Title>
                                 <Card.Text>{arena.city}, {arena.country}</Card.Text>
                                 <Card.Text>
                                     <span role="img" aria-label="sport"><MdOutlineSportsScore /></span> {arena.sport}

@@ -34,6 +34,8 @@ const Login = () => {
   
       const userRole = decodedToken.role;
       setSuccessMessage("Login successful!");
+      setErrorMessage(""); // Clear any previous error message
+
   
       // Check for redirectVenue or redirectAfterLogin
       const redirectVenue = localStorage.getItem('redirectVenue');

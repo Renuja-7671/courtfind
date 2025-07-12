@@ -7,9 +7,9 @@ import { BiSolidPhoneCall } from "react-icons/bi";
 const OwnerArenaBookings = () => {
     const [bookings, setBookings] = useState([]);
     const [arenas, setArenas] = useState([]);
-    const [selectedArenaId, setSelectedArenaId] = useState("all");
+    const [selectedArenaId, setSelectedArenaId] = useState([]);
     const [selectedCourt, setSelectedCourt] = useState([]);
-    const [selectedCourtName, setSelectedCourtName] = useState("");
+    const [selectedCourtName, setSelectedCourtName] = useState([]);
     const [visibleCount, setVisibleCount] = useState(5);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -46,12 +46,12 @@ const OwnerArenaBookings = () => {
     }, [selectedArenaId]);
 
     const handleCourtChange = async (e) => {
-        const courtName = e.target.value;
+        const courtName = e.target.value.trim();
+        console.log("Selected court name:", courtName);
         setSelectedCourtName(courtName);
         const filters = {
           arenaId : selectedArenaId , 
-          bookingDate : null , 
-          courtName : selectedCourtName }
+          courtName : courtName }
         try {
             const filteredBookings = await getFilteredArenaBookings(token, filters);
             setBookings(filteredBookings);
@@ -157,7 +157,7 @@ const OwnerArenaBookings = () => {
                         </Form.Label>
                         <Col sm={6}>
                             <Form.Select
-                                value={selectedArenaId}
+                                value={selectedCourtName}
                                 onChange={handleCourtChange}
                                 className="mb-3"
                             >

@@ -245,6 +245,7 @@ exports.fetchCourtsByArenaId = async (req, res) => {
     try {
         const arenaId = req.params.arenaId;
         const courts = await OwnerDashboard.fetchCourtsByArenaId(arenaId);
+        console.log("The courts are: ", courts);
         res.json(courts);
         } catch (error) {
             console.error('Error fetching courts by arena id:', error);
@@ -253,22 +254,37 @@ exports.fetchCourtsByArenaId = async (req, res) => {
 };
 
 exports.fetchFilteredArenaBookings = async (req, res) => {
-    try {
-        const ownerId = req.user.userId;
-        const { arenaId, bookingDate, courtName } = req.query;
+  try {
+    const ownerId = req.user.userId;
+    console.log("Owner ID IN THIS FUNCTION:", ownerId);
+    let { arenaId, courtName } = req.query;
 
-        const bookings = await OwnerDashboard.fetchFilteredArenaBookings(
-            ownerId,
-            arenaId,
-            bookingDate || null,
-            courtName || null
-        );
+    // Convert string to int
+    arenaId = parseInt(arenaId);
 
-        res.json(bookings);
-    } catch (error) {
-        console.error("Error filtering arena bookings:", error);
-        res.status(500).json({ message: "Internal server error" });
+    if (courtName) {
+    courtName = courtName.trim();
     }
+
+
+    // If courtName is "all" or empty, treat it as null
+    if (!courtName || courtName.toLowerCase() === "all") {
+      courtName = null;
+    }
+
+    console.log("Filtering bookings for:", { ownerId, arenaId, courtName });
+
+    const bookings = await OwnerDashboard.fetchFilteredArenaBookings(
+      ownerId,
+      arenaId,
+      courtName
+    );
+
+    res.json(bookings);
+  } catch (error) {
+    console.error("Error filtering arena bookings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 //FOR MY PROFIT 

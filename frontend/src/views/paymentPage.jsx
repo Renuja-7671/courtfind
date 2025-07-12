@@ -45,7 +45,7 @@ const ELEMENT_OPTIONS = {
 
 
 const CheckoutForm = () => {
-  const { total } = useParams();
+  const { bookingId, total } = useParams();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();

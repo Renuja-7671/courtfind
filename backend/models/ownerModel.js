@@ -124,15 +124,15 @@ fetchArenasOfOwner : async (ownerId) => {
 
 fetchCourtsByArenaId: async (arenaId) => {
     try {
-        const query = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
-        const [rows] = await query(query, [arenaId]) ;
+        const queryStr = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
+        const [rows] = await query(queryStr, [arenaId]) ;
         return rows ;
         } catch (err) {
             throw err ;
             }
 },
 
-fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => {
+fetchFilteredArenaBookings: async (ownerId, arenaId, courtName) => {
     try {
         let queryStr = `
             SELECT b.bookingId, c.name AS court_name, b.booking_date, b.start_time, b.end_time,
@@ -147,17 +147,15 @@ fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => 
 
         const params = [ownerId, arenaId];
 
-        if (bookingDate) {
-            queryStr += ` AND DATE(b.booking_date) = ?`;
-            params.push(bookingDate);
-        }
-
         if (courtName) {
             queryStr += ` AND c.name = ?`;
             params.push(courtName);
         }
 
         queryStr += ` ORDER BY b.booking_date DESC, b.start_time ASC`;
+        
+        console.log("Query Params:", params);
+        console.log("Final Query:", queryStr);
 
         const [rows] = await query(queryStr, params);
         return rows;

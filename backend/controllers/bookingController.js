@@ -30,6 +30,7 @@ exports.setABooking = async (req, res) => {
                 if (!bookingId) {
                     return res.status(404).json({ error: "No bookings found for this player" });
                 }
+                console.log("Booking ID returned:", bookingId); // Debugging line
                 res.status(201).json({ bookingId: bookingId }); // Return the booking ID
                 //console.log("Booking ID returned:", bookingId); // Debugging line
             });

@@ -80,7 +80,7 @@ const playerRoutes = [
   { path: "/player-invoices",element: PlayerInvoice }, 
   { path: "/reviews/:courtId", element: ViewReviews },
   { path: "/feedback/:courtId", element: FeedbackPage},
-  { path: "/payment/:total", element: PaymentPage },
+  { path: "/payment/:bookingId/:total", element: PaymentPage },
   { path: "/payment-success", element: PaymentSuccess }, 
   { path: "/payment-cancel", element: PaymentCancel },
 ];
