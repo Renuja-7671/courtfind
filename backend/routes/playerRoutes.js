@@ -6,6 +6,7 @@ const invoiceController = require("../controllers/invoiceController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
 const { uploadPlayerProfileImage } = require("../middleware/uploadMiddleware");
 const playerReviewController = require("../controllers/playerReviewController");
+const playerInvoiceController = require("../controllers/playerInvoiceController");
 
 //routes needed for retrieve bookings
 router.get("/bookings", authenticateUser, authorizeRole(["Player"]), playerController.getBookings);
@@ -28,5 +29,9 @@ router.post("/reviews", authenticateUser, authorizeRole(["Player"]), playerRevie
 router.get("/reviews/:courtId", authenticateUser, authorizeRole(["Player"]), playerReviewController.getReviewsByCourtId);
 router.get("/reviews/:courtId/stats", authenticateUser, authorizeRole(["Player"]), playerReviewController.getReviewStats);
 router.get("/reviews/:courtId/average", authenticateUser, authorizeRole(["Player"]), playerReviewController.getAverageRatingByCourtId);
+router.get("/generate-invoice/:bookingId", playerInvoiceController.handleInvoiceGeneration);
+router.get("/download-invoice/:filename", playerInvoiceController.downloadInvoice);
+router.get("/get-owner-id/:bookingId", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.getOwnerIdForBooking);
+router.post("/update-payments-table", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.updatePaymentsTable);
 
 module.exports = router;

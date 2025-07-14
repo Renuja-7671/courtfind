@@ -11,7 +11,7 @@ const PlayerBooking = {
         db.query(query, [playerId, courtId, booking_date, start_time, end_time, total_price, payment_status, status, ownerId, arenaId], callback);
     },
     getBookingTimesByCourtId: (courtId, bookingDate, callback) => {
-        const query = "SELECT start_time, end_time FROM bookings WHERE courtId = ? AND booking_date = ?;";
+        const query = "SELECT start_time, end_time FROM bookings WHERE courtId = ? AND booking_date = ? AND payment_status = 'Paid'";
         db.query(query, [courtId, bookingDate], callback);
     },
     getIdOfLastBooking: (playerId, callback) => {
@@ -36,7 +36,56 @@ const PlayerBooking = {
             WHERE b.bookingId = ?;
         `;
         db.query(query, [bookingId], callback);
+    },
+    updateInvoiceAndPaymentStatus: (bookingId, invoiceUrl, callback) => {
+        const query = `
+            UPDATE bookings
+            SET payment_status = 'Paid',
+                invoices_url = ?
+            WHERE bookingId = ?;
+        `;
+        db.query(query, [invoiceUrl, bookingId], callback);
+        },
+
+    getFullBookingDetails: (bookingId, callback) => {
+        const query = `
+            SELECT b.bookingId, b.booking_date, b.start_time, b.end_time, b.total_price, 
+                    b.status, b.payment_status, b.created_at,
+                    u.firstName, u.lastName, u.email,
+                    c.name AS court_name,
+                    a.name AS arena_name
+            FROM bookings b
+            JOIN users u ON b.playerId = u.userId
+            JOIN courts c ON b.courtId = c.courtId
+            JOIN arenas a ON b.arenaId = a.arenaId
+            WHERE b.bookingId = ?;
+        `;
+        db.query(query, [bookingId], callback);
+        },
+
+    getOwnerIdForBooking: (bookingId, callback) => {
+        const query = "SELECT ownerId FROM bookings WHERE bookingId = ?;";
+        db.query(query, [bookingId], (err, results) => {
+            if (err) {
+                return callback(err);
+            }
+            if (results.length > 0) {
+                return callback(null, results[0].ownerId);
+            } else {
+                return callback(new Error("Booking not found"));
+            }
+        });
+    },
+
+    updatePaymentsTable: (bookingId, paymentDesc, total, payment_method, ownerId, callback) => {
+        const query = `
+            INSERT INTO payments (bookingId, paymentDesc, amount, payment_method, ownerId)
+            VALUES (?, ?, ?, ?, ?);
+        `;
+        db.query(query, [bookingId, paymentDesc, total, payment_method, ownerId], callback);
     }
+
+    
 };
 
 module.exports = PlayerBooking;

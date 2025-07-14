@@ -20,8 +20,7 @@ exports.authenticateToken = (req, res, next) => {
 
 exports.authenticateUser = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1];
-    console.log("Token received for authentication in arenabooking:", token); // Log the token for debugging
-
+    
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     try {

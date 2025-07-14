@@ -133,7 +133,7 @@ const ViewingPage = () => {
       const bookingId = await createBooking(bookingData, authToken);
       console.log("Booking ID sent for payment:", bookingId); // Debug log
       if (bookingId) {
-        alert("Booking successful!");
+        alert("Booking Pending! Proceed to payment.");
         navigate(`/payment/${bookingId}/${bookingData.total_price}`); // Redirect to payment page with bookingId
         // Reset form fields
         setSelectedDate('');
@@ -169,6 +169,14 @@ const handleViewReviews = () => {
       navigate('/login');
     }
   };
+
+  // Handle logging in as a player
+  const handleLoggingInPlayer = () => {
+    if (!isLoggedInPlayer()) {
+      navigate('/login', { replace: true, state: { from: location.pathname } });
+    }
+  };
+
 
 
   if (loading) return <Spinner animation="border" variant="primary" />;
@@ -465,7 +473,7 @@ const handleViewReviews = () => {
                 <span
                   className="text-decoration-underline"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => navigate('/login')}
+                  onClick={handleLoggingInPlayer}
                 >
                   log&nbsp;in&nbsp;as&nbsp;a&nbsp;Player
                 </span>
