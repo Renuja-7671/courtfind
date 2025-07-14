@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { loginUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { jwtDecode } from "jwt-decode";
@@ -14,6 +14,7 @@ const Login = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const { updateAuthState } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +35,8 @@ const Login = () => {
   
       const userRole = decodedToken.role;
       setSuccessMessage("Login successful!");
+      setErrorMessage(""); // Clear any previous error message
+
   
       // Check for redirectVenue or redirectAfterLogin
       const redirectVenue = localStorage.getItem('redirectVenue');
@@ -44,7 +47,11 @@ const Login = () => {
       localStorage.removeItem('redirectAfterLogin');
       
       // Redirect based on stored redirect or role
-      if (redirectVenue) {
+      const from = location.state?.from || null;
+
+      if(from) {
+        navigate(from, { replace: true });
+      } else if (redirectVenue) {
         navigate(`/explore-now?venue=${encodeURIComponent(redirectVenue)}`);
       } else if (redirectAfterLogin) {
         navigate(redirectAfterLogin);

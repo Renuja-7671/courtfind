@@ -76,8 +76,8 @@ export const getBookings = async (token) => {
     return response.data;
 };
 
-export const updateBookingStatus = async (token, bookingId) => {
-    const response = await api.put(`/owner/arena-bookings/${bookingId}`, {}, {
+export const updateBookingStatus = async (token, bookingId, cancellationReason) => {
+    const response = await api.put(`/owner/arena-bookings/${bookingId}`, { reason: cancellationReason }, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -98,24 +98,38 @@ export const getSelectedArenaBookings = async (token, arenaId) => {
 };
 
 export const getCourtsByArenaId = async (token, arenaId) => {
-    const response = await api.get(`/owner/arena-bookings/courts/${arenaId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+    try {
+        const response = await api.get(`/owner/arena-bookings/courts/${arenaId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+            } catch (error) {
+                console.error('Error fetching courts by arena id:', error);
+                throw error;
+            }
 };
 
 export const getFilteredArenaBookings = async (token, filters) => {
-    const { arenaId, bookingDate, courtName } = filters;
-    const params = new URLSearchParams();
+    try {
+        const { arenaId, courtName } = filters;
+        console.log("Filter parameters initially:", { arenaId, courtName });
+        const queryParams = new URLSearchParams({
+            arenaId: arenaId,
+            ...(courtName !== "all" && courtName ? { courtName } : {}),
+        });
+        console.log("Filter parameters:", queryParams.toString());
 
-    if (arenaId) params.append("arenaId", arenaId);
-    if (bookingDate) params.append("bookingDate", bookingDate);
-    if (courtName) params.append("courtName", courtName);
+        const response = await api.get(`/owner/arena-bookings/filter/${arenaId}/${courtName}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
 
-    const response = await api.get(`/owner/arena-bookings/filter?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching filtered bookings:", error);
+        throw error;
+    }
 };
 
 // My Profit

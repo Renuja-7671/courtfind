@@ -87,10 +87,10 @@ const OwnerDashboard = {
     }
 },
 
-    updateCancelStatus : async (bookingId) => {
+    updateCancelStatus : async (bookingId, reason) => {
         try {
-            const queryStr = `UPDATE bookings SET status = 'Cancelled' WHERE bookingId =?`;
-            const [rows] = await query(queryStr, [bookingId]);
+            const queryStr = `UPDATE bookings SET status = 'Cancelled', cancellationReason = ? WHERE bookingId =?`;
+            const [rows] = await query(queryStr, [reason, bookingId]);
             return rows;
         } catch (err) {
             throw err;
@@ -124,15 +124,16 @@ fetchArenasOfOwner : async (ownerId) => {
 
 fetchCourtsByArenaId: async (arenaId) => {
     try {
-        const query = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
-        const [rows] = await query(query, [arenaId]) ;
+        const queryStr = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
+        const [rows] = await query(queryStr, [arenaId]) ;
         return rows ;
         } catch (err) {
             throw err ;
             }
 },
 
-fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => {
+fetchFilteredArenaBookings: async (ownerId, arenaId, courtName) => {
+    console.log("Fetching filtered arena bookings with parameters:", { ownerId, arenaId, courtName });
     try {
         let queryStr = `
             SELECT b.bookingId, c.name AS court_name, b.booking_date, b.start_time, b.end_time,
@@ -146,11 +147,6 @@ fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => 
         `;
 
         const params = [ownerId, arenaId];
-
-        if (bookingDate) {
-            queryStr += ` AND DATE(b.booking_date) = ?`;
-            params.push(bookingDate);
-        }
 
         if (courtName) {
             queryStr += ` AND c.name = ?`;

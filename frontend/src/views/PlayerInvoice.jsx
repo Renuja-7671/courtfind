@@ -28,28 +28,23 @@ const PlayerInvoices = () => {
     }, []);
 
     // Handle file download with file existence check
-const handleDownload = async (url, name, bookingDate) => {
-    const fullUrl = `http://localhost:8000${url}`; // Full file path
+    const handleDownload = async (url, name, bookingDate) => {
+        const fullUrl = `http://localhost:8000${url}`; // Full file path
 
-    try {
-        const response = await fetch(fullUrl, { method: 'HEAD' });
+        try {
+            const response = await fetch(fullUrl, { method: 'HEAD' });
 
-        if (!response.ok) {
-            throw new Error('File not found');
+            if (!response.ok) {
+                throw new Error('File not found');
+            }
+
+            window.open(fullUrl, '_blank');
+
+        } catch (err) {
+            alert('Invoice file not found or unavailable.');
+            console.error('Download error:', err);
         }
-
-        const link = document.createElement('a');
-        link.href = fullUrl;
-        const formattedDate = bookingDate.split('T')[0]; // Format date
-        link.download = `Invoice-${name}-${formattedDate}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } catch (err) {
-        alert('Invoice file not found or unavailable.');
-        console.error('Download error:', err);
-    }
-};
+    };
 
 
     return (
@@ -62,21 +57,21 @@ const handleDownload = async (url, name, bookingDate) => {
 
                 {/* Main content area */}
                 <Col md={9} className="p-4 m-0">
-                    <h2 className="mb-4 text-primary">My Invoices</h2>
+                    <h2 className="mb-4">My Invoices</h2>
 
                     {/* Loading state */}
                     {loading ? (
                         <Spinner animation="border" variant="primary" />
 
-                    // Error state
+                        // Error state
                     ) : error ? (
                         <Alert variant="danger">{error}</Alert>
 
-                    // Empty state
+                        // Empty state
                     ) : invoices.length === 0 ? (
                         <Alert variant="info">No invoices found.</Alert>
 
-                    // Invoices list
+                        // Invoices list
                     ) : (
                         <Row>
                             {invoices.map((invoice, index) => (
@@ -114,7 +109,7 @@ const handleDownload = async (url, name, bookingDate) => {
                                                             className="d-flex align-items-center gap-2"
                                                         >
                                                             <BsDownload />
-                                                            Download Invoice
+                                                            View or Download Invoice
                                                         </Button>
                                                     ) : (
                                                         <span className="text-muted">No invoice available</span>

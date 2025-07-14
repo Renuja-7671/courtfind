@@ -1,19 +1,89 @@
-import React from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Card, Button, Spinner } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { generateInvoice, downloadInvoice, getOwnerIdForBooking, updatePaymentsTable } from "../services/bookingService";
 
 const PaymentSuccess = () => {
+  const { bookingId, total } = useParams();
+  const [invoiceFilename, setInvoiceFilename] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    const fetchInvoice = async () => {
+      try {
+        const url = await generateInvoice(bookingId);
+        // Assuming your backend returns something like "/uploads/invoices/invoice_61.pdf"
+        const filename = url.split("/").pop(); // Extract just "invoice_61.pdf"
+        setInvoiceFilename(filename);
+      } catch (err) {
+        console.error("Error generating invoice:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInvoice();
+  }, [bookingId]);
+
+  useEffect(() => {
+    const updatePaymentStatus = async () => {
+      try {
+        const ownerId = await getOwnerIdForBooking(bookingId);
+        const numericTotal = parseFloat(total);
+        console.log("Owner ID:", ownerId, "Total Amount:", numericTotal);
+        const response = await updatePaymentsTable(bookingId, ownerId, numericTotal);
+        console.log("Payment status updated:", response);
+      } catch (err) {
+        console.error("Error updating payment status:", err);
+      }
+    }
+    updatePaymentStatus();
+  }, [bookingId, total]);
+
+  const handleDownload = async () => {
+    try {
+      setDownloading(true);
+      const blobUrl = await downloadInvoice(invoiceFilename);
+
+      // Create a temporary anchor tag and trigger download
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `CourtFind-Invoice-${bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Error downloading invoice:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <Container className="py-5 text-center">
       <Row className="justify-content-center">
         <Col md={6}>
           <Card className="shadow p-4">
-        
             <Card.Body>
               <h3 className="text-success">Payment Successful!</h3>
               <p className="text-muted">Your booking has been confirmed. Thank you for using our service.</p>
-              <Button variant="success" href="/player-dashboard">
-                Go to Dashboard
-              </Button>
+
+              {loading ? (
+                <Spinner animation="border" />
+              ) : (
+                invoiceFilename && (
+                  <Button variant="outline-primary" onClick={handleDownload} disabled={downloading}>
+                    {downloading ? "Downloading..." : "Download Invoice"}
+                  </Button>
+                )
+              )}
+
+              <div className="mt-3">
+                <Button variant="success" href="/player-dashboard">
+                  Go to Dashboard
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>

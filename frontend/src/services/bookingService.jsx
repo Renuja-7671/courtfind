@@ -27,3 +27,52 @@ export const getBookingTimesByCourtId = async (courtId, date) => {
     return { success: false, error: error.response?.data?.error || "Unknown error" };
   }
 };
+
+export const generateInvoice = async (bookingId) => {
+  const res = await api.get(`/player/generate-invoice/${bookingId}`);
+  return res.data.invoiceUrl;
+};
+
+export const downloadInvoice = async (filename) => {
+  try {
+    const response = await api.get(`/player/download-invoice/${filename}`, {
+      responseType: 'blob', // Important for downloading files
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    return url;
+  } catch (error) {
+    console.error("Failed to download invoice:", error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+};
+
+export const getOwnerIdForBooking = async (bookingId) => {
+  try {
+    const response = await api.get(`/player/get-owner-id/${bookingId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      }});
+    return response.data.ownerId;
+  } catch (error) {
+    console.error("Failed to fetch owner ID for booking:", error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+};
+
+export const updatePaymentsTable = async (bookingId, ownerId, total) => {
+  try {
+    const response = await api.post('/player/update-payments-table', {
+      bookingId,
+      ownerId,
+      total
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update payments table:", error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+}

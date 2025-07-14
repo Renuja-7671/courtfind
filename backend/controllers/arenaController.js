@@ -10,7 +10,7 @@ exports.getAllArenas = async (req, res) => {
             if (results.length === 0) {
                 return res.status(404).json({ message: "No arenas found" });
             }
-            //console.log("All arenas:", results); // Debugging line
+            console.log("All arenas:", results); // Debugging line
             res.json(results);
         });
     } catch (err) {
