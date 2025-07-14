@@ -40,7 +40,7 @@ const PlayerDashboard = () => {
                     <Sidebar />
                 </Col>
                 <Col className="p-4 m-0"  md={9}>
-            <h2 className="mb-4 text-primary">My Bookings</h2>
+            <h2 className="mb-4">My Bookings</h2>
             {loading ? (
                 <Spinner animation="border" variant="primary" />
             ) : error ? (

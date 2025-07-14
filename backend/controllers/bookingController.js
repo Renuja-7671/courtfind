@@ -1,4 +1,6 @@
 const PlayerBooking = require("../models/bookingModel");
+const invoiceService = require("../services/invoiceService");
+const path = require("path");
 
 exports.setABooking = async (req, res) => {
     const { courtId, booking_date, start_time, end_time, total_price, payment_status, status } = req.body;
@@ -83,4 +85,6 @@ exports.getBookingDetailsForPayment = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
+
+

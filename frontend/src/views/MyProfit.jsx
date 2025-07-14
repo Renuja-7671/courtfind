@@ -190,12 +190,12 @@ const MyProfitPage = () => {
   }, [token]);
 
   return (
-    <Container className="min-vh-100 d-flex flex-column align-items-center" fluid>
-      <Row className="w-100">
+    <Container className="min-vh-100 d-flex flex-column align-items-center" >
+      <Row className="w-100" text-center>
         <Col className="p-4 m-0" md={3}>
           <Sidebar />
         </Col>
-        <Col md={8} className="p-4 m-0 d-flex flex-column justify-content-center align-items-center">
+        <Col md={9} className="p-4 m-0 d-flex flex-column justify-content-center align-items-center">
           <div className="w-100" style={{ maxWidth: "1200px", backgroundColor: '#f8f9fa' }}>
             
             {/* Header */}
