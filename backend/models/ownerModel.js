@@ -87,10 +87,10 @@ const OwnerDashboard = {
     }
 },
 
-    updateCancelStatus : async (bookingId) => {
+    updateCancelStatus : async (bookingId, reason) => {
         try {
-            const queryStr = `UPDATE bookings SET status = 'Cancelled' WHERE bookingId =?`;
-            const [rows] = await query(queryStr, [bookingId]);
+            const queryStr = `UPDATE bookings SET status = 'Cancelled', cancellationReason = ? WHERE bookingId =?`;
+            const [rows] = await query(queryStr, [reason, bookingId]);
             return rows;
         } catch (err) {
             throw err;
@@ -133,6 +133,7 @@ fetchCourtsByArenaId: async (arenaId) => {
 },
 
 fetchFilteredArenaBookings: async (ownerId, arenaId, courtName) => {
+    console.log("Fetching filtered arena bookings with parameters:", { ownerId, arenaId, courtName });
     try {
         let queryStr = `
             SELECT b.bookingId, c.name AS court_name, b.booking_date, b.start_time, b.end_time,
@@ -153,9 +154,6 @@ fetchFilteredArenaBookings: async (ownerId, arenaId, courtName) => {
         }
 
         queryStr += ` ORDER BY b.booking_date DESC, b.start_time ASC`;
-        
-        console.log("Query Params:", params);
-        console.log("Final Query:", queryStr);
 
         const [rows] = await query(queryStr, params);
         return rows;

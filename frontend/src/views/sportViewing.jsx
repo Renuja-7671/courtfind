@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row, Spinner, Form, Carousel } from 'react-bootstrap';
 import { getCourtsForBooking } from '../services/courtService';
 import { createBooking, getBookingTimesByCourtId } from '../services/bookingService';
-import { getReviewStats, getAverageRatingByCourt } from '../services/playerAuthService';
+import { gerReviewStatsWithoutAuth, getAverageRatingByCourtWithoutAuth } from '../services/playerAuthService';
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaPhoneAlt, FaStar } from 'react-icons/fa';
 import { MdOutlineSportsScore } from "react-icons/md";
@@ -87,22 +87,26 @@ const ViewingPage = () => {
       } finally {
         setLoading(false);
       }
-    };
-// Fetch review statistics and average rating
+    };    
+
+    fetchCourt();
+  }, [courtId,authToken]);
+
+  useEffect(() => {
     const fetchReviewData = async () => {
       try {
-        const statsData = await getReviewStats(courtId,authToken);
-        setReviewStats(statsData);
-        const avgData = await getAverageRatingByCourt(courtId,authToken);
+        const statsData = await gerReviewStatsWithoutAuth(courtId);
+        console.log("Review stats fetched:", statsData);
+        setReviewStats(statsData.total_reviews || 0);
+        const avgData = await getAverageRatingByCourtWithoutAuth(courtId);
+        console.log("Average rating fetched:", avgData);
         setAverageRating(avgData.averageRating || 0.0);
       } catch (error) {
         console.error("Error fetching review data:", error);
       }
     };
-
-    fetchCourt();
-    if (authToken) fetchReviewData();
-  }, [courtId,authToken]);
+    fetchReviewData();
+  }, [courtId]);
 
   // Handle booking submission
   const handleBooking = async () => {
@@ -242,18 +246,16 @@ const handleViewReviews = () => {
           <p><FaMapMarkerAlt /><strong> Address:</strong> {court.city}, {court.country}</p>
           <p><FaPhoneAlt /><strong> Call Us: </strong> {court.mobile}</p>
           <div>
-            <h4>{averageRating}<FaStar className="text-warning" /></h4>
-           <Card.Text className="mt-2">
-                  <span
-                    style={{
+            <h2>{averageRating}<FaStar className="text-warning" /></h2>
+            <h5>Total Reviews: {reviewStats.total_reviews}</h5>
+            <Button variant="link" style={{
                       cursor: isLoggedInPlayer() ? 'pointer' : 'not-allowed',
                       color: isLoggedInPlayer() ? '#007bff' : '#6c757d',
                     }}
-                    onClick={handleViewReviews}
-                  >
-                    {reviewStats} Reviews
-                  </span>
-                </Card.Text> 
+                    onClick={handleViewReviews} className="text-decoration-none">
+            <FaStar />
+              {isLoggedInPlayer() ? ' Add or View Reviews' : ' Login to Add or View Reviews'}
+            </Button>
           </div>
           </Card.Body>
           

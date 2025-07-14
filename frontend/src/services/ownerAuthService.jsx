@@ -76,8 +76,8 @@ export const getBookings = async (token) => {
     return response.data;
 };
 
-export const updateBookingStatus = async (token, bookingId) => {
-    const response = await api.put(`/owner/arena-bookings/${bookingId}`, {}, {
+export const updateBookingStatus = async (token, bookingId, cancellationReason) => {
+    const response = await api.put(`/owner/arena-bookings/${bookingId}`, { reason: cancellationReason }, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -121,7 +121,7 @@ export const getFilteredArenaBookings = async (token, filters) => {
         });
         console.log("Filter parameters:", queryParams.toString());
 
-        const response = await api.get(`/owner/arena-bookings/filter?${queryParams.toString()}`, {
+        const response = await api.get(`/owner/arena-bookings/filter/${arenaId}/${courtName}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
