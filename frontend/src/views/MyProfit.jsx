@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Card, Dropdown, Table, Button, Tabs, Tab, Row, Col } from 'react-bootstrap';
 import Sidebar from "../components/ownerSidebar";
 import { Line } from 'react-chartjs-2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import {
   getTotalRevenueService,
@@ -127,6 +129,26 @@ const MyProfitPage = () => {
       intersect: false
     }
   };
+
+  const generatePaymentPDF = (payment) => {
+  const doc = new jsPDF();
+
+  doc.text("Payment Receipt", 14, 15);
+
+  doc.autoTable({
+    startY: 25,
+    head: [['Field', 'Value']],
+    body: [
+      ['Payment ID', payment.paymentId],
+      ['Description', payment.payment_description],
+      ['Date', new Date(payment.date).toLocaleDateString('en-LK')],
+      ['Amount (LKR)', `LKR ${payment.amount.toLocaleString('en-LK')}`],
+    ]
+  });
+
+  doc.save(`Payment_${payment.paymentId}.pdf`);
+};
+
 
   // Fetch charts, transactions, payments, total revenue
   useEffect(() => {
@@ -365,7 +387,11 @@ const MyProfitPage = () => {
                               {payment.amount.toLocaleString('en-LK', { style: 'currency', currency: 'LKR' })}
                             </td>
                             <td>
-                              <FaDownload style={{ cursor: 'pointer', color: '#007bff' }} title="Download Receipt" />
+                          <FaDownload
+                            style={{ cursor: 'pointer', color: '#007bff' }}
+                            title="Download Receipt"
+                            onClick={() => generatePaymentPDF(payment)}
+                          />
                             </td>
                           </tr>
                         ))}
