@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Card, Dropdown, Table, Button, Tabs, Tab, Row, Col } from 'react-bootstrap';
 import Sidebar from "../components/ownerSidebar";
 import { Line } from 'react-chartjs-2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import {
   getTotalRevenueService,
@@ -12,6 +14,7 @@ import {
   getCurrentMonthRevenueService
 } from '../services/ownerAuthService';
 import { FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -27,6 +30,7 @@ const MyProfitPage = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [showCombinedLine, setShowCombinedLine] = useState(false);
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   const years = Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i);
@@ -125,6 +129,26 @@ const MyProfitPage = () => {
       intersect: false
     }
   };
+
+  const generatePaymentPDF = (payment) => {
+  const doc = new jsPDF();
+
+  doc.text("Payment Receipt", 14, 15);
+
+  doc.autoTable({
+    startY: 25,
+    head: [['Field', 'Value']],
+    body: [
+      ['Payment ID', payment.paymentId],
+      ['Description', payment.payment_description],
+      ['Date', new Date(payment.date).toLocaleDateString('en-LK')],
+      ['Amount (LKR)', `LKR ${payment.amount.toLocaleString('en-LK')}`],
+    ]
+  });
+
+  doc.save(`Payment_${payment.paymentId}.pdf`);
+};
+
 
   // Fetch charts, transactions, payments, total revenue
   useEffect(() => {
@@ -279,6 +303,17 @@ const MyProfitPage = () => {
                         </div>
                       </Tab>
                     </Tabs>
+
+                    {/* Add button here */}
+                    <div className="d-flex justify-content-end mt-3">
+                      <Button
+                        variant="primary"
+                        onClick={() => navigate('/courtwise-profit')}
+                      >
+                        Switch to Detailed View
+                      </Button>
+                    </div>
+
                   </Card.Body>
                 </Card>
               </Col>
@@ -352,7 +387,11 @@ const MyProfitPage = () => {
                               {payment.amount.toLocaleString('en-LK', { style: 'currency', currency: 'LKR' })}
                             </td>
                             <td>
-                              <FaDownload style={{ cursor: 'pointer', color: '#007bff' }} title="Download Receipt" />
+                          <FaDownload
+                            style={{ cursor: 'pointer', color: '#007bff' }}
+                            title="Download Receipt"
+                            onClick={() => generatePaymentPDF(payment)}
+                          />
                             </td>
                           </tr>
                         ))}

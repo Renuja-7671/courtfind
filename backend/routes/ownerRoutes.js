@@ -35,4 +35,9 @@ router.get("/my-profit/payment-history", authenticateUser, authorizeRole(["Owner
 router.get("/my-profit/transactions", authenticateUser, authorizeRole(["Owner"]), ownerController.getAllTransactions);
 router.get('/my-profit/current-month-revenue', authenticateUser, authorizeRole(["Owner"]),ownerController.getCurrentMonthRevenue);
 
+//Courtwise Profit Page Routes
+router.get("/arenas", authenticateUser, authorizeRole(["Owner"]), ownerController.getOwnerArenas);
+router.get("/arenas/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.getArenaDetails);
+router.get('/arenas/:arenaId/yearly-chart', ownerController.getArenaCourtYearlyData);
+
 module.exports = router;
