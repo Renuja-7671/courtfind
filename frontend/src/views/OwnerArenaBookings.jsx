@@ -15,6 +15,10 @@ const OwnerArenaBookings = () => {
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showContactModal, setShowContactModal] = useState(false);
+    const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
+    const [cancellationReason, setCancellationReason] = useState("");
+    const [bookingToCancel, setBookingToCancel] = useState(null);
+
     const token = localStorage.getItem("authToken");
 
     useEffect(() => {
@@ -100,20 +104,33 @@ const OwnerArenaBookings = () => {
     };
 
     const handleCancelBooking = async (bookingId) => {
-        if (!window.confirm("Are you sure you want to cancel this booking?")) return;
+        setBookingToCancel(bookingId);
+        setShowCancelReasonModal(true);
+    };
+
+    const submitCancellation = async () => {
+        if (!cancellationReason.trim()) {
+            alert("Please provide a reason for cancellation.");
+            return;
+        }
 
         try {
-            await updateBookingStatus(token, bookingId);
+            await updateBookingStatus(token, bookingToCancel, cancellationReason);
             const updatedBookings = bookings.map((b) =>
-                b.bookingId === bookingId ? { ...b, status: "Cancelled" } : b
+                b.bookingId === bookingToCancel
+                    ? { ...b, status: "Cancelled", cancellationReason }
+                    : b
             );
             setBookings(updatedBookings);
+            setShowCancelReasonModal(false);
+            setCancellationReason("");
             alert("Booking cancelled successfully.");
         } catch (error) {
             console.error("Cancellation failed:", error);
             alert("Failed to cancel booking.");
         }
     };
+
 
     return (
         <Container className="min-vh-100 d-flex flex-column  align-items-center">
@@ -244,13 +261,19 @@ const OwnerArenaBookings = () => {
                             <Modal.Body>
                                 <p><strong>Booking ID:</strong> {selectedBooking.bookingId}</p>
                                 <p><strong>Court Name:</strong> {selectedBooking.court_name}</p>
-                                <p><strong>Booking Date:</strong> {selectedBooking.booking_date}</p>
+                                <p><strong>Booking Date:</strong> {selectedBooking.booking_date.split('T')[0]}</p>
                                 <p><strong>Time:</strong> {selectedBooking.start_time} - {selectedBooking.end_time}</p>
-                                <p><strong>Status:</strong> 
+                                <p><strong>Status:</strong>
                                     <span style={{ color: selectedBooking.status === 'Cancelled' ? 'red' : 'black' }}>
                                         {selectedBooking.status}
                                     </span>
                                 </p>
+
+                                    {selectedBooking.status === 'Cancelled' && selectedBooking.cancellationReason && (
+                                    <p className="text-danger">
+                                        <strong>Cancellation Reason:</strong> {selectedBooking.cancellationReason}
+                                    </p>
+                                    )}
                                 <p><strong>Payment Status:</strong> {selectedBooking.payment_status}</p>
                                 <p><strong>Total Price:</strong> Rs. {selectedBooking.total_price}</p>
                             </Modal.Body>
@@ -277,6 +300,30 @@ const OwnerArenaBookings = () => {
                             </Modal.Footer>
                         </Modal>
                     )}
+
+                    {/* Cancel Reason Modal */}
+                    <Modal show={showCancelReasonModal} onHide={() => setShowCancelReasonModal(false)} centered>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Reason for Cancellation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form.Group>
+                                <Form.Label>Provide a reason for cancelling this booking:</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={4}
+                                    value={cancellationReason}
+                                    onChange={(e) => setCancellationReason(e.target.value)}
+                                    placeholder="E.g., Court maintenance issue, double booking, etc."
+                                />
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => setShowCancelReasonModal(false)}>Close</Button>
+                            <Button variant="danger" onClick={submitCancellation}>Confirm Cancel</Button>
+                        </Modal.Footer>
+                    </Modal>
+
                 </Col>
             </Row>
         </Container>

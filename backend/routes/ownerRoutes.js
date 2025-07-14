@@ -24,7 +24,7 @@ router.get('/arena-bookings', authenticateUser, authorizeRole(["Owner"]), ownerC
 router.put("/arena-bookings/:bookingId", authenticateUser, authorizeRole(["Owner"]), ownerController.updateCancelStatus);
 router.get("/arena-bookings/allArenas", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchArenasOfOwner);
 router.get("/arena-bookings/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchSelectedArenaBookings);
-router.get("/arena-bookings/filter", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchFilteredArenaBookings);
+router.get("/arena-bookings/filter/:arenaId/:courtName", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchFilteredArenaBookings);
 router.get("/arena-bookings/courts/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchCourtsByArenaId);
 
 //My Profit Dashboard Routes

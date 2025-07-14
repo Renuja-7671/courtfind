@@ -231,8 +231,9 @@ exports.fetchArenasOfOwner = async (req, res) => {
 exports.updateCancelStatus = async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
-        console.log('bookingId :', bookingId);
-        const updateBookingStatus = await OwnerDashboard.updateCancelStatus(bookingId);
+        const { reason } = req.body;
+        
+        const updateBookingStatus = await OwnerDashboard.updateCancelStatus(bookingId, reason);
         console.log("booking status : ", updateBookingStatus);
         res.json(updateBookingStatus);
     } catch (error) {
@@ -256,23 +257,11 @@ exports.fetchCourtsByArenaId = async (req, res) => {
 exports.fetchFilteredArenaBookings = async (req, res) => {
   try {
     const ownerId = req.user.userId;
-    console.log("Owner ID IN THIS FUNCTION:", ownerId);
-    let { arenaId, courtName } = req.query;
+    
+    const { arenaId, courtName } = req.params;
+    //console.log("Filter parameters:", { arenaId, courtName });
 
-    // Convert string to int
-    arenaId = parseInt(arenaId);
-
-    if (courtName) {
-    courtName = courtName.trim();
-    }
-
-
-    // If courtName is "all" or empty, treat it as null
-    if (!courtName || courtName.toLowerCase() === "all") {
-      courtName = null;
-    }
-
-    console.log("Filtering bookings for:", { ownerId, arenaId, courtName });
+    //console.log("Filtering bookings for:", { ownerId, arenaId, courtName });
 
     const bookings = await OwnerDashboard.fetchFilteredArenaBookings(
       ownerId,

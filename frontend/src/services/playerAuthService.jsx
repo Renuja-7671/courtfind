@@ -133,3 +133,23 @@ export const getReviewsByCourt = async (courtId, token) => {
     throw error;
   }
 };
+
+export const gerReviewStatsWithoutAuth = async (courtId) => {
+  try {
+    const response = await api.get(`/player/reviewsNoAuth/${courtId}/stats`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching review stats without auth:', error);
+    throw error;
+  }
+};
+
+export const getAverageRatingByCourtWithoutAuth = async (courtId) => {
+  try {
+    const response = await api.get(`/player/reviewsNoAuth/${courtId}/average`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching average rating without auth:', error);
+    throw error;
+  }
+}

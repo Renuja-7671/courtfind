@@ -33,5 +33,7 @@ router.get("/generate-invoice/:bookingId", playerInvoiceController.handleInvoice
 router.get("/download-invoice/:filename", playerInvoiceController.downloadInvoice);
 router.get("/get-owner-id/:bookingId", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.getOwnerIdForBooking);
 router.post("/update-payments-table", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.updatePaymentsTable);
+router.get("/reviewsNoAuth/:courtId/stats", playerReviewController.getReviewStats);
+router.get("/reviewsNoAuth/:courtId/average", playerReviewController.getAverageRatingByCourtId);
 
 module.exports = router;
