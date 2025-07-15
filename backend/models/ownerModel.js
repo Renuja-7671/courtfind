@@ -87,10 +87,10 @@ const OwnerDashboard = {
     }
 },
 
-    updateCancelStatus : async (bookingId) => {
+    updateCancelStatus : async (bookingId, reason) => {
         try {
-            const queryStr = `UPDATE bookings SET status = 'Cancelled' WHERE bookingId =?`;
-            const [rows] = await query(queryStr, [bookingId]);
+            const queryStr = `UPDATE bookings SET status = 'Cancelled', cancellationReason = ? WHERE bookingId =?`;
+            const [rows] = await query(queryStr, [reason, bookingId]);
             return rows;
         } catch (err) {
             throw err;
@@ -124,15 +124,16 @@ fetchArenasOfOwner : async (ownerId) => {
 
 fetchCourtsByArenaId: async (arenaId) => {
     try {
-        const query = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
-        const [rows] = await query(query, [arenaId]) ;
+        const queryStr = `SELECT courtId, name FROM courts WHERE arenaId = ?`;
+        const [rows] = await query(queryStr, [arenaId]) ;
         return rows ;
         } catch (err) {
             throw err ;
             }
 },
 
-fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => {
+fetchFilteredArenaBookings: async (ownerId, arenaId, courtName) => {
+    console.log("Fetching filtered arena bookings with parameters:", { ownerId, arenaId, courtName });
     try {
         let queryStr = `
             SELECT b.bookingId, c.name AS court_name, b.booking_date, b.start_time, b.end_time,
@@ -146,11 +147,6 @@ fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => 
         `;
 
         const params = [ownerId, arenaId];
-
-        if (bookingDate) {
-            queryStr += ` AND DATE(b.booking_date) = ?`;
-            params.push(bookingDate);
-        }
 
         if (courtName) {
             queryStr += ` AND c.name = ?`;
@@ -166,7 +162,322 @@ fetchFilteredArenaBookings: async (ownerId, arenaId, bookingDate, courtName) => 
     }
 },
 
-}
+// FOR MY PROFIT DASHBOARD
+
+    // 1. Total Revenue Function
+    fetchTotalRevenue: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT SUM(p.amount) AS total_revenue
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                WHERE b.ownerId = ?
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows[0].total_revenue || 0;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Revenue for current month
+    fetchCurrentMonthRevenue: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT SUM(p.amount) AS current_month_revenue
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                WHERE b.ownerId = ?
+                AND MONTH(p.paid_at) = MONTH(CURRENT_DATE())
+                AND YEAR(p.paid_at) = YEAR(CURRENT_DATE())
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows[0].current_month_revenue || 0;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    //2. Yearly Chart Data Function
+    fetchYearlyChartData: async (ownerId, year = new Date().getFullYear()) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    a.name AS arena_name,
+                    MONTH(p.paid_at) AS month,
+                    SUM(p.amount) AS total
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                JOIN arenas a ON b.arenaId = a.arenaId
+                WHERE b.ownerId = ? AND YEAR(p.paid_at) = ?
+                GROUP BY a.arenaId, a.name, MONTH(p.paid_at)
+                ORDER BY a.name, MONTH(p.paid_at)
+            `;
+            const [rows] = await query(queryStr, [ownerId, year]);
+
+            const arenaNames = [...new Set(rows.map(row => row.arena_name))];
+
+            const chartData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: []
+            };
+
+            arenaNames.forEach(arenaName => {
+                const arenaData = Array(12).fill(0);
+                rows.forEach(row => {
+                    if (row.arena_name === arenaName) {
+                        arenaData[row.month - 1] = row.total;
+                    }
+                });
+
+                chartData.datasets.push({
+                    label: arenaName,
+                    data: arenaData
+                });
+            });
+
+            return chartData;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+
+    // 3. Monthly Chart Data Function
+// Updated fetchMonthlyChartData function in ownerModel.js
+fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = new Date().getMonth() + 1) => {
+    try {
+        const queryStr = `
+        SELECT 
+            a.name AS arena_name,
+            DAY(p.paid_at) AS day,
+            SUM(p.amount) AS total
+        FROM payments p
+        JOIN bookings b ON p.bookingId = b.bookingId
+        JOIN arenas a ON b.arenaId = a.arenaId
+        WHERE b.ownerId = ? AND YEAR(p.paid_at) = ? AND MONTH(p.paid_at) = ? 
+        GROUP BY a.arenaId, a.name, DAY(p.paid_at)
+        ORDER BY a.name, DAY(p.paid_at)
+        `;
+        const [rows] = await query(queryStr, [ownerId, year, month]);
+        console.log("Getting data for:", ownerId, year, month);
+        console.log("Query results:", rows); // Debug log
+        
+        // Clear previous state by resetting chartData on every call
+        
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const dayLabels = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString());
+
+        // Initialize empty chart data
+        const chartData = {
+            labels: dayLabels,
+            datasets: []
+        };
+
+        // If no data found, return empty chart
+        if (!rows || rows.length === 0) {
+            console.log("No data found for the selected month");
+            return chartData;
+        }
+
+        const arenaNames = [...new Set(rows.map(row => row.arena_name))];
+
+        arenaNames.forEach(arenaName => {
+            const arenaData = Array(daysInMonth).fill(0);
+            rows.forEach(row => {
+                if (row.arena_name === arenaName) {
+                    arenaData[row.day - 1] = row.total;
+                }
+            });
+
+            chartData.datasets.push({
+                label: arenaName,
+                data: arenaData
+            });
+        });
+
+        return chartData;
+    } catch (err) {
+        throw err;
+    }
+},
+    fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = new Date().getMonth() + 1) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    a.name AS arena_name,
+                    DAY(p.paid_at) AS day,
+                    SUM(p.amount) AS total
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                JOIN arenas a ON b.arenaId = a.arenaId
+                WHERE b.ownerId = ? AND YEAR(p.paid_at) = ?
+                GROUP BY a.arenaId, a.name, DAY(p.paid_at)
+                ORDER BY a.name, DAY(p.paid_at)
+            `;
+            const [rows] = await query(queryStr, [ownerId, year]);
+
+            // Get unique arena names
+            const arenaNames = [...new Set(rows.map(row => row.arena_name))];
+            
+            // Get days in the specified year (assuming current month or you can add month parameter)
+            const daysInMonth = new Date(year, new Date().getMonth() + 1, 0).getDate();
+            const dayLabels = Array.from({length: daysInMonth}, (_, i) => (i + 1).toString());
+            
+            // Prepare data structure
+            const chartData = {
+                labels: dayLabels,
+                datasets: []
+            };
+
+            // Create dataset for each arena
+            arenaNames.forEach(arenaName => {
+                const arenaData = Array(daysInMonth).fill(0);
+                rows.forEach(row => {
+                    if (row.arena_name === arenaName) {
+                        arenaData[row.day - 1] = row.total;
+                    }
+                });
+                
+                chartData.datasets.push({
+                    label: arenaName,
+                    data: arenaData
+                });
+            });
+
+            return chartData;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // 4. All Transactions Function
+    fetchAllTransactions: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    b.bookingId,
+                    CONCAT(u.firstName, ' ', u.lastName) AS player_name,
+                    DATE(p.paid_at) AS date,
+                    p.amount
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                JOIN users u ON b.playerId = u.userId
+                WHERE b.ownerId = ?
+                ORDER BY p.paid_at DESC
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // 5. Payment History for Profit Dashboard
+    fetchPaymentHistoryForMyProfit: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    p.paymentId,
+                    p.paymentDesc AS payment_description,
+                    DATE(p.paid_at) AS date,
+                    p.amount
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                WHERE b.ownerId = ?
+                ORDER BY p.paid_at DESC
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    //For courtwise Profit Page
+    // Get all arenas for a specific owner
+    fetchOwnerArenas: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT arenaId, name, city, country 
+                FROM arenas 
+                WHERE owner_id = ?
+                ORDER BY name ASC
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Get arena details by ID
+    fetchArenaDetails: async (arenaId) => {
+        try {
+            const queryStr = `
+                SELECT arenaId, name, city, country, description
+                FROM arenas 
+                WHERE arenaId = ?
+            `;
+            const [rows] = await query(queryStr, [arenaId]);
+            return rows[0] || null;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Get yearly chart data by courts for a specific arena
+    fetchArenaCourtYearlyData: async (arenaId, year = new Date().getFullYear()) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    c.name AS court_name,
+                    MONTH(p.paid_at) AS month,
+                    SUM(p.amount) AS total
+                FROM payments p
+                JOIN bookings b ON p.bookingId = b.bookingId
+                JOIN courts c ON b.courtId = c.courtId
+                WHERE c.arenaId = ? AND YEAR(p.paid_at) = ?
+                GROUP BY c.courtId, c.name, MONTH(p.paid_at)
+                ORDER BY c.name, MONTH(p.paid_at)
+            `;
+            const [rows] = await query(queryStr, [arenaId, year]);
+
+            // Get unique court names
+            const courtNames = [...new Set(rows.map(row => row.court_name))];
+
+            const chartData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: []
+            };
+
+            // If no data, return empty chart
+            if (!rows || rows.length === 0) {
+                return chartData;
+            }
+
+            // Create dataset for each court
+            courtNames.forEach(courtName => {
+                const courtData = Array(12).fill(0);
+                rows.forEach(row => {
+                    if (row.court_name === courtName) {
+                        courtData[row.month - 1] = row.total;
+                    }
+                });
+
+                chartData.datasets.push({
+                    label: courtName,
+                    data: courtData
+                });
+            });
+
+            return chartData;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    }
 
 
 

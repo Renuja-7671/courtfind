@@ -24,7 +24,20 @@ router.get('/arena-bookings', authenticateUser, authorizeRole(["Owner"]), ownerC
 router.put("/arena-bookings/:bookingId", authenticateUser, authorizeRole(["Owner"]), ownerController.updateCancelStatus);
 router.get("/arena-bookings/allArenas", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchArenasOfOwner);
 router.get("/arena-bookings/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchSelectedArenaBookings);
-router.get("/arena-bookings/filter", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchFilteredArenaBookings);
+router.get("/arena-bookings/filter/:arenaId/:courtName", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchFilteredArenaBookings);
 router.get("/arena-bookings/courts/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.fetchCourtsByArenaId);
+
+//My Profit Dashboard Routes
+router.get("/my-profit/total-revenue", authenticateUser, authorizeRole(["Owner"]), ownerController.getTotalRevenue);
+router.get("/my-profit/yearly-chart", authenticateUser, authorizeRole(["Owner"]), ownerController.getYearlyChartData);
+router.get("/my-profit/monthly-chart", authenticateUser, authorizeRole(["Owner"]), ownerController.getMonthlyChartData);
+router.get("/my-profit/payment-history", authenticateUser, authorizeRole(["Owner"]), ownerController.getPaymentHistoryForProfit);
+router.get("/my-profit/transactions", authenticateUser, authorizeRole(["Owner"]), ownerController.getAllTransactions);
+router.get('/my-profit/current-month-revenue', authenticateUser, authorizeRole(["Owner"]),ownerController.getCurrentMonthRevenue);
+
+//Courtwise Profit Page Routes
+router.get("/arenas", authenticateUser, authorizeRole(["Owner"]), ownerController.getOwnerArenas);
+router.get("/arenas/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.getArenaDetails);
+router.get('/arenas/:arenaId/yearly-chart', ownerController.getArenaCourtYearlyData);
 
 module.exports = router;

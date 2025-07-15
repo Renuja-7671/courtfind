@@ -1,4 +1,6 @@
 const PlayerBooking = require("../models/bookingModel");
+const invoiceService = require("../services/invoiceService");
+const path = require("path");
 
 exports.setABooking = async (req, res) => {
     const { courtId, booking_date, start_time, end_time, total_price, payment_status, status } = req.body;
@@ -30,6 +32,7 @@ exports.setABooking = async (req, res) => {
                 if (!bookingId) {
                     return res.status(404).json({ error: "No bookings found for this player" });
                 }
+                console.log("Booking ID returned:", bookingId); // Debugging line
                 res.status(201).json({ bookingId: bookingId }); // Return the booking ID
                 //console.log("Booking ID returned:", bookingId); // Debugging line
             });
@@ -82,4 +85,6 @@ exports.getBookingDetailsForPayment = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
+
+

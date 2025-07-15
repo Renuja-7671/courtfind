@@ -35,6 +35,8 @@ import AddArena from "./views/AddArenas";
 import AddCourts from "./views/AddCourts";
 import ArenaManagement from "./views/ManageArenas";
 import OwnerArenaBookings from "./views/OwnerArenaBookings";
+import MyProfitPage from "./views/MyProfit";
+import ProfitCourtwise from "./views/MyProfitCourtwise";
 
 // Admin Views
 import AdminDashboard from "./views/AdminDashboard";
@@ -78,8 +80,8 @@ const playerRoutes = [
   { path: "/player-invoices",element: PlayerInvoice }, 
   { path: "/reviews/:courtId", element: ViewReviews },
   { path: "/feedback/:courtId", element: FeedbackPage},
-  { path: "/payment/:total", element: PaymentPage },
-  { path: "/payment-success", element: PaymentSuccess }, 
+  { path: "/payment/:bookingId/:total", element: PaymentPage },
+  { path: "/payment-success/:bookingId/:absoluteAmount", element: PaymentSuccess }, 
   { path: "/payment-cancel", element: PaymentCancel },
 ];
 
@@ -91,6 +93,9 @@ const ownerRoutes = [
   { path: "/add-courts", element: AddCourts },
   { path: "/manage-arenas", element: ArenaManagement },
   { path: "/arena-bookings", element: OwnerArenaBookings },
+  { path: "/my-profit", element: MyProfitPage},
+  { path: "/courtwise-profit", element: ProfitCourtwise},
+
 ];
 
 const adminRoutes = [
