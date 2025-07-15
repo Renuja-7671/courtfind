@@ -279,18 +279,18 @@ exports.deleteOwner = async (req, res) => {
 exports.getUserStats = async (req, res) => {
   try {
     const { search } = req.query;
-    const [totalUsers, totalPlayers, totalOwners, averageRevenue] = await Promise.all([
+    const [totalUsers, totalPlayers, totalOwners, totalRevenue] = await Promise.all([
       AdminModel.getTotalUsersCount(search),
       AdminModel.getPlayersCount(search),
       AdminModel.getOwnersCount(search),
-      AdminModel.getAverageRevenue()
+      AdminModel.getTotalRevenue() // Changed from getAverageRevenue
     ]);
     
     res.json({
       totalUsers,      // Total users excluding Admins
       totalPlayers,    // Total players
       totalOwners,     // Total owners
-      averageRevenue   // Average revenue from payments
+      totalRevenue     // Total revenue from revenue table (changed from averageRevenue)
     });
   } catch (error) {
     console.error('Error fetching user stats:', error);
