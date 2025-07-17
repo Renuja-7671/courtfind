@@ -38,3 +38,4 @@ router.get("/reviewsNoAuth/:courtId/average", playerReviewController.getAverageR
 
 
 module.exports = router;
+
