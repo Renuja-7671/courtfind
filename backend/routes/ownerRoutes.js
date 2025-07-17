@@ -41,6 +41,8 @@ router.get('/my-profit/current-month-revenue', authenticateUser, authorizeRole([
 router.get("/arenas", authenticateUser, authorizeRole(["Owner"]), ownerController.getOwnerArenas);
 router.get("/arenas/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.getArenaDetails);
 router.get('/arenas/:arenaId/yearly-chart', ownerController.getArenaCourtYearlyData);
+router.get('/top-courts', authenticateUser, authorizeRole(["Owner"]), ownerController.getTopEarningCourts);
+router.get('/player-activity', authenticateUser, authorizeRole(["Owner"]), ownerController.getPlayerBehaviorAnalysis);
 
 router.get('/activity-summary', authenticateUser, authorizeRole(["Owner"]), loginActivityController.getActivitySummary);
 router.get('/login-times', authenticateUser, authorizeRole(["Owner"]), loginActivityController.getLoginTimes);
