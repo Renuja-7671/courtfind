@@ -400,3 +400,28 @@ exports.getArenaCourtYearlyData = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch chart data' });
     }
 };
+
+//Courtwise Profit's new changes
+// Get Top Earning Courts (Last 3 Months)
+exports.getTopEarningCourts = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const topCourts = await OwnerDashboard.fetchTopEarningCourts(ownerId);
+        res.json(topCourts);
+    } catch (error) {
+        console.error('Error fetching top earning courts:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Analyze Player Behavior (Repeat vs New) - Last 3 Months
+exports.getPlayerBehaviorAnalysis = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const result = await OwnerDashboard.analyzePlayerBehaviorLast3Months(ownerId);
+        res.json(result);
+    } catch (error) {
+        console.error('Error analyzing player behavior:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

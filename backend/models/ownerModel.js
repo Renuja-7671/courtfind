@@ -301,6 +301,7 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
         throw err;
     }
 },
+/*
     fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = new Date().getMonth() + 1) => {
         try {
             const queryStr = `
@@ -350,7 +351,7 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
             throw err;
         }
     },
-
+*/
     // 4. All Transactions Function
     fetchAllTransactions: async (ownerId) => {
         try {
@@ -475,7 +476,72 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
         } catch (err) {
             throw err;
         }
-    }
+    },
+
+    // Courtwise Profit page's new changes
+    // Get Top 3 Highest-Earning Courts in Last 3 Months
+    fetchTopEarningCourts: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    c.name AS court_name,
+                    a.name AS arena_name,
+                    SUM(p.amount) AS total_revenue,
+                    COUNT(b.bookingId) AS booking_count,
+                    ROUND(SUM(p.amount) / COUNT(b.bookingId), 2) AS avg_revenue_per_booking
+                FROM bookings b
+                JOIN payments p ON b.bookingId = p.bookingId
+                JOIN courts c ON b.courtId = c.courtId
+                JOIN arenas a ON c.arenaId = a.arenaId
+                WHERE b.ownerId = ?
+                AND p.paid_at >= CURDATE() - INTERVAL 3 MONTH
+                GROUP BY c.courtId
+                ORDER BY total_revenue DESC
+                LIMIT 3
+            `;
+            const [rows] = await query(queryStr, [ownerId]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // Analyze Player Behavior (Repeat vs New) in Last 3 Months
+    analyzePlayerBehaviorLast3Months: async (ownerId) => {
+        try {
+            const queryStr = `
+                SELECT 
+                    u.userId,
+                    CONCAT(u.firstName, ' ', u.lastName) AS player_name,
+                    COUNT(b.bookingId) AS booking_count,
+                    SUM(p.amount) AS total_paid,
+                    (
+                        SELECT COUNT(*) 
+                        FROM bookings b2
+                        WHERE b2.playerId = b.playerId
+                        AND b2.booking_date < CURDATE() - INTERVAL 3 MONTH
+                        AND b2.ownerId = ?
+                    ) AS previous_bookings
+                FROM bookings b
+                JOIN users u ON b.playerId = u.userId
+                JOIN payments p ON p.bookingId = b.bookingId
+                WHERE b.ownerId = ?
+                AND b.booking_date >= CURDATE() - INTERVAL 3 MONTH
+                GROUP BY u.userId, u.firstName, u.lastName
+            `;
+            const [rows] = await query(queryStr, [ownerId, ownerId]);
+
+            // Add player type flag to each record
+            const result = rows.map(row => ({
+                ...row,
+                player_type: row.previous_bookings > 0 ? "Repeat" : "New"
+            }));
+
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
 
     }
 

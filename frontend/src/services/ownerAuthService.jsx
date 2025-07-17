@@ -204,5 +204,21 @@ export const getArenaCourtYearlyData = async (arenaId, year) => {
     return response.data;
 };
 
+// Fetch top earning courts for last 3 months
+export const fetchTopEarningCourtsLast3Months = async (token) => {
+  const response = await api.get("/owner/top-courts", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+// Fetch player behavior (new/repeat) analysis
+export const fetchPlayerBehaviorAnalysis = async (token) => {
+  const response = await api.get("/owner/player-activity", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
 
 
