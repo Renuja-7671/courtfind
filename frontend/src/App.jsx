@@ -38,6 +38,9 @@ import OwnerArenaBookings from "./views/OwnerArenaBookings";
 import MyProfitPage from "./views/MyProfit";
 import ProfitCourtwise from "./views/MyProfitCourtwise";
 import ownerRequests from "./views/ownerRequests";
+import arenaPaymentPage from "./views/arenaPayments";
+import arenaPaymentSuccess from "./views/arenaPaymentSuccess";
+
 
 
 // Admin Views
@@ -99,6 +102,8 @@ const ownerRoutes = [
   { path: "/my-profit", element: MyProfitPage},
   { path: "/courtwise-profit", element: ProfitCourtwise},
   { path: "/owner-requests", element: ownerRequests },
+  { path: "/arena-payment/:arenaId/:price", element: arenaPaymentPage },
+  { path: "/arenaPayment-success/:arenaId/:price", element: arenaPaymentSuccess },
 
 ];
 

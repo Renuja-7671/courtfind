@@ -9,7 +9,7 @@ const PendingArenasPage = () => {
   const [paymentPendingArenas, setPaymentPendingArenas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [price, setPrice] = useState(null);
+  const [price, setPrice] = useState(null || 0);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
   const [selectedArena, setSelectedArena] = useState(null);
@@ -161,7 +161,7 @@ const PendingArenasPage = () => {
                       </td>
                       <td>
                         {arena.arenaStatus === "Approved" && (
-                          <Button size="sm" variant="primary" href={`/arena-payment/${arena.arenaId}`}>
+                          <Button size="sm" variant="primary" href={`/arena-payment/${arena.arenaId}/${price}`}>
                             Pay Now
                           </Button>
                         )}

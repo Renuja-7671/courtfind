@@ -26,9 +26,9 @@ const ExploreNow = () => {
                     //console.log("Fetching sport for sportId:", sportId); // Debug log
                     const response = await fetch(`http://localhost:8000/common/sport`);
                     const sports = await response.json();
-                    console.log("Sports data:", sports); // Debug log
+                    //console.log("Sports data:", sports); // Debug log
                     updatedSport = sports.find(s => s.id === parseInt(sportId))?.name || "";
-                    console.log("Mapped sport name:", updatedSport); // Debug log
+                    //console.log("Mapped sport name:", updatedSport); // Debug log
                     if (!updatedSport) {
                         console.warn("No sport name found for sportId:", sportId);
                     }

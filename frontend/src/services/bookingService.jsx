@@ -77,3 +77,17 @@ export const updatePaymentsTable = async (bookingId, ownerId, arenaId, total) =>
     throw error; // Propagate the error to be handled by the caller
   }
 }
+
+export const generateInvoiceForArenaAdd = async (arenaId) => {
+  try {
+    const response = await api.get(`/owner/generate-invoice-for-arena-add/${arenaId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      }
+    });
+    return response.data.invoiceUrl;
+  } catch (error) {
+    console.error("Failed to generate invoice for arena add:", error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+};

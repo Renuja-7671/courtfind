@@ -3,12 +3,12 @@ const { addArena } = require("../controllers/ownerController");
 
 const arena={
     getAllArenas: (callback) => {
-        const query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
+        const query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId AND a.paidStatus = 'Paid'";
         db.query(query, callback);
     },
 
     searchArenas: (sport, venue, callback) => {
-        let query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId";
+        let query = "SELECT a.arenaId, a.name AS arenaName, a.city, a.country, a.description, a.image_url, c.name AS courtName, c.courtId, c.sport FROM arenas a, courts c WHERE a.arenaId = c.arenaId AND a.paidStatus = 'Paid'";
         const params = [];
 
         if (sport) {
@@ -36,7 +36,7 @@ const arena={
 
         // Get arenas by owner 
     getArenasByOwner: (ownerId, callback) => {
-    const query = "SELECT arenaId, name FROM arenas WHERE owner_id = ?";
+    const query = "SELECT arenaId, name FROM arenas WHERE owner_id = ? AND paidStatus = 'Paid'";
     db.query(query, [ownerId], callback);
     },
 
@@ -86,7 +86,24 @@ const arena={
                        FROM arenas a
                        WHERE a.owner_id = ? AND a.paidStatus = 'Pending'`;
         db.query(query, [ownerId], callback);
-    }
+    },
+
+    getArenaDetails: (arenaId, callback) => {
+        const query = `SELECT * FROM arenas WHERE arenaId = ?`;
+        db.query(query, [arenaId], callback);
+    },
+
+    markAsPaid: (arenaId, invoiceUrl, callback) => {
+        const query = `UPDATE arenas
+                        SET paidStatus = 'Paid', invoiceUrl = ?
+                        WHERE arenaId = ?;`;
+        db.query(query, [invoiceUrl, arenaId], callback);
+    },
+
+    setPriceForNewArena: (arenaId, price, callback) => {
+        const query = "UPDATE arenas SET amount = ? WHERE arenaId = ?";
+        db.query(query, [price, arenaId], callback);
+    },
     };
 
 module.exports = arena;

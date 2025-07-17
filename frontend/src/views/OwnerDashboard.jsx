@@ -156,7 +156,7 @@ const OwnerDashboard = () => {
                 <Col>
                     <Card>
                         <Card.Body>
-                            <h5>Payment History</h5>
+                            <h5>Payments Performed By Owner</h5>
                             <Table striped bordered>
                                 <thead>
                                 <tr><th>Payment Id</th><th>Description</th><th>Date</th><th>Amount (LKR)</th></tr>
