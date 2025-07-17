@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const OwnerDashboard = require('../models/ownerModel');
+const path = require("path");
+const { generateArenaInvoicePDF } = require("../services/invoiceService");
+const arena = require("../models/arenaModel");
 
 exports.changePassword = async (req, res) => {
     const userId = req.user.userId;
@@ -425,3 +428,64 @@ exports.getPlayerBehaviorAnalysis = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+// Generate Invoice for Arena Addition
+exports.generateArenaInvoice = async (req, res) => {
+  const { arenaId } = req.params;
+  const price = req.query.price; 
+
+
+  arena.setPriceForNewArena(arenaId, price, (err) => {
+    if (err) {
+        console.error("Error setting price for new arena:", err);
+        return res.status(500).json({ message: "Failed to set price for new arena." });
+        }
+
+  arena.getArenaDetails(arenaId, async (err, arenaData) => {
+    if (err || !arenaData || arenaData.length === 0) {
+      return res.status(404).json({ message: "Arena not found" });
+    }
+
+    const arenaDetails = arenaData[0];
+    const invoicePath = `/uploads/invoices/arena_invoice_${arenaId}.pdf`;
+    const absolutePath = path.join(__dirname, "..", invoicePath);
+
+    try {
+      await generateArenaInvoicePDF(arenaDetails, absolutePath);
+
+      arena.markAsPaid(arenaId, invoicePath, (updateErr) => {
+        if (updateErr) {
+          return res.status(500).json({ message: "Failed to update arena" });
+        }
+
+        res.json({ message: "Arena invoice generated", invoiceUrl: invoicePath });
+        console.log("Arena invoice generated:", invoicePath);
+      });
+    } catch (err) {
+      console.error("PDF Generation Error:", err);
+      res.status(500).json({ message: "Error generating invoice" });
+    }
+  });
+});
+};
+
+exports.updatePaymentsTableForArenaAdd = async (req, res) => {
+  const { arenaId, total } = req.body;
+  const ownerId = req.user.userId;
+
+  if (!arenaId || !total) {
+    return res.status(400).json({ message: "Arena ID and total amount are required" });
+  }
+
+  const paymentDesc = `Payment for arena addition: ${arenaId}`;
+  const payment_method = "Stripe";
+
+  try {
+    const response = await OwnerDashboard.updatePaymentsTableForArenaAdd(arenaId, total, ownerId, paymentDesc, payment_method);
+    res.json({ message: "Payment status updated successfully", data: response });
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({ message: "Failed to update payment status", error });
+  }
+}
+

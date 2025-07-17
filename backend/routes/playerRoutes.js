@@ -31,7 +31,7 @@ router.get("/reviews/:courtId/stats", authenticateUser, authorizeRole(["Player"]
 router.get("/reviews/:courtId/average", authenticateUser, authorizeRole(["Player"]), playerReviewController.getAverageRatingByCourtId);
 router.get("/generate-invoice/:bookingId", playerInvoiceController.handleInvoiceGeneration);
 router.get("/download-invoice/:filename", playerInvoiceController.downloadInvoice);
-router.get("/get-owner-id/:bookingId", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.getOwnerIdForBooking);
+router.get("/get-owner-id/:bookingId", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.getOwnerIdAndArenaIdForBooking);
 router.post("/update-payments-table", authenticateUser, authorizeRole(["Player"]), playerInvoiceController.updatePaymentsTable);
 router.get("/reviewsNoAuth/:courtId/stats", playerReviewController.getReviewStats);
 router.get("/reviewsNoAuth/:courtId/average", playerReviewController.getAverageRatingByCourtId);

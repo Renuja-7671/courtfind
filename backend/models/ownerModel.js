@@ -99,7 +99,7 @@ const OwnerDashboard = {
 
 fetchArenasOfOwner : async (ownerId) => {
     try {
-        const queryStr = `SELECT arenaId, name FROM arenas WHERE owner_id = ?` ;
+        const queryStr = `SELECT arenaId, name FROM arenas WHERE owner_id = ? AND paidStatus = 'Paid'`;
         const [rows] = await query(queryStr, [ownerId]) ;
         return rows ;
         } catch (err) {
@@ -402,7 +402,7 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
             const queryStr = `
                 SELECT arenaId, name, city, country 
                 FROM arenas 
-                WHERE owner_id = ?
+                WHERE owner_id = ? AND paidStatus = 'Paid'
                 ORDER BY name ASC
             `;
             const [rows] = await query(queryStr, [ownerId]);
@@ -538,6 +538,19 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
             }));
 
             return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    updatePaymentsTableForArenaAdd: async (arenaId, total, ownerId, paymentDesc, payment_method) => {
+        try {
+            const queryStr = `
+                INSERT INTO payments (arenaId, amount, ownerId, paymentDesc, payment_method)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+            await query(queryStr, [arenaId, total, ownerId, paymentDesc, payment_method]);
+            return { message: "Payment record updated successfully" };
         } catch (err) {
             throw err;
         }

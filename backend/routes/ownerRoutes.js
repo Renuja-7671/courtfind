@@ -48,4 +48,7 @@ router.get('/activity-summary', authenticateUser, authorizeRole(["Owner"]), logi
 router.get('/login-times', authenticateUser, authorizeRole(["Owner"]), loginActivityController.getLoginTimes);
 router.post('/add-login-record', authenticateUser, authorizeRole(["Owner"]), loginActivityController.addLoginRecord);
 
+router.get('/generate-arena-invoice/:arenaId', ownerController.generateArenaInvoice);
+router.post('/update-payments-table-for-arena-add', authenticateUser, authorizeRole(["Owner"]), ownerController.updatePaymentsTableForArenaAdd);
+
 module.exports = router;

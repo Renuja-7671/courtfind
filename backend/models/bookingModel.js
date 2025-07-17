@@ -64,25 +64,31 @@ const PlayerBooking = {
         },
 
     getOwnerIdForBooking: (bookingId, callback) => {
-        const query = "SELECT ownerId FROM bookings WHERE bookingId = ?;";
+        const query = "SELECT ownerId, arenaId FROM bookings WHERE bookingId = ?;";
         db.query(query, [bookingId], (err, results) => {
             if (err) {
                 return callback(err);
             }
             if (results.length > 0) {
-                return callback(null, results[0].ownerId);
+                return callback(null, results[0]);
             } else {
                 return callback(new Error("Booking not found"));
             }
         });
     },
 
-    updatePaymentsTable: (bookingId, paymentDesc, total, payment_method, ownerId, callback) => {
+    updatePaymentsTable: (bookingId, paymentDesc, total, payment_method, ownerId, arenaId, playerId, callback) => {
         const query = `
-            INSERT INTO payments (bookingId, paymentDesc, amount, payment_method, ownerId)
-            VALUES (?, ?, ?, ?, ?);
-        `;
-        db.query(query, [bookingId, paymentDesc, total, payment_method, ownerId], callback);
+      INSERT INTO payments (amount, payment_method, bookingId, arenaId, ownerId, playerId, paymentDesc)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
+    `;
+    db.query(query, [total, payment_method, bookingId, arenaId, ownerId, playerId, paymentDesc], (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return callback(err);
+      }
+      callback(null, results);
+    });
     }
 
     
