@@ -46,24 +46,25 @@ export const downloadInvoice = async (filename) => {
   }
 };
 
-export const getOwnerIdForBooking = async (bookingId) => {
+export const getOwnerIdAndArenaIdForBooking = async (bookingId) => {
   try {
     const response = await api.get(`/player/get-owner-id/${bookingId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       }});
-    return response.data.ownerId;
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch owner ID for booking:", error);
     throw error; // Propagate the error to be handled by the caller
   }
 };
 
-export const updatePaymentsTable = async (bookingId, ownerId, total) => {
+export const updatePaymentsTable = async (bookingId, ownerId, arenaId, total) => {
   try {
     const response = await api.post('/player/update-payments-table', {
       bookingId,
       ownerId,
+      arenaId,
       total
     }, {
       headers: {

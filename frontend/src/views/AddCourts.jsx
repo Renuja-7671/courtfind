@@ -120,7 +120,7 @@ const AddCourts = () => {
       alert("All courts created successfully!");
       setCourts([]);
       resetForm();
-
+      
     // Modified navigation logic
     setTimeout(() => {
       if (arenaId && location.state?.arenaId) {
