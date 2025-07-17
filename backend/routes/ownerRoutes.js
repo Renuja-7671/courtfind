@@ -4,6 +4,8 @@ const ownerController = require("../controllers/ownerController");
 const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
 const { upload } = require("../middleware/uploadMiddleware");
 //const { changePassword } = require('../controllers/ownerController');
+const loginActivityController = require('../controllers/loginActivityController');
+
 
 router.get("/dashboardbcb", authenticateUser, authorizeRole(["Owner"]), ownerController.dashboard);
 router.post("/manage-courts", authenticateUser, authorizeRole(["Owner"]), ownerController.manageCourts);
@@ -39,5 +41,9 @@ router.get('/my-profit/current-month-revenue', authenticateUser, authorizeRole([
 router.get("/arenas", authenticateUser, authorizeRole(["Owner"]), ownerController.getOwnerArenas);
 router.get("/arenas/:arenaId", authenticateUser, authorizeRole(["Owner"]), ownerController.getArenaDetails);
 router.get('/arenas/:arenaId/yearly-chart', ownerController.getArenaCourtYearlyData);
+
+router.get('/activity-summary', authenticateUser, authorizeRole(["Owner"]), loginActivityController.getActivitySummary);
+router.get('/login-times', authenticateUser, authorizeRole(["Owner"]), loginActivityController.getLoginTimes);
+router.post('/add-login-record', authenticateUser, authorizeRole(["Owner"]), loginActivityController.addLoginRecord);
 
 module.exports = router;
