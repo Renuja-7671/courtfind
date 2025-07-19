@@ -379,14 +379,13 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
         try {
             const queryStr = `
                 SELECT 
-                    p.paymentId,
-                    p.paymentDesc AS payment_description,
-                    DATE(p.paid_at) AS date,
-                    p.amount
-                FROM payments p
-                JOIN bookings b ON p.bookingId = b.bookingId
-                WHERE b.ownerId = ?
-                ORDER BY p.paid_at DESC
+                    paymentId,
+                    paymentDesc AS payment_description,
+                    DATE(paid_at) AS date,
+                    amount
+                FROM payments
+                WHERE ownerId = ?
+                ORDER BY paid_at DESC
             `;
             const [rows] = await query(queryStr, [ownerId]);
             return rows;
@@ -394,6 +393,7 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
             throw err;
         }
     },
+
 
     //For courtwise Profit Page
     // Get all arenas for a specific owner
