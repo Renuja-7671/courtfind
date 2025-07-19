@@ -9,7 +9,7 @@ const OwnerDashboard = {
             const [bookingRes] = await query('SELECT COUNT(*) AS totalBookings FROM bookings WHERE ownerId = ?', [ownerId]);
             const totalBookings = bookingRes[0].totalBookings;
 
-            const [incomeRes] = await query('SELECT SUM(amount) AS totalIncome FROM payments WHERE ownerId = ?', [ownerId]);
+            const [incomeRes] = await query('SELECT SUM(amount) AS totalIncome FROM payments WHERE ownerId = ? AND playerId IS NOT NULL', [ownerId]);
             const totalIncome = incomeRes[0].totalIncome || 0;
 
             return { totalArenas, totalBookings, totalIncome };
@@ -18,27 +18,40 @@ const OwnerDashboard = {
         }
     },
 
-    fetchIncomeOverview: async (ownerId) => {
+    fetchIncomeOverview: async (ownerId, year) => {
         try {
             const queryStr = `
                 SELECT MONTH(paid_at) AS month, SUM(amount) AS total
                 FROM payments
-                WHERE ownerId = ?
+                WHERE ownerId = ? AND YEAR(paid_at) = ? AND playerId IS NOT NULL
                 GROUP BY MONTH(paid_at)
                 ORDER BY MONTH(paid_at)
             `;
-            const [rows] = await query(queryStr, [ownerId]);
+            const [rows] = await query(queryStr, [ownerId, year]);
 
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             const values = Array(12).fill(0);
             rows.forEach(row => {
-                values[row.month - 1] = row.total;
+                values[row.month - 1] = parseFloat(row.total);
             });
 
             return { labels, values };
         } catch (err) {
+            console.error("Error fetching income overview:", err);
             throw err;
         }
+    }, 
+
+    getTotalIncomeForYear: async (ownerId, year) => {
+    const queryStr = `
+        SELECT SUM(amount) AS total_income
+        FROM payments
+        WHERE ownerId = ? 
+        AND YEAR(paid_at) = ? 
+        AND playerId IS NOT NULL
+    `;
+    const [rows] = await query(queryStr, [ownerId, year]);
+    return rows[0].total_income || 0;
     },
 
     fetchRecentBookings: async (ownerId) => {
@@ -378,14 +391,9 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
     fetchPaymentHistoryForMyProfit: async (ownerId) => {
         try {
             const queryStr = `
-                SELECT 
-                    paymentId,
-                    paymentDesc AS payment_description,
-                    DATE(paid_at) AS date,
-                    amount
-                FROM payments
-                WHERE ownerId = ?
-                ORDER BY paid_at DESC
+                SELECT p.paymentId, p.paymentDesc AS payment_description, DATE(p.paid_at) AS date, p.amount
+                FROM payments p
+                WHERE p.ownerId = ? AND p.playerId IS NULL
             `;
             const [rows] = await query(queryStr, [ownerId]);
             return rows;
@@ -556,7 +564,23 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
         }
     },
 
-    }
+    fetchArenaRevenueDistribution: async (ownerId, year) => {
+        
+            const sql = `
+                        SELECT a.name, SUM(p.amount) AS total
+                        FROM payments p
+                        JOIN arenas a ON p.arenaId = a.arenaId
+                        WHERE p.ownerId = ? 
+                        AND p.playerId IS NOT NULL
+                        AND YEAR(p.paid_at) = ?
+                        GROUP BY a.name
+                    `;
+            const [results] = await query(sql, [ownerId, year]);
+            return results;
+        
+
+    },
+}
 
 
 

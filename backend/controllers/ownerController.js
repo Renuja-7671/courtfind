@@ -162,14 +162,28 @@ exports.getStats = async (req, res) => {
 };
 
 exports.getIncomeOverview = async (req, res) => {
-    try {const ownerId = req.user.userId;
-        const chartData = await OwnerDashboard.fetchIncomeOverview(ownerId);
+    try {
+        const ownerId = req.user.userId;
+        const year = req.params.year;
+        const chartData = await OwnerDashboard.fetchIncomeOverview(ownerId, year);
         res.json(chartData);
     } catch (error) {
         console.error('Error fetching income overview:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
   
+};
+
+exports.getTotalIncomeForYear = async (req, res) => {
+    try {
+        const ownerId = req.user.userId;
+        const year = req.params.year;
+        const totalIncome = await OwnerDashboard.getTotalIncomeForYear(ownerId, year);
+        res.json(totalIncome);
+    } catch {
+        console.error('Error fetching total income:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 exports.getRecentBookings = async (req, res) => {
@@ -488,4 +502,24 @@ exports.updatePaymentsTableForArenaAdd = async (req, res) => {
     res.status(500).json({ message: "Failed to update payment status", error });
   }
 }
+
+const ownerModel = require('../models/ownerModel');
+
+exports.getArenaRevenueDistribution = async (req, res) => {
+  try {
+    const ownerId = req.user.userId;
+    const currentYear = new Date().getFullYear();
+
+    const results = await OwnerDashboard.fetchArenaRevenueDistribution(ownerId, currentYear);
+
+    const labels = results.map(r => r.name);
+    const values = results.map(r => parseFloat(r.total));
+
+    res.json({ labels, values });
+  } catch (err) {
+    console.error('Error fetching arena revenue distribution:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 

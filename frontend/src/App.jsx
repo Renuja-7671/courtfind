@@ -15,13 +15,14 @@ import Chatbot from "./components/Chatbot";
 import ExploreNow from "./views/ExploreNow";
 import ViewingPage from "./views/sportViewing";
 import Homepage from "./views/Home";
+import ViewReviews from "./views/ViewReviews";
+import AboutUs from "./views/aboutUs";
 
 // Player Views
 import PlayerDashboard from "./views/PlayerDashboard";
 import PlayerProfile from "./views/PlayerProfile";
 import PlayerChangePassword from "./views/PlayerChangePassword";
 import PlayerInvoice from "./views/PlayerInvoice";
-import ViewReviews from "./views/ViewReviews";
 import FeedbackPage from "./views/Feedback";
 import PaymentPage from "./views/paymentPage";
 import PaymentSuccess from "./views/PaymentSuccess";
@@ -76,7 +77,8 @@ const commonRoutes = [
   { path: "/explore-now", element: ExploreNow },
   { path: "/view/:courtId", element: ViewingPage },
   { path: "/home", element: Homepage },
-
+  { path: "/reviews/:courtId", element: ViewReviews },
+  { path: "/about", element: AboutUs },
 ];
 
 const playerRoutes = [
@@ -84,7 +86,6 @@ const playerRoutes = [
   { path: "/player-profile", element: PlayerProfile },
   { path: "/player-change-password", element: PlayerChangePassword },
   { path: "/player-invoices",element: PlayerInvoice }, 
-  { path: "/reviews/:courtId", element: ViewReviews },
   { path: "/feedback/:courtId", element: FeedbackPage},
   { path: "/payment/:bookingId/:total", element: PaymentPage },
   { path: "/payment-success/:bookingId/:absoluteAmount", element: PaymentSuccess }, 

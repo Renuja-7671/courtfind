@@ -5,6 +5,7 @@ const { authenticateUser, authorizeRole } = require("../middleware/authMiddlewar
 const { upload } = require("../middleware/uploadMiddleware");
 //const { changePassword } = require('../controllers/ownerController');
 const loginActivityController = require('../controllers/loginActivityController');
+const reportController = require('../controllers/reportController');
 
 
 router.get("/dashboardbcb", authenticateUser, authorizeRole(["Owner"]), ownerController.dashboard);
@@ -17,9 +18,14 @@ router.get("/profile/image", authenticateUser, authorizeRole(["Owner"]), ownerCo
 
 //Owner Dashboard routes
 router.get('/dashboard/stats', authenticateUser, authorizeRole(["Owner"]), ownerController.getStats);
-router.get('/dashboard/income-overview', authenticateUser, authorizeRole(["Owner"]), ownerController.getIncomeOverview);
+router.get('/dashboard/income-overview/:year', authenticateUser, authorizeRole(["Owner"]), ownerController.getIncomeOverview);
 router.get('/dashboard/recent-bookings', authenticateUser, authorizeRole(["Owner"]), ownerController.getRecentBookings);
 router.get('/dashboard/payment-history', authenticateUser, authorizeRole(["Owner"]), ownerController.getPaymentHistory);
+router.get('/arena-revenue-distribution',authenticateUser, authorizeRole(["Owner"]), ownerController.getArenaRevenueDistribution);
+router.get('/dashboard/most-booked-courts', authenticateUser, authorizeRole(["Owner"]), reportController.getMostBookedCourts);
+router.get('/dashboard/get-total-income-for-year/:year', authenticateUser, authorizeRole(["Owner"]), ownerController.getTotalIncomeForYear);
+
+
 
 //Arena Bookings routes
 router.get('/arena-bookings', authenticateUser, authorizeRole(["Owner"]), ownerController.fetchArenaBookings);
