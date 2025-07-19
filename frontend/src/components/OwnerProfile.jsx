@@ -91,7 +91,7 @@ const OwnerProfile = () => {
                   {activitySummary ? (
                     <>
                       <div><strong>Registered Date: </strong> {new Date(activitySummary.lastProfileUpdate).toLocaleDateString()}</div>
-                      <div><strong>Logged to system (30 days):</strong> {activitySummary.loginCountLast30Days}</div>
+                      <div><strong>Number of Logins (Within last 30 days):</strong> {activitySummary.loginCountLast30Days}</div>
                     </>
                   ) : <div>Loading...</div>}
                 </Card.Body>

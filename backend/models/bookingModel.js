@@ -2,7 +2,9 @@ const db = require("../config/db");
 
 const PlayerBooking = {
     getBookingsByPlayerId: (playerId, callback) => {
-        const query = "SELECT a.name, b.booking_date, b.start_time, b.end_time, b.status, a.image_url FROM bookings b JOIN arenas a ON b.arenaId = a.arenaId WHERE b.playerId = ?;";
+        const query = `SELECT a.name,c.name AS courtName, b.booking_date, b.start_time, b.end_time, b.status, a.image_url, b.payment_status
+                        FROM bookings b, arenas a, courts c
+                        WHERE b.arenaId = a.arenaId AND b.courtId = c.courtId AND b.playerId = ?;`;
         db.query(query, [playerId], callback);
     },
     setABooking: (bookingData, callback) => {

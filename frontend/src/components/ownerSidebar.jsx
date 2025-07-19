@@ -38,7 +38,7 @@ const Sidebar = () => {
     const menuItems = [
         { path: "/owner-dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
         { path: "/arena-bookings", label: "Arena Bookings", icon: <FaCalendarAlt /> },
-        { path: "/manage-arenas", label: "My Arenas", icon: <FaUser /> },
+        { path: "/manage-arenas", label: "Manage My Arenas", icon: <FaUser /> },
         { path: "/add-arena", label: "Add Arena", icon: <FaPlusCircle /> },
         { path: "/owner-requests", label: "Requests", icon: <FaCodePullRequest /> },
         { path: "/my-profit", label: "My Profits", icon: <FaChartLine /> },

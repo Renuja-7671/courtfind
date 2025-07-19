@@ -91,7 +91,7 @@ const arenaPaymentSuccess = () => {
               )}
 
               <div className="mt-3">
-                <Button variant="success" href="/player-dashboard">
+                <Button variant="success" href="/owner-dashboard">
                   Go to Dashboard
                 </Button>
               </div>
