@@ -9,7 +9,7 @@ const OwnerDashboard = {
             const [bookingRes] = await query('SELECT COUNT(*) AS totalBookings FROM bookings WHERE ownerId = ?', [ownerId]);
             const totalBookings = bookingRes[0].totalBookings;
 
-            const [incomeRes] = await query('SELECT SUM(amount) AS totalIncome FROM payments WHERE ownerId = ? AND playerId IS NOT NULL', [ownerId]);
+            const [incomeRes] = await query('SELECT SUM(amount) AS totalIncome FROM payments WHERE ownerId = ? AND playerId IS NOT NULL  AND YEAR(paid_at) = YEAR(CURDATE());', [ownerId]);
             const totalIncome = incomeRes[0].totalIncome || 0;
 
             return { totalArenas, totalBookings, totalIncome };
@@ -394,6 +394,7 @@ fetchMonthlyChartData: async (ownerId, year = new Date().getFullYear(), month = 
                 SELECT p.paymentId, p.paymentDesc AS payment_description, DATE(p.paid_at) AS date, p.amount
                 FROM payments p
                 WHERE p.ownerId = ? AND p.playerId IS NULL
+                ORDER BY p.paid_at DESC;
             `;
             const [rows] = await query(queryStr, [ownerId]);
             return rows;
